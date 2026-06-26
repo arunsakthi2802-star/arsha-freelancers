@@ -28,110 +28,88 @@ export default function DetailsModal({ project, onClose, onSelectProject }) {
     setIsGeneratingPDF(true);
     try {
       const { jsPDF } = await import("jspdf");
-      await import("jspdf-autotable");
-
       const doc = new jsPDF("portrait");
 
-      // Add Watermark first so it acts as background
-      doc.setTextColor(240, 240, 240);
-      doc.setFontSize(70);
-      doc.text("ARSHA", doc.internal.pageSize.width / 2, doc.internal.pageSize.height / 2 - 20, {
-        align: 'center',
-        angle: 45
-      });
-      doc.text("FREELANCER", doc.internal.pageSize.width / 2, doc.internal.pageSize.height / 2 + 20, {
-        align: 'center',
-        angle: 45
-      });
-
-      if (!cachedLogoDataUrl) {
-        try {
-          const response = await fetch("/arsha%20logo.jpeg");
-          const blob = await response.blob();
-          cachedLogoDataUrl = await new Promise((resolve) => {
-            const reader = new FileReader();
-            reader.onloadend = () => resolve(reader.result);
-            reader.readAsDataURL(blob);
-          });
-        } catch (e) {
-          console.error("Failed to load logo", e);
-        }
-      }
-
-      if (cachedLogoDataUrl) {
-        doc.addImage(cachedLogoDataUrl, 'JPEG', 15, 10, 30, 30);
-      }
-
-      doc.setFontSize(22);
-      doc.setTextColor(20);
-      doc.text("Arsha Freelancers - Project Details", 50, 25);
-      
-      doc.setFontSize(16);
-      doc.setTextColor(40);
-      const safeTitle = String(project?.title || "Untitled Project");
-      const splitTitle = doc.splitTextToSize(safeTitle, 180);
-      doc.text(splitTitle, 15, 55);
-      
-      const yAfterTitle = 55 + (splitTitle.length * 7);
-
-      doc.setFontSize(12);
       const safeId = project?.id || "N/A";
+      const safeTitle = String(project?.title || "Untitled Project");
       const safeDept = project?.department || "N/A";
       const safeCat = project?.category || "N/A";
-      doc.text(`ID: ${safeId} | Dept: ${safeDept} | Category: ${safeCat}`, 15, yAfterTitle + 5);
-
-      doc.setFontSize(11);
-      doc.setTextColor(60);
-      doc.text("Project Summary:", 15, yAfterTitle + 20);
-      doc.setFontSize(10);
-      doc.setTextColor(80);
-      
       const safeDesc = String(project?.description || "No description provided.");
-      const splitDesc = doc.splitTextToSize(safeDesc, 180);
-      doc.text(splitDesc, 15, yAfterTitle + 28);
-      
-      const yAfterDesc = yAfterTitle + 28 + (splitDesc.length * 5) + 10;
-
       const techStack = Array.isArray(project?.technology) 
         ? project.technology.join(', ') 
         : (project?.technology || "Not specified");
 
-      doc.autoTable({
-        head: [['Specification', 'Details']],
-        body: [
-          ['Technology Stack', techStack],
-          ['Academic Complexity', project?.difficulty || "Not specified"],
-          ['Delivery Estimate', project?.duration || "Not specified"]
-        ],
-        startY: yAfterDesc,
-        styles: { fontSize: 10 },
-        headStyles: { fillColor: [37, 99, 235] },
-      });
+      let yPos = 20;
 
-      const finalY = doc.lastAutoTable.finalY + 15;
+      // Header
+      doc.setFontSize(24);
+      doc.setTextColor(37, 99, 235); // Blue
+      doc.text("ARSHA FREELANCERS", 105, yPos, { align: "center" });
+      yPos += 15;
       
+      doc.setFontSize(16);
+      doc.setTextColor(20);
+      const splitTitle = doc.splitTextToSize(safeTitle, 180);
+      doc.text(splitTitle, 15, yPos);
+      yPos += (splitTitle.length * 7) + 5;
+
+      // Details
+      doc.setFontSize(11);
+      doc.setTextColor(100);
+      doc.text(`Project ID: ${safeId}   |   Department: ${safeDept}   |   Category: ${safeCat}`, 15, yPos);
+      yPos += 15;
+
+      // Summary
+      doc.setFontSize(14);
+      doc.setTextColor(20);
+      doc.text("Project Summary", 15, yPos);
+      yPos += 8;
+
       doc.setFontSize(11);
       doc.setTextColor(60);
-      doc.text("Included Deliverables:", 15, finalY);
+      const splitDesc = doc.splitTextToSize(safeDesc, 180);
+      doc.text(splitDesc, 15, yPos);
+      yPos += (splitDesc.length * 5) + 10;
+
+      // Tech Stack
+      doc.setFontSize(14);
+      doc.setTextColor(20);
+      doc.text("Technical Details", 15, yPos);
+      yPos += 8;
+
+      doc.setFontSize(11);
+      doc.setTextColor(60);
+      doc.text(`Technology Stack: ${techStack}`, 15, yPos);
+      yPos += 6;
+      doc.text(`Academic Complexity: ${project?.difficulty || "Not specified"}`, 15, yPos);
+      yPos += 6;
+      doc.text(`Delivery Estimate: ${project?.duration || "Not specified"}`, 15, yPos);
+      yPos += 15;
+      
+      // Deliverables
+      doc.setFontSize(14);
+      doc.setTextColor(20);
+      doc.text("Included Deliverables", 15, yPos);
+      yPos += 8;
       doc.setFontSize(10);
-      doc.setTextColor(80);
+      doc.setTextColor(60);
       documentationDeliverables.forEach((item, index) => {
-        doc.text(`- ${item}`, 20, finalY + 10 + (index * 6));
+        doc.text(`- ${item}`, 20, yPos + (index * 6));
       });
 
-      // Contact Details Footer
-      const pageHeight = doc.internal.pageSize.height;
-      doc.setFontSize(12);
-      doc.setTextColor(40);
-      doc.text("Contact for Consultation:", doc.internal.pageSize.width / 2, pageHeight - 25, { align: "center" });
-      doc.setFontSize(10);
+      // Contact Footer
+      doc.setFontSize(16);
+      doc.setTextColor(37, 99, 235);
+      doc.text("Contact for Consultation", 105, 270, { align: "center" });
+      doc.setFontSize(11);
       doc.setTextColor(100);
-      doc.text("Arsha Freelancer | Email: arshatech06@gmail.com | Mobile: +91 8300799120", doc.internal.pageSize.width / 2, pageHeight - 15, { align: "center" });
+      doc.text("Arsha Freelancers", 105, 278, { align: "center" });
+      doc.text("Email: arshatech06@gmail.com   |   Mobile: +91 8300799120", 105, 285, { align: "center" });
 
       doc.save(`Arsha_Project_${safeId}.pdf`);
     } catch (error) {
-      console.error("Error generating PDF", error);
-      alert("Failed to generate PDF. Please try again.");
+      console.error("PDF Error:", error);
+      alert("Failed to generate PDF. Error: " + error.message);
     } finally {
       setIsGeneratingPDF(false);
     }
