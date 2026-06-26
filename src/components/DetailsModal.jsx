@@ -8,6 +8,7 @@ import {
   Presentation,
   Download,
 } from "lucide-react";
+import { logoBase64 } from "../utils/logoBase64.js";
 
 let cachedLogoDataUrl = null;
 
@@ -42,16 +43,20 @@ export default function DetailsModal({ project, onClose, onSelectProject }) {
       let yPos = 25;
 
       // Header Area
+      // Draw Logo (Left side)
+      doc.addImage(logoBase64, 'JPEG', 15, 12, 25, 25);
+
+      // Main Header Text (Centered in remaining space)
       doc.setFont("helvetica", "bold");
       doc.setFontSize(22);
       doc.setTextColor(37, 99, 235); // Blue
-      doc.text("ARSHA FREELANCERS", 105, yPos, { align: "center" });
+      doc.text("ARSHA FREELANCERS", 115, yPos, { align: "center" });
       
       yPos += 8;
       doc.setFont("helvetica", "normal");
       doc.setFontSize(10);
       doc.setTextColor(100);
-      doc.text("Academic Project Proposal & Specifications", 105, yPos, { align: "center" });
+      doc.text("Academic Project Proposal & Specifications", 115, yPos, { align: "center" });
       
       yPos += 15;
       
