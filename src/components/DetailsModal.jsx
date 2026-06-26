@@ -41,6 +41,13 @@ export default function DetailsModal({ project, onClose, onSelectProject }) {
         : (project?.technology || "Not specified");
 
       let yPos = 25;
+      
+      const checkPageBreak = (requiredSpace) => {
+        if (yPos + requiredSpace > 270) {
+          doc.addPage();
+          yPos = 20;
+        }
+      };
 
       // Header Area
       // Draw Logo (Left side)
@@ -107,6 +114,7 @@ export default function DetailsModal({ project, onClose, onSelectProject }) {
       yPos += (splitDesc.length * 5) + 12;
 
       // Tech Stack Box
+      checkPageBreak(50);
       doc.setFillColor(248, 250, 252);
       doc.setDrawColor(226, 232, 240);
       doc.roundedRect(15, yPos, 180, 35, 3, 3, 'FD'); // Fill and border
@@ -137,8 +145,78 @@ export default function DetailsModal({ project, onClose, onSelectProject }) {
       doc.setFont("helvetica", "normal");
       doc.text(project?.duration || "Not specified", 55, yPos);
       yPos += 20;
+
+      // Architecture & Implementation
+      if (project?.details) {
+        checkPageBreak(40);
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(12);
+        doc.setTextColor(37, 99, 235);
+        doc.text("ARCHITECTURE & IMPLEMENTATION", 15, yPos);
+        yPos += 8;
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(10);
+        doc.setTextColor(60);
+        const splitDetails = doc.splitTextToSize(project.details, 180);
+        doc.text(splitDetails, 15, yPos);
+        yPos += (splitDetails.length * 5) + 10;
+      }
+
+      // Key Features
+      if (project?.features && project.features.length > 0) {
+        checkPageBreak(30);
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(12);
+        doc.setTextColor(37, 99, 235);
+        doc.text("KEY FEATURES", 15, yPos);
+        yPos += 8;
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(10);
+        doc.setTextColor(60);
+        project.features.forEach((feat, idx) => {
+          doc.text(`• ${feat}`, 20, yPos + (idx * 6));
+        });
+        yPos += (project.features.length * 6) + 10;
+      }
+
+      // Project Impact & Existing Systems
+      if (project?.impact || project?.existing) {
+        checkPageBreak(40);
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(12);
+        doc.setTextColor(37, 99, 235);
+        doc.text("PROJECT SCOPE & IMPACT", 15, yPos);
+        yPos += 8;
+        
+        doc.setFontSize(10);
+        if (project.existing) {
+          doc.setFont("helvetica", "bold");
+          doc.setTextColor(30);
+          doc.text("Limitations of Existing Systems:", 15, yPos);
+          yPos += 5;
+          doc.setFont("helvetica", "normal");
+          doc.setTextColor(60);
+          const splitExisting = doc.splitTextToSize(project.existing, 180);
+          doc.text(splitExisting, 15, yPos);
+          yPos += (splitExisting.length * 5) + 8;
+        }
+        
+        if (project.impact) {
+          checkPageBreak(25);
+          doc.setFont("helvetica", "bold");
+          doc.setTextColor(30);
+          doc.text("Proposed Impact:", 15, yPos);
+          yPos += 5;
+          doc.setFont("helvetica", "normal");
+          doc.setTextColor(60);
+          const splitImpact = doc.splitTextToSize(project.impact, 180);
+          doc.text(splitImpact, 15, yPos);
+          yPos += (splitImpact.length * 5) + 10;
+        }
+      }
       
       // Deliverables
+      checkPageBreak(40);
       doc.setFont("helvetica", "bold");
       doc.setFontSize(12);
       doc.setTextColor(37, 99, 235);
@@ -154,7 +232,7 @@ export default function DetailsModal({ project, onClose, onSelectProject }) {
         doc.text(item, 22, yPos + (index * 6));
       });
 
-      // Contact Footer (Bottom of page)
+      // Contact Footer (Bottom of page - fixed position)
       const pageHeight = doc.internal.pageSize.height;
       doc.setFillColor(37, 99, 235); // Solid Blue Banner
       doc.rect(0, pageHeight - 35, 210, 35, 'F');
