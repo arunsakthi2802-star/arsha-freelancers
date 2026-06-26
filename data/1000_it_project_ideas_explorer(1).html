@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5000 Social Impact IT Project Ideas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .modal-open { overflow: hidden; }
+
+        /* Print/PDF specific styles */
+        @media print {
+            body { background-color: #ffffff; }
+            #app-ui { display: none !important; }
+            #printArea { display: block !important; color: #000; font-family: 'Merriweather', serif; }
+            .page-break { page-break-before: always; }
+            .no-break { page-break-inside: avoid; }
+            h1, h2, h3, h4 { page-break-after: avoid; font-family: 'Inter', sans-serif; }
+            .print-project { margin-bottom: 25px; padding-bottom: 20px; border-bottom: 1px solid #e5e7eb; }
+            @page { margin: 1.5cm; }
+        }
+    </style>
+</head>
+<body class="text-gray-800 antialiased h-screen flex flex-col overflow-hidden">
+
+    <!-- MAIN WEB UI -->
+    <div id="app-ui" class="h-full flex flex-col">
+        <!-- Header -->
+        <header class="bg-white shadow-sm border-b border-gray-200 z-20 flex-shrink-0">
+            <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col sm:flex-row justify-between items-center h-auto sm:h-20 py-4 sm:py-0 gap-4">
+                    <div class="flex items-center gap-3 self-start sm:self-auto">
+                        <div class="bg-indigo-600 text-white p-2.5 rounded-xl shadow-sm">
+                            <i data-lucide="cpu" class="w-7 h-7"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-xl sm:text-2xl font-extrabold text-gray-900 flex items-center tracking-tight">
+                                IT Project Matrix
+                                <span class="text-xs font-bold text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-full ml-3 border border-indigo-200 shadow-sm uppercase tracking-wide">5000 Ideas</span>
+                            </h1>
+                            <p class="text-xs text-gray-500 font-medium mt-0.5">Final Year Engineering Concepts</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center gap-3 w-full sm:w-auto">
+                        <div class="relative flex-1 sm:w-80">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i data-lucide="search" class="h-5 w-5 text-gray-400"></i>
+                            </div>
+                            <input type="text" id="searchInput" class="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-xl text-sm bg-gray-50 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors shadow-inner" placeholder="Search ideas, domains or tech...">
+                        </div>
+                        <button onclick="generatePDF()" class="flex items-center justify-center gap-2 bg-gray-900 hover:bg-gray-800 text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition-colors shadow-md whitespace-nowrap">
+                            <i data-lucide="file-down" class="w-4 h-4"></i>
+                            <span class="hidden sm:inline">Export PDF</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex overflow-hidden w-full max-w-[1400px] mx-auto">
+            
+            <!-- Sidebar / Categories -->
+            <aside class="w-72 bg-white border-r border-gray-200 flex flex-col z-10 hidden md:flex flex-shrink-0 shadow-sm">
+                <div class="p-5 border-b border-gray-100 bg-gray-50/50">
+                    <h2 class="text-xs font-extrabold text-gray-500 uppercase tracking-widest">Project Domains</h2>
+                </div>
+                <div class="overflow-y-auto flex-1 p-3">
+                    <ul id="categoryList" class="space-y-1.5">
+                        <!-- Categories injected here -->
+                    </ul>
+                </div>
+            </aside>
+
+            <!-- Mobile Category Select -->
+            <div class="md:hidden bg-white border-b border-gray-200 p-4 flex-shrink-0 w-full z-10">
+                <select id="mobileCategorySelect" class="w-full border border-gray-300 rounded-xl shadow-sm focus:ring-indigo-500 focus:border-indigo-500 py-3 pl-4 pr-10 text-sm font-medium bg-gray-50">
+                    <option value="All">All Domains (5000 Projects)</option>
+                    <!-- Options injected here -->
+                </select>
+            </div>
+
+            <!-- Project Grid -->
+            <main class="flex-1 overflow-y-auto bg-slate-50 relative p-4 sm:p-6 lg:p-8 scroll-smooth" id="mainScroll">
+                <div class="max-w-6xl mx-auto">
+                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-end mb-8 gap-2">
+                        <div>
+                            <h2 id="currentCategoryTitle" class="text-3xl font-extrabold text-gray-900 tracking-tight">All Projects</h2>
+                            <p id="projectCountText" class="text-sm font-medium text-gray-500 mt-2">Generating 5000 unique combinations...</p>
+                        </div>
+                    </div>
+                    
+                    <div id="projectGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-12">
+                        <!-- Project Cards injected here -->
+                    </div>
+                    
+                    <!-- Empty State -->
+                    <div id="emptyState" class="hidden flex-col items-center justify-center py-24 text-center">
+                        <div class="bg-gray-200 p-5 rounded-full mb-5">
+                            <i data-lucide="search-x" class="w-10 h-10 text-gray-500"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900">No projects found</h3>
+                        <p class="text-gray-500 mt-2 max-w-md text-sm">We couldn't find any ideas matching your search. Try adjusting your keywords.</p>
+                        <button onclick="clearSearch()" class="mt-6 px-5 py-2.5 bg-white border border-gray-300 rounded-xl shadow-sm text-sm font-semibold text-gray-700 hover:bg-gray-50 hover:text-indigo-600 transition-colors">
+                            Clear Search
+                        </button>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Project Detail Modal (Hidden by default) -->
+    <div id="projectModal" class="fixed inset-0 z-[100] hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="fixed inset-0 bg-gray-900/60 transition-opacity backdrop-blur-sm" onclick="closeModal()"></div>
+        <div class="fixed inset-0 z-10 overflow-y-auto">
+            <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                <div class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-2xl border border-gray-100">
+                    <div class="absolute right-0 top-0 hidden pr-4 pt-4 sm:block z-10">
+                        <button type="button" onclick="closeModal()" class="rounded-full bg-gray-100 p-1.5 text-gray-500 hover:text-gray-900 hover:bg-gray-200 focus:outline-none transition-colors">
+                            <span class="sr-only">Close</span>
+                            <i data-lucide="x" class="h-5 w-5"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="bg-white px-4 pb-4 pt-5 sm:p-8 sm:pb-6">
+                        <div class="sm:flex sm:items-start w-full">
+                            <div class="mt-3 text-left w-full sm:mt-0">
+                                
+                                <!-- Modal Header: Title prominently at the top -->
+                                <h3 class="text-2xl font-extrabold leading-tight text-gray-900 mb-4 pr-8" id="modalTitle">Project Title</h3>
+                                
+                                <div class="flex flex-wrap items-center gap-3 mb-6 pb-4 border-b border-gray-100">
+                                    <span id="modalId" class="inline-flex items-center rounded-lg bg-indigo-50 px-3 py-1 text-sm font-bold text-indigo-700 ring-1 ring-inset ring-indigo-600/20 shadow-sm"></span>
+                                    <span id="modalCategory" class="inline-flex items-center rounded-lg bg-gray-100 px-3 py-1 text-sm font-semibold text-gray-600 ring-1 ring-inset ring-gray-500/10"></span>
+                                </div>
+                                
+                                <div class="space-y-6 text-sm text-gray-700">
+                                    <div>
+                                        <h4 class="font-bold text-gray-900 flex items-center gap-2 mb-2 uppercase tracking-wide text-xs"><i data-lucide="info" class="w-4 h-4 text-blue-500"></i> Project Description</h4>
+                                        <p id="modalDesc" class="leading-relaxed bg-gray-50 p-4 rounded-xl border border-gray-100"></p>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-gray-900 flex items-center gap-2 mb-2 uppercase tracking-wide text-xs"><i data-lucide="code-2" class="w-4 h-4 text-purple-500"></i> Technical Architecture</h4>
+                                        <p id="modalDetails" class="leading-relaxed"></p>
+                                    </div>
+                                    <div class="grid sm:grid-cols-2 gap-6">
+                                        <div>
+                                            <h4 class="font-bold text-gray-900 flex items-center gap-2 mb-2 uppercase tracking-wide text-xs"><i data-lucide="history" class="w-4 h-4 text-red-500"></i> Existing Flaws</h4>
+                                            <p id="modalExisting" class="leading-relaxed"></p>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-gray-900 flex items-center gap-2 mb-2 uppercase tracking-wide text-xs"><i data-lucide="trending-up" class="w-4 h-4 text-green-500"></i> Social Impact</h4>
+                                            <p id="modalImpact" class="leading-relaxed"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Modal Footer Actions -->
+                    <div class="bg-gray-50 px-4 py-4 sm:flex sm:flex-row-reverse sm:px-8 border-t border-gray-200 gap-3">
+                        <a id="modalWaBtn" href="#" target="_blank" class="inline-flex w-full justify-center items-center gap-2 rounded-xl bg-[#25D366] px-5 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-[#1fae54] sm:w-auto transition-colors">
+                            <i data-lucide="message-circle" class="w-5 h-5"></i> Discuss on WhatsApp
+                        </a>
+                        <button type="button" onclick="closeModal()" class="mt-3 inline-flex w-full justify-center rounded-xl bg-white px-5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto transition-colors">Close Details</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- HIDDEN PRINT AREA FOR PDF GENERATION -->
+    <div id="printArea" class="hidden">
+        <div style="text-align: center; margin-bottom: 40px; border-bottom: 2px solid #4f46e5; padding-bottom: 20px;">
+            <h1 style="font-size: 28px; font-weight: bold; margin-bottom: 10px; color: #1e3a8a; font-family: 'Inter', sans-serif;">5000 IT Project Ideas Directory</h1>
+            <h2 style="font-size: 18px; color: #4b5563; font-family: 'Inter', sans-serif;">Final Year Engineering Projects for Social Impact</h2>
+            <p style="font-size: 14px; color: #6b7280; margin-top: 10px; font-family: 'Inter', sans-serif;">Generated Catalog - WhatsApp: +91 8300799120</p>
+        </div>
+        <div id="printContent"></div>
+    </div>
+
+    <script>
+        // WhatsApp Contact Number
+        const WA_NUMBER = "918300799120";
+
+        // --- DYNAMIC GENERATOR LOGIC (Yields EXACTLY 5000 Projects) ---
+        
+        // 25 Tech Prefixes
+        const TECH_PREFIXES = [
+            "AI-Powered", "IoT-Based", "Blockchain-Enabled", "Smart", "Cloud-Based", 
+            "Decentralized", "Automated", "Predictive", "Real-Time", "Mobile-First",
+            "Data-Driven", "Web3", "Machine Learning", "Serverless", "Edge-Computing",
+            "AR/VR", "5G-Enabled", "Autonomous", "Vision-Based", "Voice-Controlled",
+            "Cross-Platform", "Open-Source", "Next-Gen", "Scalable", "Distributed"
+        ];
+        
+        // 20 Core Functions
+        const FUNCTIONS = [
+            "Monitoring System", "Tracking Platform", "Management Tool", "Detection Engine", 
+            "Analysis Dashboard", "Optimization Application", "Recommendation System", 
+            "Reporting Portal", "Automation Network", "Forecasting Model",
+            "Analytics Hub", "Decision Support System", "Virtual Assistant", "Resource Allocator",
+            "Feedback Loop", "Control Interface", "Diagnostic Tool", "Alert Mechanism",
+            "Verification Ledger", "Collaboration Workspace"
+        ];
+        
+        // 10 Subjects per Category (10 Categories total)
+        const SUBJECTS = {
+            "Healthcare & Telemedicine": ["Patient Care", "Disease Outbreak", "Clinical Resource", "Medicine Supply", "Tele-consultation", "Vitals", "Mental Wellbeing", "Vaccine Distribution", "Maternal Health", "Medical Record"],
+            "Agriculture & Food Security": ["Crop Yield", "Soil Health", "Weather Pattern", "Livestock", "Fertilizer Usage", "Irrigation", "Farm Machinery", "Seed Distribution", "Commodity Price", "Harvest Storage"],
+            "Education & Skill Development": ["Student Performance", "E-Learning", "Exam Grading", "Skill Development", "Curriculum", "Attendance", "Career Counseling", "Special Education", "Library Resources", "Campus Safety"],
+            "Environment & Sustainability": ["Air Quality", "Water Pollution", "Deforestation", "Waste Recycling", "Carbon Emission", "Energy Consumption", "Wildlife Conservation", "Noise Level", "Renewable Energy", "Climate Change"],
+            "Disaster Management & Safety": ["Flood Alert", "Earthquake Rescue", "Evacuation Route", "Relief Material", "Cyclone Warning", "Structural Health", "Fire Emergency", "Volunteer Dispatch", "Hazard Risk", "Crisis Communication"],
+            "Smart City & E-Governance": ["Traffic Flow", "Street Lighting", "Waste Collection", "Public Transit", "Parking Space", "Civic Grievance", "Water Supply", "Energy Grid", "Public Space Safety", "Municipal Infrastructure"],
+            "Accessibility & Inclusion": ["Visual Impairment", "Hearing Aid", "Mobility Assistance", "Sign Language", "Speech Therapy", "Cognitive Support", "Wheelchair Routing", "Braille Learning", "Autism Care", "Accessible Transit"],
+            "Financial Inclusion & Livelihood": ["Micro-Loan", "Remittance", "Expense Tracking", "Financial Literacy", "Credit Scoring", "Chit-Fund", "Insurance Claim", "Gig Worker Payout", "Street Vendor Sales", "Rural Banking"],
+            "Transportation & Logistics": ["Fleet Route", "Public Bus", "Cargo Delivery", "Road Condition", "Electric Vehicle", "Traffic Accident", "Driver Fatigue", "Logistics", "Toll Collection", "Commuter Ride"],
+            "Data Security & Privacy": ["Data Privacy", "Cyber Threat", "Identity Fraud", "Phishing Attack", "Network Intrusion", "Access Control", "Ransomware", "Secure Messaging", "Endpoint Security", "System Vulnerability"]
+        };
+
+        const META = {
+            "Healthcare & Telemedicine": {
+                stack: ["Python, Flask, TensorFlow (CNN), MySQL, React", "Flutter, Firebase, TensorFlow Lite", "Node.js, MongoDB, React Native, WebRTC"],
+                users: "patients, primary health center staff, and doctors in remote regions",
+                existing: "Most public clinics rely on manual registers and physical walk-ins. Diagnostic workflows depend on specialist availability, leading to severe delays.",
+                impact: "Reduces travel time for underserved patients and enables early detection, directly lowering mortality risks and healthcare costs."
+            },
+            "Agriculture & Food Security": {
+                stack: ["IoT (ESP32/Sensors), Android App, Firebase", "Python, Machine Learning (XGBoost), Flask, React", "Solidity, Web3.js, Node.js, MongoDB"],
+                users: "small/marginal farmers, cooperative societies, and agronomists",
+                existing: "Farmers depend on guesswork or local middlemen for input decisions and price discovery, leading to reduced yields and unfair margins.",
+                impact: "Improves crop yield and farmer income by providing data-driven insights and direct market access, supporting sustainable farming."
+            },
+            "Education & Skill Development": {
+                stack: ["React, Node.js, MongoDB, Express", "Python, NLP (spaCy), Django, PostgreSQL", "Android (Kotlin), SQLite (Offline-first), Firebase"],
+                users: "government school students, first-generation learners, and rural educators",
+                existing: "E-learning platforms demand high-speed internet. Public schools teach at a single pace, leaving slow learners behind.",
+                impact: "Narrows the urban-rural education gap by bringing personalized, accessible, and offline-capable learning to low-resource regions."
+            },
+            "Environment & Sustainability": {
+                stack: ["Python, GIS/Rasterio, Flask, React", "IoT (Air/Water sensors), NodeMCU, ThingSpeak", "Node.js, Mapbox, MongoDB, React"],
+                users: "environmental NGOs, local municipalities, and eco-conscious citizens",
+                existing: "Pollution and deforestation tracking relies on sparse manual surveys or delayed media reports rather than real-time localized data.",
+                impact: "Empowers rapid policy and enforcement actions against ecological damage, and encourages sustainable habits among citizens."
+            },
+            "Disaster Management & Safety": {
+                stack: ["Python, ML (LSTM time-series), GIS, Flask", "Android, Firebase, Google Maps API, SMS Gateway", "React Native, Node.js, Socket.io"],
+                users: "disaster response teams, vulnerable coastal/hill communities, and local authorities",
+                existing: "Alerts are unpersonalized and broad. Relief distribution and damage assessment are manual, leading to delays and duplicate efforts.",
+                impact: "Minimizes loss of life through hyperlocal early warnings and optimizes the routing of critical relief resources during chaos."
+            },
+            "Smart City & E-Governance": {
+                stack: ["React, Node.js, MongoDB, GIS mapping", "Blockchain (Hyperledger), Express, React", "Python, Computer Vision, Flask, MySQL"],
+                users: "municipal administrators, ward officers, and everyday citizens",
+                existing: "Civic complaints are paper-based and untrackable. Infrastructure faults are only fixed when heavily escalated by frustrated citizens.",
+                impact: "Increases government transparency, reduces bureaucratic delays, and creates a data-driven approach to maintaining public infrastructure."
+            },
+            "Accessibility & Inclusion": {
+                stack: ["Python, MediaPipe/OpenCV, Android App", "Flutter, Web Speech API, Firebase", "Arduino/Raspberry Pi, Sensors, Python"],
+                users: "visually, hearing, or mobility impaired individuals and their caregivers",
+                existing: "Digital and physical infrastructure is rarely designed inclusively, forcing disabled individuals into dependency for routine tasks.",
+                impact: "Restores independence and dignity to disabled users, allowing better participation in education, employment, and society."
+            },
+            "Financial Inclusion & Livelihood": {
+                stack: ["Python, ML (Credit Scoring), Django, PostgreSQL", "Android, Voice API, Firebase", "Solidity, Ethereum Testnet, React, Node"],
+                users: "unbanked individuals, daily wage earners, and migrant workers",
+                existing: "Traditional banks ignore users without formal credit histories. Migrants lose significant money to informal remittance channels.",
+                impact: "Frees low-income earners from exploitative money lenders and provides transparent, low-cost access to welfare and savings."
+            },
+            "Transportation & Logistics": {
+                stack: ["Android (Kotlin), GPS API, Firebase", "Python, ML (Computer Vision), Flask", "React, Node.js, Socket.io, MongoDB"],
+                users: "daily commuters, public transit authorities, and logistics companies",
+                existing: "Public transit lacks real-time tracking. Traffic enforcement is manual, and supply chain inefficiencies lead to massive resource waste.",
+                impact: "Reduces wait times, improves road safety through automation, and cuts carbon emissions via optimized routing and logistics."
+            },
+            "Data Security & Privacy": {
+                stack: ["Python, NLP/Transformers, Flask", "Node.js, React, Cryptography Libraries", "Machine Learning (Anomaly Detection), Django"],
+                users: "NGOs, vulnerable populations, everyday internet users, and small businesses",
+                existing: "High-end cybersecurity tools are too expensive for NGOs or individuals, leaving them completely vulnerable to data leaks and fraud.",
+                impact: "Democratizes digital safety, protecting sensitive user data and ensuring democratic processes remain untampered by bad actors."
+            }
+        };
+
+        const projectsDatabase = [];
+
+        function generateData() {
+            let sno = 1;
+            
+            // Loop through 10 Categories
+            Object.keys(SUBJECTS).forEach(category => {
+                const catSubjects = SUBJECTS[category];
+                const meta = META[category];
+                
+                // Loop through 25 Techs
+                TECH_PREFIXES.forEach((tech, tIdx) => {
+                    // Loop through 20 Functions (25 * 20 = 500 projects per category)
+                    FUNCTIONS.forEach((func, fIdx) => {
+                        // Pick a subject, shifting index to create unique combinations
+                        const subject = catSubjects[(tIdx + fIdx) % 10];
+                        const title = `${tech} ${subject} ${func}`;
+                        
+                        // Alternate stacks
+                        const stack = meta.stack[sno % meta.stack.length];
+                        
+                        const description = `The "${title}" is a specialized software engineering initiative targeting ${category.split('&')[0].trim().toLowerCase()} challenges. Designed specifically for ${meta.users}, it utilizes modern IT frameworks to replace manual inefficiencies with scalable automation.`;
+                        
+                        const details = `Core Architecture involves: (1) Secure Authentication, (2) The core processing engine using ${stack.split(',')[0]}, (3) Database management via ${stack.split(',').pop().trim()}, and (4) An administrative dashboard for real-time overview. Tested for high availability and low latency. Recommended complete stack: ${stack}.`;
+                        
+                        projectsDatabase.push({
+                            id: `PRJ-${sno.toString().padStart(4, '0')}`,
+                            sno: sno,
+                            title: title,
+                            category: category,
+                            description: description,
+                            details: details,
+                            impact: meta.impact,
+                            existing: meta.existing
+                        });
+                        sno++;
+                    });
+                });
+            });
+        }
+
+        // --- UI RENDER LOGIC ---
+
+        let currentFilter = "All";
+        let searchQuery = "";
+
+        function getWhatsAppLink(project) {
+            const text = `Hello! I am interested in choosing this final-year project:%0A%0A*Project Code:* ${project.id}%0A*Title:* ${project.title}%0A*Category:* ${project.category}%0A%0ACould you please share more details and the next steps?`;
+            return `https://wa.me/${WA_NUMBER}?text=${text}`;
+        }
+
+        function initApp() {
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+            generateData();
+            renderCategories();
+            filterAndRenderProjects();
+            
+            // Search listener
+            document.getElementById('searchInput').addEventListener('input', (e) => {
+                searchQuery = e.target.value.toLowerCase();
+                filterAndRenderProjects();
+            });
+
+            // Mobile select listener
+            document.getElementById('mobileCategorySelect').addEventListener('change', (e) => {
+                setCategory(e.target.value);
+            });
+        }
+
+        function renderCategories() {
+            const list = document.getElementById('categoryList');
+            const select = document.getElementById('mobileCategorySelect');
+            
+            const categories = ["All", ...Object.keys(SUBJECTS)];
+            
+            categories.forEach(cat => {
+                // Desktop list
+                const li = document.createElement('li');
+                const btn = document.createElement('button');
+                btn.className = `w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 ${cat === 'All' ? 'bg-indigo-600 text-white shadow-md' : 'text-gray-600 hover:bg-gray-200 hover:text-gray-900'}`;
+                btn.innerText = cat === 'All' ? 'All Domains' : cat;
+                btn.onclick = () => setCategory(cat);
+                btn.id = `cat-btn-${cat.replace(/[\s&]+/g, '-')}`;
+                li.appendChild(btn);
+                list.appendChild(li);
+
+                // Mobile select
+                if (cat !== 'All') {
+                    const opt = document.createElement('option');
+                    opt.value = cat;
+                    opt.innerText = cat;
+                    select.appendChild(opt);
+                }
+            });
+        }
+
+        function setCategory(cat) {
+            currentFilter = cat;
+            
+            // Update UI state
+            document.querySelectorAll('#categoryList button').forEach(btn => {
+                btn.className = 'w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 text-gray-600 hover:bg-gray-200 hover:text-gray-900';
+            });
+            
+            const activeBtn = document.getElementById(`cat-btn-${cat.replace(/[\s&]+/g, '-')}`);
+            if (activeBtn) {
+                activeBtn.className = 'w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 bg-indigo-600 text-white shadow-md';
+            }
+
+            document.getElementById('mobileCategorySelect').value = cat;
+            document.getElementById('currentCategoryTitle').innerText = cat === 'All' ? 'All Projects' : cat;
+            
+            filterAndRenderProjects();
+            document.getElementById('mainScroll').scrollTop = 0;
+        }
+
+        function filterAndRenderProjects() {
+            const grid = document.getElementById('projectGrid');
+            const emptyState = document.getElementById('emptyState');
+            const countText = document.getElementById('projectCountText');
+            
+            grid.innerHTML = '';
+            
+            let filtered = projectsDatabase.filter(p => {
+                const matchesCategory = currentFilter === "All" || p.category === currentFilter;
+                const matchesSearch = p.title.toLowerCase().includes(searchQuery) || 
+                                      p.id.toLowerCase().includes(searchQuery) ||
+                                      p.category.toLowerCase().includes(searchQuery);
+                return matchesCategory && matchesSearch;
+            });
+
+            countText.innerText = `Displaying ${filtered.length} project${filtered.length !== 1 ? 's' : ''}`;
+
+            if (filtered.length === 0) {
+                grid.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                emptyState.classList.add('flex');
+            } else {
+                grid.classList.remove('hidden');
+                emptyState.classList.add('hidden');
+                emptyState.classList.remove('flex');
+                
+                filtered.forEach(p => {
+                    const card = document.createElement('div');
+                    card.className = "bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-xl hover:border-indigo-200 transition-all duration-300 flex flex-col h-full group";
+                    
+                    const badgeColor = getBadgeColor(p.category);
+                    const waLink = getWhatsAppLink(p);
+                    
+                    card.innerHTML = `
+                        <!-- TITLE ON TOP -->
+                        <h3 class="text-xl font-extrabold text-gray-900 mb-4 leading-snug group-hover:text-indigo-700 transition-colors">${p.title}</h3>
+                        
+                        <!-- ID and Category immediately below title -->
+                        <div class="flex flex-wrap justify-between items-center mb-4 gap-2 border-b border-gray-100 pb-4">
+                            <span class="text-sm text-indigo-700 bg-indigo-50 px-3 py-1 rounded-lg font-black border border-indigo-200 shadow-sm flex items-center gap-1.5"><i data-lucide="hash" class="w-3.5 h-3.5"></i>${p.id}</span>
+                            <span class="inline-flex items-center rounded-lg ${badgeColor} px-2.5 py-1 text-xs font-bold ring-1 ring-inset whitespace-nowrap">${p.category.split('&')[0].trim()}</span>
+                        </div>
+                        
+                        <p class="text-sm text-gray-600 leading-relaxed line-clamp-3 mb-6 flex-1">${p.description}</p>
+                        
+                        <!-- CTA Buttons -->
+                        <div class="mt-auto flex flex-col gap-2.5">
+                            <button onclick="openModalById('${p.id}')" class="w-full flex justify-center items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-800 text-sm font-bold py-2.5 rounded-xl transition-colors">
+                                View Technical Specs <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                            </button>
+                            
+                            <a href="${waLink}" target="_blank" class="w-full flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#1fae54] text-white text-sm font-bold py-2.5 rounded-xl transition-colors shadow-sm">
+                                <i data-lucide="message-circle" class="w-4 h-4"></i> Discuss on WhatsApp
+                            </a>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+            }
+        }
+
+        function getBadgeColor(category) {
+            const colors = {
+                "Healthcare & Telemedicine": "bg-red-50 text-red-700 ring-red-600/20",
+                "Agriculture & Food Security": "bg-green-50 text-green-700 ring-green-600/20",
+                "Education & Skill Development": "bg-yellow-50 text-yellow-800 ring-yellow-600/30",
+                "Environment & Sustainability": "bg-emerald-50 text-emerald-700 ring-emerald-600/20",
+                "Disaster Management & Safety": "bg-orange-50 text-orange-700 ring-orange-600/20",
+                "Smart City & E-Governance": "bg-indigo-50 text-indigo-700 ring-indigo-600/20",
+                "Accessibility & Inclusion": "bg-purple-50 text-purple-700 ring-purple-600/20",
+                "Financial Inclusion & Livelihood": "bg-teal-50 text-teal-700 ring-teal-600/20",
+                "Transportation & Logistics": "bg-cyan-50 text-cyan-700 ring-cyan-600/20",
+                "Data Security & Privacy": "bg-slate-100 text-slate-700 ring-slate-600/20",
+            };
+            return colors[category] || "bg-blue-50 text-blue-700 ring-blue-700/20";
+        }
+
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            searchQuery = '';
+            filterAndRenderProjects();
+        }
+
+        function openModalById(id) {
+            const project = projectsDatabase.find(p => p.id === id);
+            if(project) openModal(project);
+        }
+
+        function openModal(project) {
+            document.getElementById('modalId').innerHTML = `<i data-lucide="hash" class="w-4 h-4 mr-1"></i>${project.id}`;
+            document.getElementById('modalCategory').innerText = project.category;
+            document.getElementById('modalTitle').innerText = project.title;
+            document.getElementById('modalDesc').innerText = project.description;
+            document.getElementById('modalDetails').innerText = project.details;
+            document.getElementById('modalExisting').innerText = project.existing;
+            document.getElementById('modalImpact').innerText = project.impact;
+            
+            // Update WA button in modal
+            const waBtn = document.getElementById('modalWaBtn');
+            waBtn.href = getWhatsAppLink(project);
+            
+            document.getElementById('projectModal').classList.remove('hidden');
+            document.body.classList.add('modal-open');
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        function closeModal() {
+            document.getElementById('projectModal').classList.add('hidden');
+            document.body.classList.remove('modal-open');
+        }
+
+        function generatePDF() {
+            const printContainer = document.getElementById('printContent');
+            let printHTML = '';
+
+            // Generate HTML for all 5000 projects to be printed
+            projectsDatabase.forEach((p, index) => {
+                // Break page every 5 projects
+                const breakClass = (index > 0 && index % 5 === 0) ? 'page-break' : '';
+                
+                printHTML += `
+                <div class="print-project no-break ${breakClass}">
+                    <h3 style="font-size: 18px; color: #111827; margin-bottom: 4px;">${p.id}: ${p.title}</h3>
+                    <p style="font-size: 13px; color: #4f46e5; font-weight: bold; margin-bottom: 12px;">Category: ${p.category}</p>
+                    
+                    <div style="margin-bottom: 8px;">
+                        <strong style="font-size: 14px;">Project Description:</strong>
+                        <span style="font-size: 13.5px; line-height: 1.6;">${p.description}</span>
+                    </div>
+                    
+                    <div style="margin-bottom: 8px;">
+                        <strong style="font-size: 14px;">Technical Details:</strong>
+                        <span style="font-size: 13.5px; line-height: 1.6;">${p.details}</span>
+                    </div>
+                    
+                    <div style="margin-bottom: 8px;">
+                        <strong style="font-size: 14px;">Existing System:</strong>
+                        <span style="font-size: 13.5px; line-height: 1.6;">${p.existing}</span>
+                    </div>
+                    
+                    <div>
+                        <strong style="font-size: 14px;">Social Impact:</strong>
+                        <span style="font-size: 13.5px; line-height: 1.6;">${p.impact}</span>
+                    </div>
+                </div>
+                `;
+            });
+
+            printContainer.innerHTML = printHTML;
+
+            // Trigger print
+            setTimeout(() => {
+                window.print();
+            }, 500);
+        }
+
+        // Initialize App on Load
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
