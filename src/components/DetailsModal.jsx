@@ -39,72 +39,129 @@ export default function DetailsModal({ project, onClose, onSelectProject }) {
         ? project.technology.join(', ') 
         : (project?.technology || "Not specified");
 
-      let yPos = 20;
+      let yPos = 25;
 
-      // Header
-      doc.setFontSize(24);
+      // Header Area
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(22);
       doc.setTextColor(37, 99, 235); // Blue
       doc.text("ARSHA FREELANCERS", 105, yPos, { align: "center" });
+      
+      yPos += 8;
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(10);
+      doc.setTextColor(100);
+      doc.text("Academic Project Proposal & Specifications", 105, yPos, { align: "center" });
+      
       yPos += 15;
       
+      // Divider Line
+      doc.setDrawColor(220, 220, 220);
+      doc.line(15, yPos, 195, yPos);
+      yPos += 12;
+
+      // Project Title
+      doc.setFont("helvetica", "bold");
       doc.setFontSize(16);
       doc.setTextColor(20);
       const splitTitle = doc.splitTextToSize(safeTitle, 180);
       doc.text(splitTitle, 15, yPos);
       yPos += (splitTitle.length * 7) + 5;
 
-      // Details
-      doc.setFontSize(11);
-      doc.setTextColor(100);
-      doc.text(`Project ID: ${safeId}   |   Department: ${safeDept}   |   Category: ${safeCat}`, 15, yPos);
+      // Badges (Text format)
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(10);
+      doc.setTextColor(80);
+      doc.text("ID:", 15, yPos);
+      doc.setFont("helvetica", "normal");
+      doc.text(safeId, 22, yPos);
+
+      doc.setFont("helvetica", "bold");
+      doc.text("Dept:", 60, yPos);
+      doc.setFont("helvetica", "normal");
+      doc.text(safeDept, 72, yPos);
+
+      doc.setFont("helvetica", "bold");
+      doc.text("Category:", 120, yPos);
+      doc.setFont("helvetica", "normal");
+      doc.text(safeCat, 138, yPos);
       yPos += 15;
 
-      // Summary
-      doc.setFontSize(14);
-      doc.setTextColor(20);
-      doc.text("Project Summary", 15, yPos);
+      // Summary Section
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(12);
+      doc.setTextColor(37, 99, 235);
+      doc.text("PROJECT SUMMARY", 15, yPos);
       yPos += 8;
 
-      doc.setFontSize(11);
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(10);
       doc.setTextColor(60);
       const splitDesc = doc.splitTextToSize(safeDesc, 180);
       doc.text(splitDesc, 15, yPos);
-      yPos += (splitDesc.length * 5) + 10;
+      yPos += (splitDesc.length * 5) + 12;
 
-      // Tech Stack
-      doc.setFontSize(14);
-      doc.setTextColor(20);
-      doc.text("Technical Details", 15, yPos);
+      // Tech Stack Box
+      doc.setFillColor(248, 250, 252);
+      doc.setDrawColor(226, 232, 240);
+      doc.roundedRect(15, yPos, 180, 35, 3, 3, 'FD'); // Fill and border
+
       yPos += 8;
-
+      doc.setFont("helvetica", "bold");
       doc.setFontSize(11);
-      doc.setTextColor(60);
-      doc.text(`Technology Stack: ${techStack}`, 15, yPos);
+      doc.setTextColor(30);
+      doc.text("Technical Details", 20, yPos);
+      
+      yPos += 7;
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(10);
+      doc.setTextColor(80);
+      doc.text("Technology Stack:", 20, yPos);
+      doc.setFont("helvetica", "normal");
+      doc.text(techStack, 55, yPos);
+      
       yPos += 6;
-      doc.text(`Academic Complexity: ${project?.difficulty || "Not specified"}`, 15, yPos);
+      doc.setFont("helvetica", "bold");
+      doc.text("Complexity:", 20, yPos);
+      doc.setFont("helvetica", "normal");
+      doc.text(project?.difficulty || "Not specified", 45, yPos);
+      
       yPos += 6;
-      doc.text(`Delivery Estimate: ${project?.duration || "Not specified"}`, 15, yPos);
-      yPos += 15;
+      doc.setFont("helvetica", "bold");
+      doc.text("Delivery Estimate:", 20, yPos);
+      doc.setFont("helvetica", "normal");
+      doc.text(project?.duration || "Not specified", 55, yPos);
+      yPos += 20;
       
       // Deliverables
-      doc.setFontSize(14);
-      doc.setTextColor(20);
-      doc.text("Included Deliverables", 15, yPos);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(12);
+      doc.setTextColor(37, 99, 235);
+      doc.text("INCLUDED DELIVERABLES", 15, yPos);
       yPos += 8;
+      doc.setFont("helvetica", "normal");
       doc.setFontSize(10);
       doc.setTextColor(60);
       documentationDeliverables.forEach((item, index) => {
-        doc.text(`- ${item}`, 20, yPos + (index * 6));
+        // Bullet point
+        doc.setFillColor(37, 99, 235);
+        doc.circle(17, yPos - 1 + (index * 6), 1, 'F');
+        doc.text(item, 22, yPos + (index * 6));
       });
 
-      // Contact Footer
-      doc.setFontSize(16);
-      doc.setTextColor(37, 99, 235);
-      doc.text("Contact for Consultation", 105, 270, { align: "center" });
-      doc.setFontSize(11);
-      doc.setTextColor(100);
-      doc.text("Arsha Freelancers", 105, 278, { align: "center" });
-      doc.text("Email: arshatech06@gmail.com   |   Mobile: +91 8300799120", 105, 285, { align: "center" });
+      // Contact Footer (Bottom of page)
+      const pageHeight = doc.internal.pageSize.height;
+      doc.setFillColor(37, 99, 235); // Solid Blue Banner
+      doc.rect(0, pageHeight - 35, 210, 35, 'F');
+      
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(14);
+      doc.setTextColor(255, 255, 255);
+      doc.text("Ready to build this project?", 105, pageHeight - 22, { align: "center" });
+      
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(10);
+      doc.text("Email: arshatech06@gmail.com   |   Mobile: +91 8300799120", 105, pageHeight - 14, { align: "center" });
 
       doc.save(`Arsha_Project_${safeId}.pdf`);
     } catch (error) {
