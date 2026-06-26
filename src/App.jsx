@@ -38,6 +38,36 @@ export default function App() {
   });
   const [quoteSubmitted, setQuoteSubmitted] = useState(false);
 
+  // Handle URL Routing for deep links and browser history
+  useEffect(() => {
+    const handleUrlChange = () => {
+      const path = window.location.pathname.replace(/^\/|\/$/g, "");
+      const validViews = ["home", "about", "services", "projects", "portfolio", "gallery", "contact", "faq"];
+      
+      if (path === "student") {
+        setActiveView("projects"); // Support legacy /student link
+      } else if (validViews.includes(path)) {
+        setActiveView(path);
+      }
+    };
+    
+    // Check on initial mount
+    handleUrlChange();
+    
+    // Handle browser back/forward buttons
+    window.addEventListener("popstate", handleUrlChange);
+    return () => window.removeEventListener("popstate", handleUrlChange);
+  }, []);
+
+  useEffect(() => {
+    // Update URL when activeView changes without reloading
+    const currentPath = window.location.pathname.replace(/^\/|\/$/g, "");
+    if (currentPath !== activeView && !(currentPath === "student" && activeView === "projects")) {
+      const newUrl = activeView === "home" ? "/" : `/${activeView}`;
+      window.history.pushState({}, "", newUrl);
+    }
+  }, [activeView]);
+
   // Handle active class sync for dark mode
   useEffect(() => {
     if (darkMode) {
