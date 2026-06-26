@@ -9,6 +9,8 @@ import {
   Download,
 } from "lucide-react";
 
+let cachedLogoDataUrl = null;
+
 export default function DetailsModal({ project, onClose, onSelectProject }) {
   if (!project) return null;
 
@@ -42,21 +44,22 @@ export default function DetailsModal({ project, onClose, onSelectProject }) {
         angle: 45
       });
 
-      let logoDataUrl = null;
-      try {
-        const response = await fetch("/arsha%20logo.jpeg");
-        const blob = await response.blob();
-        logoDataUrl = await new Promise((resolve) => {
-          const reader = new FileReader();
-          reader.onloadend = () => resolve(reader.result);
-          reader.readAsDataURL(blob);
-        });
-      } catch (e) {
-        console.error("Failed to load logo", e);
+      if (!cachedLogoDataUrl) {
+        try {
+          const response = await fetch("/arsha%20logo.jpeg");
+          const blob = await response.blob();
+          cachedLogoDataUrl = await new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result);
+            reader.readAsDataURL(blob);
+          });
+        } catch (e) {
+          console.error("Failed to load logo", e);
+        }
       }
 
-      if (logoDataUrl) {
-        doc.addImage(logoDataUrl, 'JPEG', 15, 10, 30, 30);
+      if (cachedLogoDataUrl) {
+        doc.addImage(cachedLogoDataUrl, 'JPEG', 15, 10, 30, 30);
       }
 
       doc.setFontSize(22);
@@ -65,13 +68,17 @@ export default function DetailsModal({ project, onClose, onSelectProject }) {
       
       doc.setFontSize(16);
       doc.setTextColor(40);
-      const splitTitle = doc.splitTextToSize(project.title, 180);
+      const safeTitle = String(project?.title || "Untitled Project");
+      const splitTitle = doc.splitTextToSize(safeTitle, 180);
       doc.text(splitTitle, 15, 55);
       
       const yAfterTitle = 55 + (splitTitle.length * 7);
 
       doc.setFontSize(12);
-      doc.text(`ID: ${project.id} | Dept: ${project.department} | Category: ${project.category}`, 15, yAfterTitle + 5);
+      const safeId = project?.id || "N/A";
+      const safeDept = project?.department || "N/A";
+      const safeCat = project?.category || "N/A";
+      doc.text(`ID: ${safeId} | Dept: ${safeDept} | Category: ${safeCat}`, 15, yAfterTitle + 5);
 
       doc.setFontSize(11);
       doc.setTextColor(60);
@@ -79,17 +86,22 @@ export default function DetailsModal({ project, onClose, onSelectProject }) {
       doc.setFontSize(10);
       doc.setTextColor(80);
       
-      const splitDesc = doc.splitTextToSize(project.description, 180);
+      const safeDesc = String(project?.description || "No description provided.");
+      const splitDesc = doc.splitTextToSize(safeDesc, 180);
       doc.text(splitDesc, 15, yAfterTitle + 28);
       
       const yAfterDesc = yAfterTitle + 28 + (splitDesc.length * 5) + 10;
 
+      const techStack = Array.isArray(project?.technology) 
+        ? project.technology.join(', ') 
+        : (project?.technology || "Not specified");
+
       doc.autoTable({
         head: [['Specification', 'Details']],
         body: [
-          ['Technology Stack', project.technology.join(', ')],
-          ['Academic Complexity', project.difficulty],
-          ['Delivery Estimate', project.duration]
+          ['Technology Stack', techStack],
+          ['Academic Complexity', project?.difficulty || "Not specified"],
+          ['Delivery Estimate', project?.duration || "Not specified"]
         ],
         startY: yAfterDesc,
         styles: { fontSize: 10 },
@@ -116,10 +128,10 @@ export default function DetailsModal({ project, onClose, onSelectProject }) {
       doc.setTextColor(100);
       doc.text("Arsha Freelancer | Email: arshatech06@gmail.com | Mobile: +91 8300799120", doc.internal.pageSize.width / 2, pageHeight - 15, { align: "center" });
 
-      doc.save(`Arsha_Project_${project.id}.pdf`);
+      doc.save(`Arsha_Project_${safeId}.pdf`);
     } catch (error) {
       console.error("Error generating PDF", error);
-      alert("Failed to generate PDF.");
+      alert("Failed to generate PDF. Please try again.");
     } finally {
       setIsGeneratingPDF(false);
     }
