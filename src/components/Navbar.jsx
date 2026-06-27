@@ -8,8 +8,11 @@ import {
   Moon,
   ArrowRight,
   Palette,
+  LogIn,
+  Shield,
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
+import { useAuth } from "../context/AuthContext";
 
 export default function Navbar({
   activeView,
@@ -20,6 +23,7 @@ export default function Navbar({
   setTheme,
   onGetQuoteClick,
 }) {
+  const { isAdmin, isAuthenticated } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [themeDropdownOpen, setThemeDropdownOpen] = useState(false);
 
@@ -37,9 +41,13 @@ export default function Navbar({
     { id: "projects", label: "Student Projects" },
     { id: "portfolio", label: "Portfolio" },
     { id: "gallery", label: "Gallery" },
+    { id: "stories", label: "Stories" },
     { id: "faq", label: "FAQ" },
     { id: "contact", label: "Contact" },
     { id: "review", label: "⭐ Reviews" },
+    ...(isAuthenticated && isAdmin ? [{ id: "admin", label: "🛡 Dashboard" }] : []),
+    ...(isAuthenticated && !isAdmin ? [{ id: "portal", label: "🔑 Portal" }] : []),
+    ...(!isAuthenticated ? [{ id: "login", label: "Sign In" }] : []),
   ];
 
   const handleNavClick = (viewId) => {

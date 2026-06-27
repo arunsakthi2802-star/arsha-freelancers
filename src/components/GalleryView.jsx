@@ -1,62 +1,85 @@
-import React, { useState } from "react";
-import { Camera, MessageSquare, Image as ImageIcon, Star } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Camera, MessageSquare, Image as ImageIcon, Star, Loader2 } from "lucide-react";
+import { getGallery } from "../api/gallery.api";
+import { getReviews } from "../api/reviews.api";
 
 export default function GalleryView() {
   const [activeTab, setActiveTab] = useState("all"); // 'all', 'photos', 'reviews'
 
-  // Mock data for the gallery
-  const [galleryItems] = useState([
-    {
-      id: 1,
-      type: "photo",
-      url: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80",
-      caption: "Team discussing AI algorithms for final year project.",
-      date: "Oct 2025",
-    },
-    {
-      id: 2,
-      type: "review",
-      author: "Priya M.",
-      course: "B.E. Computer Science",
-      text: "The Flutter app they developed was phenomenal. Clean code and great UI! I scored full marks in my final viva.",
-      rating: 5,
-      date: "Nov 2025",
-    },
-    {
-      id: 3,
-      type: "photo",
-      url: "https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=800&q=80",
-      caption: "Student presenting the completed IoT Smart Agriculture project.",
-      date: "Jan 2026",
-    },
-    {
-      id: 4,
-      type: "review",
-      author: "Rahul S.",
-      course: "MCA Graduate",
-      text: "Excellent support for IEEE papers. Their documentation is top-notch and they explained the code line by line.",
-      rating: 5,
-      date: "Feb 2026",
-    },
-    {
-      id: 5,
-      type: "photo",
-      url: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=800&q=80",
-      caption: "Our developers working late to deliver urgent project requirements.",
-      date: "Mar 2026",
-    },
-    {
-      id: 6,
-      type: "review",
-      author: "Kavya T.",
-      course: "M.Tech IT",
-      text: "Highly professional service. They delivered the Blockchain project on time without any bugs. Very satisfied!",
-      rating: 4,
-      date: "Apr 2026",
-    },
-  ]);
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const filteredItems = galleryItems.filter((item) => {
+  const loadData = async () => {
+    setLoading(true);
+    try {
+      const [galleryRes, reviewsRes] = await Promise.allSettled([
+        getGallery({ limit: 30 }),
+        getReviews({ status: "approved", limit: 30 })
+      ]);
+
+      let loadedPhotos = [];
+      if (galleryRes.status === "fulfilled" && galleryRes.value.success) {
+        loadedPhotos = galleryRes.value.value || galleryRes.value.data || [];
+      }
+      
+      let loadedReviews = [];
+      if (reviewsRes.status === "fulfilled" && reviewsRes.value.success) {
+        loadedReviews = reviewsRes.value.value || reviewsRes.value.data || [];
+      }
+
+      const mappedPhotos = loadedPhotos.map(p => ({
+        id: p._id,
+        type: "photo",
+        url: p.image,
+        caption: p.title,
+        description: p.description || "",
+        date: new Date(p.createdAt).toLocaleDateString("en-IN", { month: "short", year: "numeric" })
+      }));
+
+      const mappedReviews = loadedReviews.map(r => ({
+        id: r._id,
+        type: "review",
+        author: r.studentName,
+        course: r.collegeName + (r.projectTitle ? `, ${r.projectTitle}` : ""),
+        text: r.reviewMessage,
+        rating: r.rating,
+        date: new Date(r.createdAt).toLocaleDateString("en-IN", { month: "short", year: "numeric" })
+      }));
+
+      // Interleave photos and reviews or display them together
+      const combined = [];
+      const maxLength = Math.max(mappedPhotos.length, mappedReviews.length);
+      for (let i = 0; i < maxLength; i++) {
+        if (mappedPhotos[i]) combined.push(mappedPhotos[i]);
+        if (mappedReviews[i]) combined.push(mappedReviews[i]);
+      }
+
+      if (combined.length > 0) {
+        setItems(combined);
+      } else {
+        // Fallback to beautiful mock data if database is empty
+        const fallback = [
+          { id: 1, type: "photo", url: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80", caption: "Team discussing AI algorithms for final year project.", date: "Oct 2025" },
+          { id: 2, type: "review", author: "Priya M.", course: "B.E. Computer Science", text: "The Flutter app they developed was phenomenal. Clean code and great UI! I scored full marks in my final viva.", rating: 5, date: "Nov 2025" },
+          { id: 3, type: "photo", url: "https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=800&q=80", caption: "Student presenting the completed IoT Smart Agriculture project.", date: "Jan 2026" },
+          { id: 4, type: "review", author: "Rahul S.", course: "MCA Graduate", text: "Excellent support for IEEE papers. Their documentation is top-notch and they explained the code line by line.", rating: 5, date: "Feb 2026" },
+          { id: 5, type: "photo", url: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=800&q=80", caption: "Our developers working late to deliver urgent project requirements.", date: "Mar 2026" },
+          { id: 6, type: "review", author: "Kavya T.", course: "M.Tech IT", text: "Highly professional service. They delivered the Blockchain project on time without any bugs. Very satisfied!", rating: 4, date: "Apr 2026" }
+        ];
+        setItems(fallback);
+      }
+    } catch (err) {
+      console.warn("API load failed, using fallbacks:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const filteredItems = items.filter((item) => {
     if (activeTab === "all") return true;
     return item.type === activeTab;
   });
@@ -114,7 +137,12 @@ export default function GalleryView() {
 
       {/* Gallery Grid - Responsive layout across all screen sizes */}
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {filteredItems.map((item) => (
+        {loading ? (
+          <div className="col-span-full py-16 text-center">
+            <Loader2 className="w-10 h-10 animate-spin text-blue-600 mx-auto mb-2" />
+            <p className="text-slate-400 text-xs font-bold">Loading showcase gallery...</p>
+          </div>
+        ) : filteredItems.map((item) => (
           <div key={item.id} className="h-full">
             {item.type === "photo" ? (
               <div className="bg-white dark:bg-slate-900 border-2 border-slate-950 dark:border-slate-800 rounded-3xl overflow-hidden shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] dark:shadow-none hover:-translate-y-1 transition-transform duration-300 flex flex-col h-full">

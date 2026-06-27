@@ -10,6 +10,7 @@ import {
   BookOpen,
   Trophy,
 } from "lucide-react";
+import { getReviews, submitReview } from "../api/reviews.api";
 
 // Star rating labels
 const STAR_LABELS = ["", "Poor", "Fair", "Good", "Great", "Excellent"];
@@ -235,6 +236,43 @@ export default function ReviewView() {
   });
   const [submitted, setSubmitted] = useState(false);
   const [step, setStep] = useState(1); // 1=rate, 2=details, 3=confirm
+  
+  // Dynamic reviews state
+  const [reviewsList, setReviewsList] = useState([]);
+  const [loadingReviews, setLoadingReviews] = useState(true);
+
+  // Load reviews from MongoDB Atlas
+  const loadApprovedReviews = async () => {
+    try {
+      const res = await getReviews({ status: "approved", limit: 20 });
+      if (res.success && res.data && res.data.length > 0) {
+        const mapped = res.data.map(r => ({
+          name: r.studentName,
+          college: r.collegeName,
+          rating: r.rating,
+          text: r.reviewMessage,
+          service: r.projectTitle,
+          tags: [],
+          date: new Date(r.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }),
+          avatar: r.studentName ? r.studentName.charAt(0).toUpperCase() : "?",
+          color: "bg-blue-600",
+          verified: true
+        }));
+        setReviewsList(mapped);
+      } else {
+        setReviewsList(SAMPLE_REVIEWS);
+      }
+    } catch (err) {
+      console.warn("Failed to load reviews from API, falling back to samples:", err);
+      setReviewsList(SAMPLE_REVIEWS);
+    } finally {
+      setLoadingReviews(false);
+    }
+  };
+
+  useEffect(() => {
+    loadApprovedReviews();
+  }, []);
 
   // Reset tags when rating changes
   useEffect(() => {
@@ -316,9 +354,25 @@ export default function ReviewView() {
       .join("\n");
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (rating === 0) return;
+
+    // Post review to database
+    try {
+      const fd = new FormData();
+      fd.append("studentName", form.name);
+      fd.append("collegeName", form.college);
+      fd.append("projectTitle", form.service || "Academic Project");
+      fd.append("reviewMessage", form.review || selectedTags.join(", "));
+      fd.append("rating", rating.toString());
+      await submitReview(fd);
+      
+      // Reload reviews
+      loadApprovedReviews();
+    } catch (err) {
+      console.warn("MongoDB review submission failed:", err.message);
+    }
 
     const message = buildWhatsAppMessage();
     const whatsappUrl = `https://wa.me/918300799120?text=${encodeURIComponent(message)}`;
@@ -816,7 +870,9 @@ export default function ReviewView() {
 
           {/* Review cards grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {SAMPLE_REVIEWS.map((review, idx) => (
+            {loadingReviews ? (
+              <div className="col-span-full py-10 text-center text-slate-400 text-xs font-bold">Loading reviews...</div>
+            ) : reviewsList.map((review, idx) => (
               <ReviewCard key={idx} review={review} index={idx} />
             ))}
           </div>

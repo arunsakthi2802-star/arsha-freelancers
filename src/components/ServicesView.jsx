@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   GraduationCap,
   BookOpen,
@@ -11,12 +11,16 @@ import {
   FileCode,
   FileText,
   Download,
+  Loader2,
 } from "lucide-react";
 import { servicesData } from "../data/services";
 import { generateServicesBrochure } from "../utils/brochurePdf";
+import { getServices } from "../api/services.api";
 
 export default function ServicesView({ onNavigate, onGetQuoteClick }) {
   const [activeCategory, setActiveCategory] = useState("All");
+  const [servicesList, setServicesList] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const categories = [
     "All",
@@ -27,6 +31,35 @@ export default function ServicesView({ onNavigate, onGetQuoteClick }) {
     "Emerging Technologies",
     "Career Services",
   ];
+
+  const loadServices = async () => {
+    try {
+      const res = await getServices();
+      if (res.success && res.data && res.data.length > 0) {
+        // Map DB services to match the layout
+        const mapped = res.data.map((s, idx) => ({
+          id: s._id || idx,
+          title: s.serviceName,
+          category: s.category || "Academic Projects", // Fallback to category
+          description: s.description,
+          icon: s.icon || "GraduationCap",
+          features: s.features || []
+        }));
+        setServicesList(mapped);
+      } else {
+        setServicesList(servicesData);
+      }
+    } catch (err) {
+      console.warn("Failed to load services from API, using default catalog:", err);
+      setServicesList(servicesData);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadServices();
+  }, []);
 
   // Specific list items requested in prompt
   const detailedServiceItems = {
@@ -120,8 +153,8 @@ export default function ServicesView({ onNavigate, onGetQuoteClick }) {
 
   const filteredServices =
     activeCategory === "All"
-      ? servicesData
-      : servicesData.filter((s) => s.category === activeCategory);
+      ? servicesList
+      : servicesList.filter((s) => s.category === activeCategory);
 
   const handleInquiryLink = (title) => {
     const text = `Hi Arsha Freelancers! I want to inquire about your professional services for: *${title}*. Could you please share the pricing, standard timeline, and deliverables list?`;

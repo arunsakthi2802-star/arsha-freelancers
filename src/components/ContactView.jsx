@@ -12,6 +12,7 @@ import {
   Github,
   Youtube,
 } from "lucide-react";
+import { submitContact } from "../api/contact.api";
 
 export default function ContactView() {
   const [formData, setFormData] = useState({
@@ -43,27 +44,21 @@ export default function ContactView() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
 
-    const newInquiry = {
-      id: `GI-${Math.floor(1000 + Math.random() * 9000)}`,
-      name: formData.name,
-      phone: formData.phone,
-      email: formData.email,
-      college: formData.college,
-      department: formData.department,
-      serviceRequired: formData.serviceRequired,
-      message: formData.message,
-      createdAt: new Date().toLocaleDateString("en-IN", {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
-    };
-
-    const updated = [newInquiry, ...savedGeneralInquiries];
-    setSavedGeneralInquiries(updated);
-    localStorage.setItem("arsha_general_inquiries", JSON.stringify(updated));
+    // Save to MongoDB via API (non-blocking)
+    try {
+      await submitContact({
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        subject: formData.serviceRequired || "General Enquiry",
+        message: `College: ${formData.college} | Dept: ${formData.department}\n\n${formData.message}`,
+      });
+    } catch (err) {
+      console.warn("API submit failed, continuing with WhatsApp:", err.message);
+    }
 
     const text = `Hi Arsha Freelancers! My name is ${formData.name || "Student"}. I want to inquire about *${formData.serviceRequired}* for my studies at *${formData.college || "my college"}*. Here are my guidelines: ${formData.message || "Please consult me."}`;
     const whatsappUrl = `https://wa.me/918300799120?text=${encodeURIComponent(text)}`;

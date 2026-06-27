@@ -13,6 +13,12 @@ import ReviewView from "./components/ReviewView";
 import Footer from "./components/Footer";
 import DetailsModal from "./components/DetailsModal";
 import AnimatedBackground from "./components/AnimatedBackground";
+import StoriesView from "./components/StoriesView";
+import LoginView from "./components/LoginView";
+import LyzrChat from "./components/LyzrChat";
+import AdminView from "./components/admin/AdminView";
+import StudentPortal from "./components/StudentPortal";
+import { AuthProvider } from "./context/AuthContext";
 
 export default function App() {
   const [activeView, setActiveView] = useState("home");
@@ -43,7 +49,7 @@ export default function App() {
   useEffect(() => {
     const handleUrlChange = () => {
       const path = window.location.pathname.replace(/^\/|\/$/g, "");
-      const validViews = ["home", "about", "services", "projects", "portfolio", "gallery", "contact", "faq", "review"];
+      const validViews = ["home", "about", "services", "projects", "portfolio", "gallery", "contact", "faq", "review", "stories", "login", "admin", "portal"];
       
       if (path === "student") {
         setActiveView("projects"); // Support legacy /student link
@@ -219,6 +225,39 @@ export default function App() {
       case "review":
         viewContent = <ReviewView />;
         break;
+      case "stories":
+        viewContent = <StoriesView />;
+        break;
+      case "login":
+        viewContent = (
+          <LoginView
+            onNavigate={(viewId) => {
+              setActiveView(viewId);
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
+          />
+        );
+        break;
+      case "admin":
+        viewContent = (
+          <AdminView
+            onNavigate={(viewId) => {
+              setActiveView(viewId);
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
+          />
+        );
+        break;
+      case "portal":
+        viewContent = (
+          <StudentPortal
+            onNavigate={(viewId) => {
+              setActiveView(viewId);
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
+          />
+        );
+        break;
       default:
         viewContent = (
           <HomeView
@@ -266,60 +305,74 @@ export default function App() {
     }
   };
 
+  const isAdminPage = activeView === "admin";
+
   return (
+    <AuthProvider>
     <div
       className={`min-h-screen ${getThemeBgClass()} font-sans flex flex-col justify-between transition-colors duration-300 select-none relative overflow-x-hidden`}
     >
       {/* 0. FLOATING BACKDROP CANVAS & GRID */}
-      <AnimatedBackground theme={theme} darkMode={darkMode} />
+      {!isAdminPage && <AnimatedBackground theme={theme} darkMode={darkMode} />}
 
       {/* 1. HEADER & STICKY NAVIGATION */}
-      <Navbar
-        activeView={activeView}
-        setActiveView={setActiveView}
-        darkMode={darkMode}
-        setDarkMode={setDarkMode}
-        theme={theme}
-        setTheme={setTheme}
-        onGetQuoteClick={() => setIsQuoteModalOpen(true)}
-      />
+      {!isAdminPage && (
+        <Navbar
+          activeView={activeView}
+          setActiveView={setActiveView}
+          darkMode={darkMode}
+          setDarkMode={setDarkMode}
+          theme={theme}
+          setTheme={setTheme}
+          onGetQuoteClick={() => setIsQuoteModalOpen(true)}
+        />
+      )}
 
       {/* 2. BODY DYNAMIC MAIN CONTENT VIEW */}
-      <main className="flex-grow pt-4 relative z-10">{renderActiveView()}</main>
+      <main className={`${isAdminPage ? "" : "flex-grow pt-4"} relative z-10`}>{renderActiveView()}</main>
 
       {/* 3. FOOTER */}
-      <Footer
-        activeView={activeView}
-        setActiveView={setActiveView}
-        onGetQuoteClick={() => setIsQuoteModalOpen(true)}
-      />
+      {!isAdminPage && (
+        <Footer
+          activeView={activeView}
+          setActiveView={setActiveView}
+          onGetQuoteClick={() => setIsQuoteModalOpen(true)}
+        />
+      )}
 
       {/* 4. FLOATING UTILITIES */}
-      <div className="fixed bottom-6 right-6 z-40 flex flex-col gap-2.5 items-end">
-        {/* Scroll To Top button */}
-        {showScrollTop && (
-          <button
-            onClick={handleScrollTop}
-            className="p-3 bg-slate-900 text-white rounded-xl border-2 border-slate-950 dark:border-slate-800 shadow-[3px_3px_0px_0px_rgba(37,99,235,1)] hover:shadow-[4px_4px_0px_0px_rgba(37,99,235,1)] hover:translate-y-[-1px] transition-all cursor-pointer flex items-center justify-center"
-            aria-label="Scroll to top"
-            id="scrollTop-floating-btn"
-          >
-            <ArrowUp className="w-5 h-5" />
-          </button>
-        )}
+      {!isAdminPage && (
+        <>
+          {/* Lyzr AI Chat */}
+          <LyzrChat />
 
-        {/* WhatsApp floating button requested in prompt */}
-        <a
-          href="https://wa.me/918300799120?text=Hi+Arsha+Freelancers!+I+want+to+know+more+about+your+academic+project+consultation+packages."
-          target="_blank"
-          rel="noreferrer"
-          className="p-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl border-2 border-slate-950 dark:border-slate-800 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,0.15)] hover:shadow-[5px_5px_0px_0px_rgba(15,23,42,1)] hover:translate-y-[-1px] transition-all flex items-center justify-center"
-          aria-label="Contact WhatsApp"
-          id="whatsapp-floating-btn"
-        >
-          <MessageCircle className="w-6 h-6 animate-pulse" />
-        </a>
-      </div>
+          <div className="fixed bottom-6 right-6 z-40 flex flex-col gap-2.5 items-end">
+            {/* Scroll To Top button */}
+            {showScrollTop && (
+              <button
+                onClick={handleScrollTop}
+                className="p-3 bg-slate-900 text-white rounded-xl border-2 border-slate-950 dark:border-slate-800 shadow-[3px_3px_0px_0px_rgba(37,99,235,1)] hover:shadow-[4px_4px_0px_0px_rgba(37,99,235,1)] hover:translate-y-[-1px] transition-all cursor-pointer flex items-center justify-center"
+                aria-label="Scroll to top"
+                id="scrollTop-floating-btn"
+              >
+                <ArrowUp className="w-5 h-5" />
+              </button>
+            )}
+
+            {/* WhatsApp floating button */}
+            <a
+              href="https://wa.me/918300799120?text=Hi+Arsha+Freelancers!+I+want+to+know+more+about+your+academic+project+consultation+packages."
+              target="_blank"
+              rel="noreferrer"
+              className="p-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl border-2 border-slate-950 dark:border-slate-800 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,0.15)] hover:shadow-[5px_5px_0px_0px_rgba(15,23,42,1)] hover:translate-y-[-1px] transition-all flex items-center justify-center"
+              aria-label="Contact WhatsApp"
+              id="whatsapp-floating-btn"
+            >
+              <MessageCircle className="w-6 h-6 animate-pulse" />
+            </a>
+          </div>
+        </>
+      )}
 
       {/* 5. SPECIFICATION DETAILS MODAL */}
       <DetailsModal
@@ -507,7 +560,8 @@ export default function App() {
             </div>
           </div>
         </div>
-      )}
+        )}
     </div>
+    </AuthProvider>
   );
 }
