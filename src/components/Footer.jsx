@@ -151,6 +151,14 @@ export default function Footer({ activeView, setActiveView, onGetQuoteClick }) {
                   Completed Portfolios
                 </button>
               </li>
+              <li>
+                <button
+                  onClick={() => handleNavClick("review")}
+                  className="hover:text-amber-400 transition-colors cursor-pointer text-amber-500 font-black"
+                >
+                  ⭐ Rate Our Service
+                </button>
+              </li>
             </ul>
           </div>
 

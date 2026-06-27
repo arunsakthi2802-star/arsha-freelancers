@@ -9,6 +9,7 @@ import ProjectsView from "./components/ProjectsView";
 import { PortfolioView, FaqView } from "./components/ExtraViews";
 import GalleryView from "./components/GalleryView";
 import ContactView from "./components/ContactView";
+import ReviewView from "./components/ReviewView";
 import Footer from "./components/Footer";
 import DetailsModal from "./components/DetailsModal";
 import AnimatedBackground from "./components/AnimatedBackground";
@@ -42,7 +43,7 @@ export default function App() {
   useEffect(() => {
     const handleUrlChange = () => {
       const path = window.location.pathname.replace(/^\/|\/$/g, "");
-      const validViews = ["home", "about", "services", "projects", "portfolio", "gallery", "contact", "faq"];
+      const validViews = ["home", "about", "services", "projects", "portfolio", "gallery", "contact", "faq", "review"];
       
       if (path === "student") {
         setActiveView("projects"); // Support legacy /student link
@@ -214,6 +215,9 @@ export default function App() {
         break;
       case "contact":
         viewContent = <ContactView />;
+        break;
+      case "review":
+        viewContent = <ReviewView />;
         break;
       default:
         viewContent = (

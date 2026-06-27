@@ -39,6 +39,7 @@ export default function Navbar({
     { id: "gallery", label: "Gallery" },
     { id: "faq", label: "FAQ" },
     { id: "contact", label: "Contact" },
+    { id: "review", label: "⭐ Reviews" },
   ];
 
   const handleNavClick = (viewId) => {
