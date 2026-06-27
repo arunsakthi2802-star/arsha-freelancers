@@ -51,13 +51,28 @@ const SERVICE_OPTIONS = [
 // Existing review testimonials to show social proof
 const SAMPLE_REVIEWS = [
   {
+    name: "Mahalakshmi",
+    college: "AVS College of Technology",
+    rating: 5,
+    text: "The project was so good 👍. And the reports are very useful to me.",
+    service: "Final Year Academic Project",
+    tags: ["Excellent Work", "Super Fast Delivery", "Top Quality Code"],
+    date: "27 June 2026",
+    avatar: "M",
+    color: "bg-rose-500",
+    verified: true,
+  },
+  {
     name: "Rahul M.",
     college: "Sona College of Technology, MCA",
     rating: 5,
     text: "Arsha team was absolutely amazing! They delivered my final year project in 3 days with full documentation. Viva went smoothly — I scored O grade!",
     service: "Final Year Academic Project",
+    tags: ["Viva Ready", "Top Quality Code"],
+    date: "June 2026",
     avatar: "R",
     color: "bg-blue-500",
+    verified: true,
   },
   {
     name: "Sneha K.",
@@ -65,8 +80,11 @@ const SAMPLE_REVIEWS = [
     rating: 5,
     text: "The IEEE report was formatted perfectly. My professor had zero corrections. The walkthrough call made everything so clear before my exam.",
     service: "IEEE Report Documentation",
+    tags: ["Highly Detailed Docs", "Professional"],
+    date: "May 2026",
     avatar: "S",
     color: "bg-purple-500",
+    verified: true,
   },
   {
     name: "Aravind J.",
@@ -74,8 +92,11 @@ const SAMPLE_REVIEWS = [
     rating: 5,
     text: "Python AI project delivered with 95% accuracy model. The team was patient with every revision and explained each module step by step.",
     service: "Python / AI / ML Project",
+    tags: ["Excellent Work", "Beyond Expectations"],
+    date: "April 2026",
     avatar: "A",
     color: "bg-emerald-500",
+    verified: true,
   },
   {
     name: "Divya P.",
@@ -83,8 +104,11 @@ const SAMPLE_REVIEWS = [
     rating: 4,
     text: "Good quality work and very professional team. The slides were creative and my seminar presentation was well-received.",
     service: "Seminar / Presentation PPT",
+    tags: ["Great Support", "On-Time Delivery"],
+    date: "March 2026",
     avatar: "D",
     color: "bg-cyan-500",
+    verified: true,
   },
 ];
 
@@ -126,38 +150,75 @@ function ReviewCard({ review, index }) {
       className="bg-white dark:bg-slate-900 brutalist-border rounded-2xl p-5 flex flex-col gap-3 text-left"
       style={{ animationDelay: `${index * 0.1}s` }}
     >
-      {/* Stars */}
-      <div className="flex gap-0.5">
-        {[1, 2, 3, 4, 5].map((s) => (
-          <Star
-            key={s}
-            className={`w-3.5 h-3.5 ${
-              s <= review.rating
-                ? "fill-amber-400 text-amber-400"
-                : "fill-slate-200 text-slate-200 dark:fill-slate-700 dark:text-slate-700"
-            }`}
-          />
-        ))}
+      {/* Top row: Stars + verified badge */}
+      <div className="flex items-center justify-between">
+        <div className="flex gap-0.5">
+          {[1, 2, 3, 4, 5].map((s) => (
+            <Star
+              key={s}
+              className={`w-3.5 h-3.5 ${
+                s <= review.rating
+                  ? "fill-amber-400 text-amber-400"
+                  : "fill-slate-200 text-slate-200 dark:fill-slate-700 dark:text-slate-700"
+              }`}
+            />
+          ))}
+        </div>
+        {review.verified && (
+          <span className="inline-flex items-center gap-0.5 text-[9px] font-black text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-1.5 py-0.5 rounded-full">
+            ✓ Verified
+          </span>
+        )}
       </div>
 
-      <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-medium italic">
+      {/* Service badge */}
+      {review.service && (
+        <span className="inline-block text-[9px] font-bold text-blue-600 dark:text-cyan-400 bg-blue-50 dark:bg-blue-950/30 px-2 py-0.5 rounded uppercase tracking-wide w-fit">
+          {review.service}
+        </span>
+      )}
+
+      {/* Review text */}
+      <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-medium italic flex-grow">
         &ldquo;{review.text}&rdquo;
       </p>
 
-      <div className="flex items-center gap-2.5 pt-1 border-t border-slate-100 dark:border-slate-800">
-        <div
-          className={`w-8 h-8 rounded-full ${review.color} flex items-center justify-center text-white font-black text-xs border-2 border-slate-950 dark:border-slate-700`}
-        >
-          {review.avatar}
+      {/* Tags */}
+      {review.tags && review.tags.length > 0 && (
+        <div className="flex flex-wrap gap-1">
+          {review.tags.map((tag) => (
+            <span
+              key={tag}
+              className="px-2 py-0.5 bg-amber-50 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400 text-[9px] font-bold rounded-lg border border-amber-200 dark:border-amber-800"
+            >
+              {tag}
+            </span>
+          ))}
         </div>
-        <div>
-          <p className="text-xs font-black text-slate-800 dark:text-slate-200 leading-none">
-            {review.name}
-          </p>
-          <p className="text-[10px] text-slate-500 dark:text-slate-400 font-medium mt-0.5">
-            {review.college}
-          </p>
+      )}
+
+      {/* Footer: avatar + name + date */}
+      <div className="flex items-center justify-between pt-1 border-t border-slate-100 dark:border-slate-800">
+        <div className="flex items-center gap-2">
+          <div
+            className={`w-8 h-8 rounded-full ${review.color} flex items-center justify-center text-white font-black text-xs border-2 border-slate-950 dark:border-slate-700 flex-shrink-0`}
+          >
+            {review.avatar}
+          </div>
+          <div>
+            <p className="text-xs font-black text-slate-800 dark:text-slate-200 leading-none">
+              {review.name}
+            </p>
+            <p className="text-[10px] text-slate-500 dark:text-slate-400 font-medium mt-0.5">
+              {review.college}
+            </p>
+          </div>
         </div>
+        {review.date && (
+          <span className="text-[9px] text-slate-400 dark:text-slate-500 font-medium flex-shrink-0">
+            {review.date}
+          </span>
+        )}
       </div>
     </div>
   );
@@ -754,7 +815,7 @@ export default function ReviewView() {
           </div>
 
           {/* Review cards grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {SAMPLE_REVIEWS.map((review, idx) => (
               <ReviewCard key={idx} review={review} index={idx} />
             ))}
