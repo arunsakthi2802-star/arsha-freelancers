@@ -248,7 +248,7 @@ export default function ReviewView() {
       ``,
       `${DIVIDER}`,
       `📅 *Submitted:*  ${dateStr}`,
-      `🌐 *Via:*  arsha-freelancers.vercel.app/review`,
+      `🌐 *Via:*  arsha-freelancers.netlify.app/review`,
       `${DIVIDER}`,
     ]
       .filter((line) => line !== null && line !== undefined)
