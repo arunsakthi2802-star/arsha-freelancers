@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Search, Check, X, Trash2, Star, Loader2, Plus, Edit2, RefreshCw, MessageSquare } from "lucide-react";
+import { Search, Check, X, Trash2, Star, Loader2, Plus, Edit2, RefreshCw, MessageSquare, Eye } from "lucide-react";
 import { getReviews, approveReview, rejectReview, deleteReview, submitReview, updateReview } from "../../api/reviews.api";
 
 const STATUS_COLORS = {
@@ -31,6 +31,7 @@ export default function AdminReviews() {
   const [replyModal, setReplyModal] = useState(null);
   const [replyText, setReplyText] = useState("");
   const [replyLoading, setReplyLoading] = useState(false);
+  const [viewModal, setViewModal] = useState(null);
 
   const loadReviews = async () => {
     setLoading(true);
@@ -208,22 +209,9 @@ export default function AdminReviews() {
               <tbody>
                 {reviews.map((rev) => (
                   <tr key={rev._id} className="border-b border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50">
-                    <td className="px-4 py-3 min-w-[280px] max-w-[400px]">
+                    <td className="px-4 py-3">
                       <p className="font-black text-slate-950 dark:text-white">{rev.studentName}</p>
-                      <p className="text-[10px] font-bold text-slate-400 mb-2">{rev.projectTitle}</p>
-                      <div className="p-2.5 bg-slate-100 dark:bg-slate-800/80 rounded-lg border border-slate-200 dark:border-slate-700 relative">
-                        <p className="text-[11px] text-slate-700 dark:text-slate-300 whitespace-pre-wrap leading-relaxed italic">
-                          "{rev.reviewMessage}"
-                        </p>
-                        {rev.adminReply && (
-                          <div className="mt-2 pt-2 border-t border-slate-200 dark:border-slate-600">
-                            <span className="text-[9px] font-black uppercase text-blue-600 dark:text-blue-400">Admin Reply:</span>
-                            <p className="text-[11px] text-slate-600 dark:text-slate-400 whitespace-pre-wrap mt-0.5">
-                              {rev.adminReply}
-                            </p>
-                          </div>
-                        )}
-                      </div>
+                      <p className="text-slate-400 truncate max-w-[140px]">{rev.projectTitle}</p>
                     </td>
                     <td className="px-4 py-3 text-slate-600 dark:text-slate-400 max-w-[120px] truncate">{rev.collegeName}</td>
                     <td className="px-4 py-3"><Stars rating={rev.rating} /></td>
@@ -238,6 +226,9 @@ export default function AdminReviews() {
                             {actionLoading === rev._id + "approve" ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
                           </button>
                         )}
+                        <button onClick={() => setViewModal(rev)} className="p-1.5 bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-400 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors cursor-pointer" title="View Full Details">
+                          <Eye className="w-3.5 h-3.5" />
+                        </button>
                         {rev.approvalStatus !== "rejected" && (
                           <button onClick={() => handleAction(rev._id, "reject")} disabled={!!actionLoading} className="p-1.5 bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400 rounded-lg hover:bg-amber-200 transition-colors cursor-pointer" title="Reject">
                             {actionLoading === rev._id + "reject" ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <X className="w-3.5 h-3.5" />}
@@ -300,6 +291,52 @@ export default function AdminReviews() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* View Details Modal */}
+      {viewModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/50 backdrop-blur-sm">
+          <div className="bg-white dark:bg-slate-900 w-full max-w-md rounded-2xl border-4 border-slate-950 shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xl font-black text-slate-950 dark:text-white">Review Details</h3>
+              <button onClick={() => setViewModal(null)} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl text-slate-500 cursor-pointer">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl border border-slate-100 dark:border-slate-700">
+                <p className="text-[10px] font-black uppercase text-slate-400 mb-1">Student & Project</p>
+                <p className="font-bold text-slate-900 dark:text-white text-sm">{viewModal.studentName}</p>
+                <p className="text-slate-500 text-xs">{viewModal.projectTitle}</p>
+                <p className="text-slate-500 text-xs">{viewModal.collegeName}</p>
+              </div>
+
+              <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl border border-slate-100 dark:border-slate-700">
+                <p className="text-[10px] font-black uppercase text-slate-400 mb-1">Review</p>
+                <div className="mb-2"><Stars rating={viewModal.rating} /></div>
+                <p className="text-sm text-slate-700 dark:text-slate-300 italic whitespace-pre-wrap leading-relaxed">
+                  "{viewModal.reviewMessage}"
+                </p>
+              </div>
+
+              {viewModal.adminReply && (
+                <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl border border-blue-100 dark:border-blue-900/50">
+                  <p className="text-[10px] font-black uppercase text-blue-600 dark:text-blue-400 mb-1">Admin Reply</p>
+                  <p className="text-sm text-slate-700 dark:text-slate-300 whitespace-pre-wrap leading-relaxed">
+                    {viewModal.adminReply}
+                  </p>
+                </div>
+              )}
+            </div>
+
+            <div className="flex justify-end gap-3 mt-6">
+              <button onClick={() => setViewModal(null)} className="px-5 py-2.5 text-sm font-black text-slate-600 bg-slate-100 border-2 border-slate-200 rounded-xl hover:bg-slate-200 cursor-pointer">
+                Close
+              </button>
+            </div>
           </div>
         </div>
       )}
