@@ -226,13 +226,13 @@ router.post("/:id/reset-password", async (req, res) => {
 router.post("/:id/change-role", async (req, res) => {
   try {
     const { role, adminPassword } = req.body;
-    if (!["admin", "user"].includes(role)) {
+    if (!["admin", "manager", "user"].includes(role)) {
       return res.status(400).json({ success: false, message: "Invalid role." });
     }
 
-    if (role === "admin") {
+    if (role === "admin" || role === "manager") {
       if (!adminPassword) {
-        return res.status(400).json({ success: false, message: "Admin password is required to grant admin role." });
+        return res.status(400).json({ success: false, message: `Admin password is required to grant ${role} role.` });
       }
       
       const activeAdmin = await User.findById(req.user._id).select("+password");
