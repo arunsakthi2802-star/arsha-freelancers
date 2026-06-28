@@ -40,6 +40,7 @@ const SERVICE_OPTIONS = [
   "Final Year Academic Project",
   "Mini Semester Project",
   "IEEE Report Documentation",
+  "Documentation and Report",
   "Seminar / Presentation PPT",
   "Python / AI / ML Project",
   "Web / Mobile App Development",

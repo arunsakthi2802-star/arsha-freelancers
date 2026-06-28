@@ -1,21 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { LogIn, Eye, EyeOff, Lock, Mail, AlertCircle, Loader2, ShieldCheck } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
 export default function LoginView({ onNavigate }) {
   const { login } = useAuth();
-  const [form, setForm] = useState({ email: "", password: "" });
+  const emailRef = useRef(null);
+  const passwordRef = useRef(null);
   const [showPw, setShowPw] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const email = emailRef.current?.value;
+    const password = passwordRef.current?.value;
+    
+    if (!email || !password) return;
+
     setError("");
     setLoading(true);
     try {
-      const res = await login(form.email, form.password);
+      const res = await login(email, password);
       if (res.success) {
         if (res.user.role === "admin") {
           onNavigate("admin");
@@ -74,8 +80,7 @@ export default function LoginView({ onNavigate }) {
                   id="login-email"
                   type="email"
                   required
-                  value={form.email}
-                  onChange={(e) => setForm((p) => ({ ...p, email: e.target.value }))}
+                  ref={emailRef}
                   placeholder="admin@arsha.com"
                   className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium"
                 />
@@ -90,8 +95,7 @@ export default function LoginView({ onNavigate }) {
                   id="login-password"
                   type={showPw ? "text" : "password"}
                   required
-                  value={form.password}
-                  onChange={(e) => setForm((p) => ({ ...p, password: e.target.value }))}
+                  ref={passwordRef}
                   placeholder="••••••••"
                   className="w-full pl-10 pr-10 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium"
                 />
