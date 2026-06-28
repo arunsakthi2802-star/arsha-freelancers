@@ -1,11 +1,13 @@
 // Netlify Serverless Function — wraps the Express app
 // This file is the entry point for all /api/* requests on Netlify
 const serverless = require("serverless-http");
+const path = require("path");
 
-// Load environment variables (Netlify provides them from the dashboard)
-// No .env file needed in production — env vars are set in Netlify UI
+// Load environment variables
+// In production (Netlify), env vars come from Netlify Dashboard
+// In local dev, fall back to the .env file
 if (!process.env.MONGODB_URI) {
-  require("dotenv").config({ path: require("path").resolve(__dirname, "../../server/.env") });
+  require("dotenv").config({ path: path.resolve(__dirname, "../../server/.env") });
 }
 
 // Import the Express app (not the server listener)
@@ -29,6 +31,17 @@ exports.handler = async (event, context) => {
   // Keep the MongoDB connection alive across warm invocations
   context.callbackWaitsForEmptyEventLoop = false;
 
-  const handler = getHandler();
-  return handler(event, context);
+  try {
+    const handler = getHandler();
+    return await handler(event, context);
+  } catch (error) {
+    console.error("Serverless function error:", error);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({
+        success: false,
+        message: "Server error: " + error.message,
+      }),
+    };
+  }
 };
