@@ -286,9 +286,11 @@ export default function AdminUsers() {
         </div>
         <div className="flex gap-2">
           <button onClick={load} className="p-2.5 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-xl text-slate-500 cursor-pointer self-start sm:self-auto"><RefreshCw className="w-4 h-4" /></button>
-          <button onClick={() => setShowAddForm(true)} className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-black rounded-xl border-2 border-slate-950 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] cursor-pointer" id="admin-create-user-btn">
-            <Plus className="w-4 h-4" /> Add User
-          </button>
+          {me?.role === "admin" && (
+            <button onClick={() => setShowAddForm(true)} className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-black rounded-xl border-2 border-slate-950 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] cursor-pointer" id="admin-create-user-btn">
+              <Plus className="w-4 h-4" /> Add User
+            </button>
+          )}
         </div>
       </div>
 
@@ -759,7 +761,7 @@ export default function AdminUsers() {
             <table className="w-full text-xs">
               <thead>
                 <tr className="border-b-2 border-slate-100 dark:border-slate-800">
-                  {["User", "Email", "Phone", "Role", "Status", "Joined", "Actions"].map((h) => (
+                  {["User", "Email", "Phone", "Role", "Status", "Joined", ...(me?.role === "admin" ? ["Actions"] : [])].map((h) => (
                     <th key={h} className="text-left px-4 py-3 font-black text-slate-400 uppercase text-[10px]">{h}</th>
                   ))}
                 </tr>
@@ -806,27 +808,29 @@ export default function AdminUsers() {
                       <span className={`px-2 py-1 rounded-lg font-black text-[10px] ${u.status === "active" ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700"}`}>{u.status}</span>
                     </td>
                     <td className="px-4 py-3 text-slate-400">{new Date(u.createdAt).toLocaleDateString("en-IN")}</td>
-                    <td className="px-4 py-3">
-                      {u._id !== me?._id && (
-                        <div className="flex items-center gap-1">
-                          <button onClick={() => handle(u._id, u.status === "active" ? "block" : "block")} disabled={!!actionLoading} title={u.status === "active" ? "Block" : "Unblock"} className={`p-1.5 rounded-lg cursor-pointer ${u.status === "active" ? "bg-orange-100 text-orange-600 hover:bg-orange-200" : "bg-emerald-100 text-emerald-600 hover:bg-emerald-200"}`} id={`block-user-${u._id}`}>
-                            {actionLoading === u._id + "block" ? <Loader2 className="w-3 h-3 animate-spin" /> : u.status === "active" ? <Ban className="w-3 h-3" /> : <UserCheck className="w-3 h-3" />}
-                          </button>
-                          <button onClick={() => { setRoleModal(u); setSelectedRole(u.role); }} title="Change Role" className="p-1.5 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 cursor-pointer" id={`role-user-${u._id}`}>
-                            {u.role === "admin" ? <Shield className="w-3 h-3" /> : u.role === "manager" ? <UserCheck className="w-3 h-3" /> : <User className="w-3 h-3" />}
-                          </button>
-                          <button onClick={() => openResourceModal(u)} title="Project Resources" className="p-1.5 bg-teal-100 text-teal-600 rounded-lg hover:bg-teal-200 cursor-pointer" id={`resources-user-${u._id}`}>
-                            <FolderOpen className="w-3 h-3" />
-                          </button>
-                          <button onClick={() => setResetModal(u)} title="Reset Password" className="p-1.5 bg-purple-100 text-purple-600 rounded-lg hover:bg-purple-200 cursor-pointer" id={`reset-user-${u._id}`}>
-                            <Key className="w-3 h-3" />
-                          </button>
-                          <button onClick={() => setDeleteModal(u)} title="Delete" className="p-1.5 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 cursor-pointer" id={`delete-user-${u._id}`}>
-                            <Trash2 className="w-3 h-3" />
-                          </button>
-                        </div>
-                      )}
-                    </td>
+                    {me?.role === "admin" && (
+                      <td className="px-4 py-3">
+                        {u._id !== me?._id && (
+                          <div className="flex items-center gap-1">
+                            <button onClick={() => handle(u._id, u.status === "active" ? "block" : "block")} disabled={!!actionLoading} title={u.status === "active" ? "Block" : "Unblock"} className={`p-1.5 rounded-lg cursor-pointer ${u.status === "active" ? "bg-orange-100 text-orange-600 hover:bg-orange-200" : "bg-emerald-100 text-emerald-600 hover:bg-emerald-200"}`} id={`block-user-${u._id}`}>
+                              {actionLoading === u._id + "block" ? <Loader2 className="w-3 h-3 animate-spin" /> : u.status === "active" ? <Ban className="w-3 h-3" /> : <UserCheck className="w-3 h-3" />}
+                            </button>
+                            <button onClick={() => { setRoleModal(u); setSelectedRole(u.role); }} title="Change Role" className="p-1.5 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 cursor-pointer" id={`role-user-${u._id}`}>
+                              {u.role === "admin" ? <Shield className="w-3 h-3" /> : u.role === "manager" ? <UserCheck className="w-3 h-3" /> : <User className="w-3 h-3" />}
+                            </button>
+                            <button onClick={() => openResourceModal(u)} title="Project Resources" className="p-1.5 bg-teal-100 text-teal-600 rounded-lg hover:bg-teal-200 cursor-pointer" id={`resources-user-${u._id}`}>
+                              <FolderOpen className="w-3 h-3" />
+                            </button>
+                            <button onClick={() => setResetModal(u)} title="Reset Password" className="p-1.5 bg-purple-100 text-purple-600 rounded-lg hover:bg-purple-200 cursor-pointer" id={`reset-user-${u._id}`}>
+                              <Key className="w-3 h-3" />
+                            </button>
+                            <button onClick={() => setDeleteModal(u)} title="Delete" className="p-1.5 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 cursor-pointer" id={`delete-user-${u._id}`}>
+                              <Trash2 className="w-3 h-3" />
+                            </button>
+                          </div>
+                        )}
+                      </td>
+                    )}
                   </tr>
                 ))}
               </tbody>
