@@ -60,7 +60,7 @@ export default function AdminView({ onNavigate }) {
       case "gallery": return <AdminGallery />;
       case "stories": return <AdminStories />;
       case "services": return isAdmin ? <AdminServices /> : <AdminReviews />;
-      case "users": return isAdmin ? <AdminUsers /> : <AdminReviews />;
+      case "users": return (isAdmin || isManager) ? <AdminUsers /> : <AdminReviews />;
       case "contacts": return isAdmin ? <AdminContacts /> : <AdminReviews />;
       case "settings": return isAdmin ? <AdminSettings /> : <AdminReviews />;
       default: return isAdmin ? <AdminDashboard /> : <AdminReviews />;
