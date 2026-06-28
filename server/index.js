@@ -71,6 +71,10 @@ const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 200,
   message: { success: false, message: "Too many requests, please try again later." },
+  // Provide a custom keyGenerator for Netlify serverless since req.ip might be undefined
+  keyGenerator: (req) => {
+    return req.headers['x-nf-client-connection-ip'] || req.ip || req.connection?.remoteAddress || 'unknown';
+  }
 });
 app.use("/api", limiter);
 
