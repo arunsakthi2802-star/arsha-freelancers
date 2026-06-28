@@ -8,14 +8,14 @@ import {
 import { useAuth } from "../../context/AuthContext";
 
 const allNavItems = [
-  { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, roles: ["admin", "manager"] },
+  { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, roles: ["admin"] },
   { id: "pending_approvals", label: "Permission Control", icon: ShieldAlert, roles: ["admin"] },
   { id: "manager_requests", label: "My Requests", icon: Clock, roles: ["manager"] },
   { id: "reviews", label: "Reviews", icon: Star, roles: ["admin", "manager"] },
   { id: "gallery", label: "Gallery", icon: Images, roles: ["admin", "manager"] },
   { id: "stories", label: "Stories", icon: BookOpen, roles: ["admin", "manager"] },
   { id: "services", label: "Services", icon: Briefcase, roles: ["admin"] },
-  { id: "users", label: "Users", icon: Users, roles: ["admin", "manager"] },
+  { id: "users", label: "Users", icon: Users, roles: ["admin"] },
   { id: "contacts", label: "Enquiries", icon: MessageSquare, roles: ["admin"] },
   { id: "audit_logs", label: "Audit Logs", icon: FileText, roles: ["admin"] },
   { id: "settings", label: "Settings", icon: Settings, roles: ["admin"] },

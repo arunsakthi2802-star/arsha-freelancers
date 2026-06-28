@@ -16,7 +16,7 @@ import AuditLogs from "./AuditLogs";
 
 export default function AdminView({ onNavigate }) {
   const { isAdmin, isManager, isAuthenticated, loading } = useAuth();
-  const [activeTab, setActiveTab] = useState("dashboard");
+  const [activeTab, setActiveTab] = useState(isAdmin ? "dashboard" : "reviews");
 
   if (loading) {
     return (
@@ -52,18 +52,18 @@ export default function AdminView({ onNavigate }) {
 
   const renderTab = () => {
     switch (activeTab) {
-      case "dashboard": return <AdminDashboard />;
-      case "pending_approvals": return isAdmin ? <PendingApprovals /> : <AdminDashboard />;
-      case "manager_requests": return isManager ? <ManagerRequests /> : <AdminDashboard />;
-      case "audit_logs": return isAdmin ? <AuditLogs /> : <AdminDashboard />;
+      case "dashboard": return isAdmin ? <AdminDashboard /> : <AdminReviews />;
+      case "pending_approvals": return isAdmin ? <PendingApprovals /> : <AdminReviews />;
+      case "manager_requests": return isManager ? <ManagerRequests /> : (isAdmin ? <AdminDashboard /> : <AdminReviews />);
+      case "audit_logs": return isAdmin ? <AuditLogs /> : <AdminReviews />;
       case "reviews": return <AdminReviews />;
       case "gallery": return <AdminGallery />;
       case "stories": return <AdminStories />;
-      case "services": return <AdminServices />;
-      case "users": return <AdminUsers />;
-      case "contacts": return <AdminContacts />;
-      case "settings": return <AdminSettings />;
-      default: return <AdminDashboard />;
+      case "services": return isAdmin ? <AdminServices /> : <AdminReviews />;
+      case "users": return isAdmin ? <AdminUsers /> : <AdminReviews />;
+      case "contacts": return isAdmin ? <AdminContacts /> : <AdminReviews />;
+      case "settings": return isAdmin ? <AdminSettings /> : <AdminReviews />;
+      default: return isAdmin ? <AdminDashboard /> : <AdminReviews />;
     }
   };
 
