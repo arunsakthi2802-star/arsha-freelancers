@@ -1,4 +1,4 @@
-import api from "./axios";
+import api from "./apiClient";
 
 export const getApprovalRequests = async () => {
   const response = await api.get("/approvals");
