@@ -18,7 +18,7 @@ const logAudit = async (req, action, targetId, details) => {
     details,
   });
 };
-const { uploadReview, uploadToCloudinary } = require("../config/cloudinary");
+
 
 const router = express.Router();
 
