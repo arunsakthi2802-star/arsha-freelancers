@@ -12,7 +12,8 @@ export const getUsers = (params = {}) => {
 export const updateUser = (id, formData) =>
   api.put(`/users/${id}`, formData, { isFormData: true });
 
-export const deleteUser = (id) => api.delete(`/users/${id}`);
+export const deleteUser = (id, adminPassword) => 
+  api.delete(`/users/${id}`, { data: { adminPassword } });
 
 export const blockUser = (id) => api.post(`/users/${id}/block`, {});
 

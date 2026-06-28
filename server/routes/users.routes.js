@@ -137,6 +137,7 @@ router.put("/:id", uploadProfile.single("profilePhoto"), async (req, res) => {
 // DELETE /api/users/:id
 router.delete("/:id", async (req, res) => {
   try {
+    const { adminPassword } = req.body;
     const user = await User.findById(req.params.id);
     if (!user) return res.status(404).json({ success: false, message: "User not found." });
     
@@ -152,6 +153,16 @@ router.delete("/:id", async (req, res) => {
         targetId: req.params.id,
       });
       return res.status(202).json({ success: true, message: "Request sent for Admin approval." });
+    }
+
+    // Requires admin password for Main Admin
+    if (!adminPassword) {
+      return res.status(400).json({ success: false, message: "Admin password is required to delete a user." });
+    }
+    const activeAdmin = await User.findById(req.user._id).select("+password");
+    const isMatch = await bcrypt.compare(adminPassword, activeAdmin.password);
+    if (!isMatch) {
+      return res.status(401).json({ success: false, message: "Incorrect administrator password." });
     }
 
     await user.deleteOne();
