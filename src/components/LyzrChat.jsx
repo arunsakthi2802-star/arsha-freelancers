@@ -110,7 +110,7 @@ export default function LyzrChat() {
                 <p className="text-white font-black text-sm">Arsha AI Assistant</p>
                 <p className="text-blue-100 text-[10px] font-medium flex items-center gap-1">
                   <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
-                  Powered by Lyzr Agent
+                  Online
                 </p>
               </div>
               <button
