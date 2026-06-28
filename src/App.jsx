@@ -15,7 +15,7 @@ import DetailsModal from "./components/DetailsModal";
 import AnimatedBackground from "./components/AnimatedBackground";
 import StoriesView from "./components/StoriesView";
 import LoginView from "./components/LoginView";
-import LyzrChat from "./components/LyzrChat";
+import ArshaChat from "./components/ArshaChat";
 import AdminView from "./components/admin/AdminView";
 import StudentPortal from "./components/StudentPortal";
 import { AuthProvider } from "./context/AuthContext";
@@ -344,7 +344,7 @@ export default function App() {
       {!isAdminPage && (
         <>
           {/* Lyzr AI Chat */}
-          <LyzrChat />
+          <ArshaChat />
 
           <div className="fixed bottom-6 right-6 z-40 flex flex-col gap-2.5 items-end">
             {/* Scroll To Top button */}

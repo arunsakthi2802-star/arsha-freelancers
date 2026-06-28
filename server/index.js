@@ -14,6 +14,7 @@ const galleryRoutes = require("./routes/gallery.routes");
 const storyRoutes = require("./routes/stories.routes");
 const serviceRoutes = require("./routes/services.routes");
 const contactRoutes = require("./routes/contact.routes");
+const chatRoutes = require("./routes/chat.routes");
 
 // Models for stats
 const User = require("./models/User");
@@ -93,36 +94,7 @@ app.use("/api/gallery", galleryRoutes);
 app.use("/api/stories", storyRoutes);
 app.use("/api/services", serviceRoutes);
 app.use("/api/contact", contactRoutes);
-
-// ── Lyzr AI Agent Proxy ────────────────────────────────────────────────────────
-app.post("/api/lyzr/chat", async (req, res) => {
-  try {
-    const { message, session_id } = req.body;
-    const response = await fetch("https://agent-prod.studio.lyzr.ai/v3/inference/chat/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": process.env.LYZR_API_KEY,
-      },
-      body: JSON.stringify({
-        user_id: process.env.LYZR_USER_ID,
-        agent_id: process.env.LYZR_AGENT_ID,
-        session_id: session_id || process.env.LYZR_SESSION_ID,
-        message,
-      }),
-    });
-
-    if (!response.ok) {
-      const err = await response.text();
-      return res.status(response.status).json({ success: false, message: err });
-    }
-
-    const data = await response.json();
-    res.status(200).json({ success: true, data });
-  } catch (error) {
-    res.status(500).json({ success: false, message: "Lyzr agent error: " + error.message });
-  }
-});
+app.use("/api/chat", chatRoutes);
 
 
 app.get("/api/stats", protect, adminOnly, async (req, res) => {

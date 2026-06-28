@@ -1,16 +1,14 @@
 import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { MessageCircle, X, Send, Bot, User, Loader2, Sparkles } from "lucide-react";
-import { chatWithLyzr } from "../api/lyzr.api";
-
-const SESSION_ID = `arsha-session-${Date.now()}`;
+import { chatWithAI } from "../api/chat.api";
 
 const WelcomeMessages = [
   "👋 Hi! I'm Arsha AI — your smart assistant for academic projects, services, and queries.",
   "Ask me anything about our IEEE projects, AI/ML services, pricing, or how to get started! 🚀",
 ];
 
-export default function LyzrChat() {
+export default function ArshaChat() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
@@ -54,12 +52,12 @@ export default function LyzrChat() {
     setLoading(true);
 
     try {
-      const res = await chatWithLyzr(text, SESSION_ID);
-      const botText =
-        res?.data?.response ||
-        res?.data?.message ||
-        res?.data?.output ||
-        "I'm here to help! Please ask me about our academic project services.";
+      // Pass the previous actual messages (excluding welcome messages to save tokens if desired, but here we pass all user/bot interactions)
+      // Filter out the newly added user message to avoid duplication, though our history state here already has it since we used `prev`.
+      const chatHistory = messages.filter(m => !m.id.startsWith('welcome-')).concat(userMsg);
+      const res = await chatWithAI(text, chatHistory);
+      
+      const botText = res?.data?.response || "I'm here to help! Please ask me about our academic project services.";
 
       const botMsg = {
         id: `bot-${Date.now()}`,
