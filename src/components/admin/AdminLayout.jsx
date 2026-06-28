@@ -9,7 +9,7 @@ import { useAuth } from "../../context/AuthContext";
 
 const allNavItems = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, roles: ["admin", "manager"] },
-  { id: "pending_approvals", label: "Pending Approvals", icon: ShieldAlert, roles: ["admin"] },
+  { id: "pending_approvals", label: "Permission Control", icon: ShieldAlert, roles: ["admin"] },
   { id: "manager_requests", label: "My Requests", icon: Clock, roles: ["manager"] },
   { id: "reviews", label: "Reviews", icon: Star, roles: ["admin", "manager"] },
   { id: "gallery", label: "Gallery", icon: Images, roles: ["admin", "manager"] },

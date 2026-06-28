@@ -53,7 +53,7 @@ export default function PendingApprovals() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-xl font-black text-slate-950 dark:text-white">Pending Approvals</h2>
+          <h2 className="text-xl font-black text-slate-950 dark:text-white">Permission Control</h2>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Review and approve changes submitted by Managers.</p>
         </div>
         <button
