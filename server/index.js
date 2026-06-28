@@ -25,17 +25,41 @@ const Contact = require("./models/Contact");
 const { protect } = require("./middleware/auth");
 const { adminOnly } = require("./middleware/adminOnly");
 
-// Connect to MongoDB Atlas
-connectDB();
+// Connect to MongoDB Atlas (cached for serverless warm starts)
+let dbConnected = false;
+const ensureDbConnected = async () => {
+  if (!dbConnected) {
+    await connectDB();
+    dbConnected = true;
+  }
+};
+// Connect immediately (for both local dev and serverless cold starts)
+ensureDbConnected();
 
 const app = express();
 
 // ── Security Middleware ────────────────────────────────────────────────────────
 app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
 
+// Allow both localhost (dev) and the Netlify production URL
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://arsha-freelancers.netlify.app",
+];
+if (process.env.CLIENT_URL && !allowedOrigins.includes(process.env.CLIENT_URL)) {
+  allowedOrigins.push(process.env.CLIENT_URL);
+}
+
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "http://localhost:3000",
+    origin: function (origin, callback) {
+      // Allow requests with no origin (server-to-server, curl, mobile apps)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      return callback(new Error("Not allowed by CORS"));
+    },
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
@@ -193,12 +217,16 @@ app.use((err, req, res, next) => {
   });
 });
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`🚀 Arsha Backend running on http://localhost:${PORT}`);
-  console.log(`📊 Dashboard API: http://localhost:${PORT}/api/stats`);
-  console.log(`🤖 Lyzr AI Chat: http://localhost:${PORT}/api/lyzr/chat`);
-  console.log(`🔍 Global Search: http://localhost:${PORT}/api/search`);
-});
+// ── Start server only in local development (not in serverless) ─────────────────
+// When required by the Netlify function, app.listen() is NOT called
+if (require.main === module) {
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => {
+    console.log(`🚀 Arsha Backend running on http://localhost:${PORT}`);
+    console.log(`📊 Dashboard API: http://localhost:${PORT}/api/stats`);
+    console.log(`🤖 Lyzr AI Chat: http://localhost:${PORT}/api/lyzr/chat`);
+    console.log(`🔍 Global Search: http://localhost:${PORT}/api/search`);
+  });
+}
 
 module.exports = app;

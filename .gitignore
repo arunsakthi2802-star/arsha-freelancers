@@ -6,5 +6,6 @@ coverage/
 *.log
 .env*
 !.env.example
+.netlify/
 Arsha_All_Projects_List.md
 generate_md.js
