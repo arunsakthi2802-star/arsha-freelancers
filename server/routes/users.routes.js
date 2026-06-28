@@ -61,6 +61,14 @@ router.get("/:id", async (req, res) => {
 // PUT /api/users/:id
 router.put("/:id", uploadProfile.single("profilePhoto"), async (req, res) => {
   try {
+    const existingUser = await User.findById(req.params.id);
+    if (!existingUser) return res.status(404).json({ success: false, message: "User not found." });
+    
+    // Protect main admin account from being modified by other admins
+    if (existingUser.email === "arunsakthi2802@gmail.com" && req.user.email !== "arunsakthi2802@gmail.com") {
+      return res.status(403).json({ success: false, message: "Only the main admin can modify this account." });
+    }
+
     const updates = { ...req.body };
     delete updates.password; // Use reset endpoint for password
 
@@ -81,7 +89,6 @@ router.put("/:id", uploadProfile.single("profilePhoto"), async (req, res) => {
       new: true,
       runValidators: true,
     });
-    if (!user) return res.status(404).json({ success: false, message: "User not found." });
 
     res.status(200).json({ success: true, data: user });
   } catch (error) {
@@ -92,8 +99,14 @@ router.put("/:id", uploadProfile.single("profilePhoto"), async (req, res) => {
 // DELETE /api/users/:id
 router.delete("/:id", async (req, res) => {
   try {
-    const user = await User.findByIdAndDelete(req.params.id);
+    const user = await User.findById(req.params.id);
     if (!user) return res.status(404).json({ success: false, message: "User not found." });
+    
+    if (user.email === "arunsakthi2802@gmail.com") {
+      return res.status(403).json({ success: false, message: "Main admin account cannot be deleted." });
+    }
+
+    await user.deleteOne();
     res.status(200).json({ success: true, message: "User deleted." });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -105,6 +118,10 @@ router.post("/:id/block", async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
     if (!user) return res.status(404).json({ success: false, message: "User not found." });
+    
+    if (user.email === "arunsakthi2802@gmail.com") {
+      return res.status(403).json({ success: false, message: "Main admin account cannot be blocked." });
+    }
 
     user.status = user.status === "active" ? "blocked" : "active";
     await user.save();
@@ -125,6 +142,10 @@ router.post("/:id/reset-password", async (req, res) => {
 
     const user = await User.findById(req.params.id);
     if (!user) return res.status(404).json({ success: false, message: "User not found." });
+    
+    if (user.email === "arunsakthi2802@gmail.com" && req.user.email !== "arunsakthi2802@gmail.com") {
+      return res.status(403).json({ success: false, message: "Only the main admin can reset their password." });
+    }
 
     user.password = newPassword; // pre-save hook will hash it
     await user.save();
@@ -159,8 +180,15 @@ router.post("/:id/change-role", async (req, res) => {
       }
     }
 
-    const user = await User.findByIdAndUpdate(req.params.id, { role }, { new: true });
+    const user = await User.findById(req.params.id);
     if (!user) return res.status(404).json({ success: false, message: "User not found." });
+    
+    if (user.email === "arunsakthi2802@gmail.com") {
+      return res.status(403).json({ success: false, message: "Main admin account role cannot be changed." });
+    }
+
+    user.role = role;
+    await user.save();
 
     res.status(200).json({ success: true, data: user });
   } catch (error) {
