@@ -15,6 +15,7 @@ const storyRoutes = require("./routes/stories.routes");
 const serviceRoutes = require("./routes/services.routes");
 const contactRoutes = require("./routes/contact.routes");
 const chatRoutes = require("./routes/chat.routes");
+const approvalsRoutes = require("./routes/approvals.routes");
 
 // Models for stats
 const User = require("./models/User");
@@ -95,6 +96,7 @@ app.use("/api/stories", storyRoutes);
 app.use("/api/services", serviceRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/chat", chatRoutes);
+app.use("/api/approvals", approvalsRoutes);
 
 
 app.get("/api/stats", protect, adminOnly, async (req, res) => {

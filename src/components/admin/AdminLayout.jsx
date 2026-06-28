@@ -2,24 +2,34 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
   LayoutDashboard, Star, Images, BookOpen, Briefcase, Users,
-  MessageSquare, LogOut, Menu, X, ChevronRight, Shield, Home, Settings
+  MessageSquare, LogOut, Menu, X, ChevronRight, Shield, Home, Settings,
+  Clock, ShieldAlert, FileText
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 
-const navItems = [
-  { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { id: "reviews", label: "Reviews", icon: Star },
-  { id: "gallery", label: "Gallery", icon: Images },
-  { id: "stories", label: "Stories", icon: BookOpen },
-  { id: "services", label: "Services", icon: Briefcase },
-  { id: "users", label: "Users", icon: Users },
-  { id: "contacts", label: "Enquiries", icon: MessageSquare },
-  { id: "settings", label: "Settings", icon: Settings },
+const allNavItems = [
+  { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, roles: ["admin", "manager"] },
+  { id: "pending_approvals", label: "Pending Approvals", icon: ShieldAlert, roles: ["admin"] },
+  { id: "manager_requests", label: "My Requests", icon: Clock, roles: ["manager"] },
+  { id: "reviews", label: "Reviews", icon: Star, roles: ["admin", "manager"] },
+  { id: "gallery", label: "Gallery", icon: Images, roles: ["admin", "manager"] },
+  { id: "stories", label: "Stories", icon: BookOpen, roles: ["admin", "manager"] },
+  { id: "services", label: "Services", icon: Briefcase, roles: ["admin"] },
+  { id: "users", label: "Users", icon: Users, roles: ["admin", "manager"] },
+  { id: "contacts", label: "Enquiries", icon: MessageSquare, roles: ["admin"] },
+  { id: "audit_logs", label: "Audit Logs", icon: FileText, roles: ["admin"] },
+  { id: "settings", label: "Settings", icon: Settings, roles: ["admin"] },
 ];
 
 export default function AdminLayout({ activeTab, setActiveTab, onNavigatePublic, children }) {
-  const { user, logout } = useAuth();
+  const { user, logout, isAdmin, isManager } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const navItems = allNavItems.filter((item) => {
+    if (isAdmin) return item.roles.includes("admin");
+    if (isManager) return item.roles.includes("manager");
+    return false;
+  });
 
   const handleLogout = () => {
     logout();

@@ -1,14 +1,29 @@
 const express = require("express");
 const User = require("../models/User");
 const { protect } = require("../middleware/auth");
-const { adminOnly } = require("../middleware/adminOnly");
+const { adminOrManager, mainAdminOnly } = require("../middleware/adminOnly");
 const { uploadProfile, uploadToCloudinary, uploadGeneric } = require("../config/cloudinary");
 const bcrypt = require("bcryptjs");
+const ApprovalRequest = require("../models/ApprovalRequest");
+const AuditLog = require("../models/AuditLog");
 
 const router = express.Router();
 
-// All user routes require admin
-router.use(protect, adminOnly);
+// Helper to log audit
+const logAudit = async (req, action, targetId, details) => {
+  await AuditLog.create({
+    performedBy: req.user._id,
+    userEmail: req.user.email,
+    userRole: req.user.role,
+    action,
+    module: "users",
+    targetId,
+    details,
+  });
+};
+
+// All user routes require admin or manager
+router.use(protect, adminOrManager);
 
 // GET /api/users — list all users with pagination & search
 router.get("/", async (req, res) => {
@@ -40,7 +55,18 @@ router.post("/", async (req, res) => {
     const existing = await User.findOne({ email });
     if (existing) return res.status(400).json({ success: false, message: "Email already registered." });
 
+    if (req.user.role === "manager") {
+      await ApprovalRequest.create({
+        requestedBy: req.user._id,
+        module: "users",
+        action: "create",
+        payload: { fullName, email, phone, password, college, department, role: role || "user" },
+      });
+      return res.status(202).json({ success: true, message: "Request sent for Admin approval." });
+    }
+
     const user = await User.create({ fullName, email, phone, password, college, department, role: role || "user" });
+    await logAudit(req, "create", user._id, `Created user ${email}`);
     res.status(201).json({ success: true, data: user });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -85,11 +111,23 @@ router.put("/:id", uploadProfile.single("profilePhoto"), async (req, res) => {
       }
     }
 
+    if (req.user.role === "manager") {
+      await ApprovalRequest.create({
+        requestedBy: req.user._id,
+        module: "users",
+        action: "update",
+        targetId: req.params.id,
+        payload: updates,
+      });
+      return res.status(202).json({ success: true, message: "Request sent for Admin approval." });
+    }
+
     const user = await User.findByIdAndUpdate(req.params.id, updates, {
       new: true,
       runValidators: true,
     });
 
+    await logAudit(req, "update", user._id, `Updated user ${user.email}`);
     res.status(200).json({ success: true, data: user });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -106,7 +144,18 @@ router.delete("/:id", async (req, res) => {
       return res.status(403).json({ success: false, message: "Main admin account cannot be deleted." });
     }
 
+    if (req.user.role === "manager") {
+      await ApprovalRequest.create({
+        requestedBy: req.user._id,
+        module: "users",
+        action: "delete",
+        targetId: req.params.id,
+      });
+      return res.status(202).json({ success: true, message: "Request sent for Admin approval." });
+    }
+
     await user.deleteOne();
+    await logAudit(req, "delete", user._id, `Deleted user ${user.email}`);
     res.status(200).json({ success: true, message: "User deleted." });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -123,9 +172,21 @@ router.post("/:id/block", async (req, res) => {
       return res.status(403).json({ success: false, message: "Main admin account cannot be blocked." });
     }
 
+    if (req.user.role === "manager") {
+      await ApprovalRequest.create({
+        requestedBy: req.user._id,
+        module: "users",
+        action: "update",
+        targetId: req.params.id,
+        payload: { status: user.status === "active" ? "blocked" : "active" },
+      });
+      return res.status(202).json({ success: true, message: "Request sent for Admin approval." });
+    }
+
     user.status = user.status === "active" ? "blocked" : "active";
     await user.save();
-
+    
+    await logAudit(req, "update", user._id, `${user.status === "blocked" ? "Blocked" : "Unblocked"} user ${user.email}`);
     res.status(200).json({ success: true, data: user, message: `User ${user.status}.` });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -147,9 +208,14 @@ router.post("/:id/reset-password", async (req, res) => {
       return res.status(403).json({ success: false, message: "Only the main admin can reset their password." });
     }
 
+    if (req.user.role === "manager") {
+      return res.status(403).json({ success: false, message: "Managers cannot reset passwords. Main Admin only." });
+    }
+
     user.password = newPassword; // pre-save hook will hash it
     await user.save();
 
+    await logAudit(req, "update", user._id, `Reset password for user ${user.email}`);
     res.status(200).json({ success: true, message: "Password reset successfully." });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -187,9 +253,21 @@ router.post("/:id/change-role", async (req, res) => {
       return res.status(403).json({ success: false, message: "Main admin account role cannot be changed." });
     }
 
+    if (req.user.role === "manager") {
+      await ApprovalRequest.create({
+        requestedBy: req.user._id,
+        module: "users",
+        action: "update",
+        targetId: req.params.id,
+        payload: { role },
+      });
+      return res.status(202).json({ success: true, message: "Request sent for Admin approval." });
+    }
+
     user.role = role;
     await user.save();
-
+    
+    await logAudit(req, "update", user._id, `Changed role of user ${user.email} to ${role}`);
     res.status(200).json({ success: true, data: user });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });

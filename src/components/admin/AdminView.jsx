@@ -10,9 +10,12 @@ import AdminUsers from "./AdminUsers";
 import AdminContacts from "./AdminContacts";
 import LoginView from "../LoginView";
 import AdminSettings from "./AdminSettings";
+import PendingApprovals from "./PendingApprovals";
+import ManagerRequests from "./ManagerRequests";
+import AuditLogs from "./AuditLogs";
 
 export default function AdminView({ onNavigate }) {
-  const { isAdmin, isAuthenticated, loading } = useAuth();
+  const { isAdmin, isManager, isAuthenticated, loading } = useAuth();
   const [activeTab, setActiveTab] = useState("dashboard");
 
   if (loading) {
@@ -27,7 +30,7 @@ export default function AdminView({ onNavigate }) {
     return <LoginView onNavigate={onNavigate} />;
   }
 
-  if (!isAdmin) {
+  if (!isAdmin && !isManager) {
     return (
       <div className="flex items-center justify-center h-screen px-4">
         <div className="text-center">
@@ -35,7 +38,7 @@ export default function AdminView({ onNavigate }) {
             🔒
           </div>
           <h2 className="text-xl font-black text-slate-950 dark:text-white mb-2">Access Denied</h2>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">Your account does not have administrator privileges.</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">Your account does not have administrator or manager privileges.</p>
           <button
             onClick={() => onNavigate("home")}
             className="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white font-black text-sm rounded-xl border-2 border-slate-950 shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] cursor-pointer"
@@ -50,6 +53,9 @@ export default function AdminView({ onNavigate }) {
   const renderTab = () => {
     switch (activeTab) {
       case "dashboard": return <AdminDashboard />;
+      case "pending_approvals": return isAdmin ? <PendingApprovals /> : <AdminDashboard />;
+      case "manager_requests": return isManager ? <ManagerRequests /> : <AdminDashboard />;
+      case "audit_logs": return isAdmin ? <AuditLogs /> : <AdminDashboard />;
       case "reviews": return <AdminReviews />;
       case "gallery": return <AdminGallery />;
       case "stories": return <AdminStories />;
