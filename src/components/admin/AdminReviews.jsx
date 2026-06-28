@@ -208,9 +208,22 @@ export default function AdminReviews() {
               <tbody>
                 {reviews.map((rev) => (
                   <tr key={rev._id} className="border-b border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50">
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-3 min-w-[280px] max-w-[400px]">
                       <p className="font-black text-slate-950 dark:text-white">{rev.studentName}</p>
-                      <p className="text-slate-400 truncate max-w-[140px]">{rev.projectTitle}</p>
+                      <p className="text-[10px] font-bold text-slate-400 mb-2">{rev.projectTitle}</p>
+                      <div className="p-2.5 bg-slate-100 dark:bg-slate-800/80 rounded-lg border border-slate-200 dark:border-slate-700 relative">
+                        <p className="text-[11px] text-slate-700 dark:text-slate-300 whitespace-pre-wrap leading-relaxed italic">
+                          "{rev.reviewMessage}"
+                        </p>
+                        {rev.adminReply && (
+                          <div className="mt-2 pt-2 border-t border-slate-200 dark:border-slate-600">
+                            <span className="text-[9px] font-black uppercase text-blue-600 dark:text-blue-400">Admin Reply:</span>
+                            <p className="text-[11px] text-slate-600 dark:text-slate-400 whitespace-pre-wrap mt-0.5">
+                              {rev.adminReply}
+                            </p>
+                          </div>
+                        )}
+                      </div>
                     </td>
                     <td className="px-4 py-3 text-slate-600 dark:text-slate-400 max-w-[120px] truncate">{rev.collegeName}</td>
                     <td className="px-4 py-3"><Stars rating={rev.rating} /></td>
