@@ -199,6 +199,19 @@ function ReviewCard({ review, index }) {
         </div>
       )}
 
+      {/* Admin Reply */}
+      {review.adminReply && (
+        <div className="mt-2 p-3 bg-slate-50 dark:bg-slate-800 border-l-4 border-blue-500 rounded-r-xl relative overflow-hidden group">
+          <div className="flex items-center gap-2 mb-1.5">
+            <div className="w-5 h-5 rounded-full bg-blue-600 flex items-center justify-center text-[10px] text-white font-black">A</div>
+            <span className="text-[10px] font-black uppercase text-blue-600 dark:text-blue-400 tracking-wider">Response from Arsha</span>
+          </div>
+          <p className="text-xs text-slate-700 dark:text-slate-300 font-medium leading-relaxed">
+            {review.adminReply}
+          </p>
+        </div>
+      )}
+
       {/* Footer: avatar + name + date */}
       <div className="flex items-center justify-between pt-1 border-t border-slate-100 dark:border-slate-800">
         <div className="flex items-center gap-2">
@@ -253,6 +266,7 @@ export default function ReviewView() {
           rating: r.rating,
           text: r.reviewMessage,
           service: r.projectTitle,
+          adminReply: r.adminReply,
           tags: [],
           date: new Date(r.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }),
           avatar: r.studentName ? r.studentName.charAt(0).toUpperCase() : "?",

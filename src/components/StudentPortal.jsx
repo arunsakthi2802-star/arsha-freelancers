@@ -1,17 +1,30 @@
 import React, { useState, useEffect } from "react";
-import { motion } from "motion/react";
-import { FolderOpen, ExternalLink, LogOut, User, Mail, Phone, BookOpen, Clock, ShieldAlert, CheckCircle } from "lucide-react";
+import { FolderOpen, ExternalLink, LogOut, User, Mail, Phone, BookOpen, Clock, ShieldAlert, CheckCircle, Fingerprint, Edit2, Save, X } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import LoginView from "./LoginView";
+import { updateMyProfile } from "../api/auth.api";
 
 export default function StudentPortal({ onNavigate }) {
   const { user, logout, isAuthenticated, refreshProfile } = useAuth();
+  
+  const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState({ fullName: "", phone: "" });
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     if (isAuthenticated) {
       refreshProfile();
     }
   }, [isAuthenticated, refreshProfile]);
+
+  useEffect(() => {
+    if (user) {
+      setFormData({
+        fullName: user.fullName || "",
+        phone: user.phone || ""
+      });
+    }
+  }, [user]);
   
   if (!isAuthenticated) {
     return <LoginView onNavigate={onNavigate} />;
@@ -22,13 +35,27 @@ export default function StudentPortal({ onNavigate }) {
     onNavigate("home");
   };
 
+  const handleSaveProfile = async () => {
+    try {
+      setIsSaving(true);
+      await updateMyProfile({ fullName: formData.fullName, phone: formData.phone });
+      await refreshProfile();
+      setIsEditing(false);
+    } catch (error) {
+      console.error("Failed to update profile", error);
+      alert("Failed to update profile. Please try again.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   return (
     <div className="max-w-5xl mx-auto px-4 py-12">
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-10 pb-6 border-b-2 border-slate-200 dark:border-slate-800">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black text-slate-950 dark:text-white tracking-tight">Student Portal</h1>
-          <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm">Manage your academic projects and download development resources.</p>
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-950 dark:text-white tracking-tight">User Portal</h1>
+          <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm">Manage your account, projects, and download resources.</p>
         </div>
         <button
           onClick={handleLogout}
@@ -41,18 +68,62 @@ export default function StudentPortal({ onNavigate }) {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Profile Card */}
         <div className="lg:col-span-1 space-y-6">
-          <div className="bg-white dark:bg-slate-900 border-2 border-slate-950 dark:border-slate-700 rounded-3xl p-6 shadow-[5px_5px_0px_0px_rgba(37,99,235,0.6)]">
+          <div className="bg-white dark:bg-slate-900 border-2 border-slate-950 dark:border-slate-700 rounded-3xl p-6 shadow-[5px_5px_0px_0px_rgba(37,99,235,0.6)] relative">
+            
+            {!isEditing ? (
+              <button 
+                onClick={() => setIsEditing(true)}
+                className="absolute top-4 right-4 p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
+                title="Edit Profile"
+              >
+                <Edit2 className="w-4 h-4" />
+              </button>
+            ) : (
+              <button 
+                onClick={() => {
+                  setIsEditing(false);
+                  setFormData({ fullName: user.fullName || "", phone: user.phone || "" });
+                }}
+                className="absolute top-4 right-4 p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
+                title="Cancel Edit"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
+
             <div className="text-center pb-6 border-b border-slate-100 dark:border-slate-800">
               <div className="w-20 h-20 bg-blue-600 rounded-3xl border-2 border-slate-950 mx-auto flex items-center justify-center text-white text-3xl font-black shadow-[3px_3px_0px_0px_rgba(15,23,42,1)]">
-                {user?.fullName?.charAt(0) || "S"}
+                {user?.fullName?.charAt(0) || "U"}
               </div>
-              <h2 className="text-lg font-black text-slate-950 dark:text-white mt-4">{user?.fullName}</h2>
-              <span className="inline-block mt-1 text-[10px] font-black uppercase px-2.5 py-0.5 bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-400 rounded-full border border-emerald-200 dark:border-emerald-900">
-                {user?.status || "Active"} Client
+              
+              {isEditing ? (
+                <div className="mt-4">
+                  <input
+                    type="text"
+                    value={formData.fullName}
+                    onChange={(e) => setFormData({...formData, fullName: e.target.value})}
+                    className="w-full text-center font-black text-slate-950 dark:text-white bg-slate-50 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-lg px-2 py-1 text-sm focus:border-blue-500 focus:outline-none"
+                    placeholder="Full Name"
+                  />
+                </div>
+              ) : (
+                <h2 className="text-lg font-black text-slate-950 dark:text-white mt-4">{user?.fullName}</h2>
+              )}
+              
+              <span className="inline-block mt-2 text-[10px] font-black uppercase px-2.5 py-0.5 bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-400 rounded-full border border-emerald-200 dark:border-emerald-900">
+                {user?.role === 'manager' ? 'Manager' : user?.status || "Active"} Client
               </span>
             </div>
 
             <div className="mt-6 space-y-4 text-xs">
+              <div className="flex items-center gap-3">
+                <Fingerprint className="w-4 h-4 text-slate-400 flex-shrink-0" />
+                <div className="min-w-0">
+                  <p className="text-slate-400 text-[9px] uppercase font-black">Unique ID</p>
+                  <p className="font-bold text-slate-700 dark:text-slate-300 font-mono text-[10px]">{user?._id}</p>
+                </div>
+              </div>
+
               <div className="flex items-center gap-3">
                 <Mail className="w-4 h-4 text-slate-400 flex-shrink-0" />
                 <div className="min-w-0">
@@ -63,9 +134,19 @@ export default function StudentPortal({ onNavigate }) {
               
               <div className="flex items-center gap-3">
                 <Phone className="w-4 h-4 text-slate-400 flex-shrink-0" />
-                <div>
-                  <p className="text-slate-400 text-[9px] uppercase font-black">Phone</p>
-                  <p className="font-bold text-slate-700 dark:text-slate-300">{user?.phone || "—"}</p>
+                <div className="w-full">
+                  <p className="text-slate-400 text-[9px] uppercase font-black">Mobile Number</p>
+                  {isEditing ? (
+                    <input
+                      type="text"
+                      value={formData.phone}
+                      onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                      className="w-full font-bold text-slate-950 dark:text-white bg-slate-50 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-lg px-2 py-1 mt-1 text-xs focus:border-blue-500 focus:outline-none"
+                      placeholder="Phone number"
+                    />
+                  ) : (
+                    <p className="font-bold text-slate-700 dark:text-slate-300 mt-0.5">{user?.phone || "—"}</p>
+                  )}
                 </div>
               </div>
 
@@ -73,12 +154,24 @@ export default function StudentPortal({ onNavigate }) {
                 <BookOpen className="w-4 h-4 text-slate-400 flex-shrink-0" />
                 <div>
                   <p className="text-slate-400 text-[9px] uppercase font-black">Academic / Dept</p>
-                  <p className="font-bold text-slate-700 dark:text-slate-300">
+                  <p className="font-bold text-slate-700 dark:text-slate-300 mt-0.5">
                     {user?.college || "—"} {user?.department ? `(${user?.department})` : ""}
                   </p>
                 </div>
               </div>
             </div>
+
+            {isEditing && (
+              <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800">
+                <button
+                  onClick={handleSaveProfile}
+                  disabled={isSaving}
+                  className="w-full flex items-center justify-center gap-2 py-2 bg-blue-600 hover:bg-blue-500 text-white font-black text-xs rounded-xl border-2 border-slate-950 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] cursor-pointer disabled:opacity-70 disabled:cursor-wait"
+                >
+                  <Save className="w-3 h-3" /> {isSaving ? "Saving..." : "Save Changes"}
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
@@ -102,7 +195,7 @@ export default function StudentPortal({ onNavigate }) {
 
                 <div className="bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-5 border border-slate-200 dark:border-slate-700">
                   <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">ASSIGNED PROJECT</span>
-                  <h4 className="text-base font-black text-slate-950 dark:text-white mt-1">{user?.projectTitle || "Academic Development Project"}</h4>
+                  <h4 className="text-base font-black text-slate-950 dark:text-white mt-1">{user?.projectTitle || "Development Project"}</h4>
                   
                   <div className="mt-4 flex flex-wrap gap-4 text-xs text-slate-500">
                     <div className="flex items-center gap-1.5">
@@ -193,3 +286,4 @@ export default function StudentPortal({ onNavigate }) {
     </div>
   );
 }
+

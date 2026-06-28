@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Search, Check, X, Trash2, Star, Loader2, Plus, Edit2, RefreshCw } from "lucide-react";
-import { getReviews, approveReview, rejectReview, deleteReview, submitReview } from "../../api/reviews.api";
+import { Search, Check, X, Trash2, Star, Loader2, Plus, Edit2, RefreshCw, MessageSquare } from "lucide-react";
+import { getReviews, approveReview, rejectReview, deleteReview, submitReview, updateReview } from "../../api/reviews.api";
 
 const STATUS_COLORS = {
   approved: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400",
@@ -28,6 +28,9 @@ export default function AdminReviews() {
   const [showAddForm, setShowAddForm] = useState(false);
   const [newReview, setNewReview] = useState({ studentName: "", collegeName: "", projectTitle: "", reviewMessage: "", rating: "5" });
   const [addLoading, setAddLoading] = useState(false);
+  const [replyModal, setReplyModal] = useState(null);
+  const [replyText, setReplyText] = useState("");
+  const [replyLoading, setReplyLoading] = useState(false);
 
   const loadReviews = async () => {
     setLoading(true);
@@ -79,6 +82,27 @@ export default function AdminReviews() {
       alert(err.message);
     } finally {
       setAddLoading(false);
+    }
+  };
+
+  const handleReplySubmit = async (e) => {
+    e.preventDefault();
+    if (!replyModal) return;
+    setReplyLoading(true);
+    try {
+      const fd = new FormData();
+      fd.append("adminReply", replyText);
+      // We don't have updateReview imported yet, we'll import it above or just use the fetch manually.
+      // Wait, let me import updateReview from reviews.api
+      // I'll add the import in a separate replace chunk, but I'll write the logic here.
+      await updateReview(replyModal._id, fd);
+      setReplyModal(null);
+      setReplyText("");
+      loadReviews();
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      setReplyLoading(false);
     }
   };
 
@@ -206,6 +230,9 @@ export default function AdminReviews() {
                             {actionLoading === rev._id + "reject" ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <X className="w-3.5 h-3.5" />}
                           </button>
                         )}
+                        <button onClick={() => { setReplyModal(rev); setReplyText(rev.adminReply || ""); }} className="p-1.5 bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 rounded-lg hover:bg-blue-200 transition-colors cursor-pointer" title="Reply">
+                          <MessageSquare className="w-3.5 h-3.5" />
+                        </button>
                         <button onClick={() => { if (confirm("Delete this review?")) handleAction(rev._id, "delete"); }} disabled={!!actionLoading} className="p-1.5 bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-200 transition-colors cursor-pointer" title="Delete" id={`delete-review-${rev._id}`}>
                           {actionLoading === rev._id + "delete" ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
                         </button>
@@ -225,6 +252,42 @@ export default function AdminReviews() {
           <button disabled={page === 1} onClick={() => setPage((p) => p - 1)} className="px-3 py-2 text-xs font-bold bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 rounded-xl disabled:opacity-40 cursor-pointer">← Prev</button>
           <span className="px-3 py-2 text-xs font-bold text-slate-500">Page {page} / {Math.ceil(total / 10)}</span>
           <button disabled={page >= Math.ceil(total / 10)} onClick={() => setPage((p) => p + 1)} className="px-3 py-2 text-xs font-bold bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 rounded-xl disabled:opacity-40 cursor-pointer">Next →</button>
+        </div>
+      )}
+
+      {/* Reply Modal */}
+      {replyModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/50 backdrop-blur-sm">
+          <div className="bg-white dark:bg-slate-900 w-full max-w-md rounded-2xl border-4 border-slate-950 shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xl font-black text-slate-950 dark:text-white">Reply to {replyModal.studentName}</h3>
+              <button onClick={() => setReplyModal(null)} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl text-slate-500 cursor-pointer">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <form onSubmit={handleReplySubmit} className="space-y-4">
+              <div className="space-y-2">
+                <label className="text-xs font-black uppercase text-slate-500">Admin/Manager Reply</label>
+                <textarea
+                  value={replyText}
+                  onChange={(e) => setReplyText(e.target.value)}
+                  placeholder="Type your reply to be shown publicly on the review..."
+                  rows={4}
+                  className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:border-blue-500 dark:text-white resize-none"
+                  required
+                />
+              </div>
+              <div className="flex justify-end gap-3 pt-2">
+                <button type="button" onClick={() => setReplyModal(null)} className="px-5 py-2.5 text-sm font-black text-slate-600 bg-slate-100 border-2 border-slate-200 rounded-xl hover:bg-slate-200 cursor-pointer">
+                  Cancel
+                </button>
+                <button type="submit" disabled={replyLoading} className="px-5 py-2.5 text-sm font-black text-white bg-blue-600 border-2 border-slate-950 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] rounded-xl hover:bg-blue-500 hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] transition-all cursor-pointer flex items-center gap-2">
+                  {replyLoading && <Loader2 className="w-4 h-4 animate-spin" />}
+                  Save Reply
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       )}
     </div>

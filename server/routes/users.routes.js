@@ -22,7 +22,28 @@ const logAudit = async (req, action, targetId, details) => {
   });
 };
 
-// All user routes require admin or manager
+// PUT /api/users/profile — User updates their own profile
+router.put("/profile", protect, async (req, res) => {
+  try {
+    const { fullName, phone } = req.body;
+    
+    // Only allow updating name and phone for regular users
+    const updates = {};
+    if (fullName) updates.fullName = fullName;
+    if (phone) updates.phone = phone;
+
+    const user = await User.findByIdAndUpdate(req.user._id, updates, {
+      new: true,
+      runValidators: true,
+    });
+
+    res.status(200).json({ success: true, data: user });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// All user management routes require admin or manager
 router.use(protect, adminOrManager);
 
 // GET /api/users — list all users with pagination & search
