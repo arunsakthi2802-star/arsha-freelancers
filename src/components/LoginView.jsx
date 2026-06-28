@@ -23,7 +23,7 @@ export default function LoginView({ onNavigate }) {
     try {
       const res = await login(email, password);
       if (res.success) {
-        if (res.user.role === "admin") {
+        if (res.user.role === "admin" || res.user.role === "manager") {
           onNavigate("admin");
         } else {
           onNavigate("portal");

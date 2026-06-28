@@ -23,7 +23,7 @@ export default function Navbar({
   setTheme,
   onGetQuoteClick,
 }) {
-  const { isAdmin, isAuthenticated } = useAuth();
+  const { isAdmin, isManager, isAuthenticated } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [themeDropdownOpen, setThemeDropdownOpen] = useState(false);
 
@@ -45,8 +45,8 @@ export default function Navbar({
     { id: "faq", label: "FAQ" },
     { id: "contact", label: "Contact" },
     { id: "review", label: "⭐ Reviews" },
-    ...(isAuthenticated && isAdmin ? [{ id: "admin", label: "🛡 Dashboard" }] : []),
-    ...(isAuthenticated && !isAdmin ? [{ id: "portal", label: "🔑 Portal" }] : []),
+    ...(isAuthenticated && (isAdmin || isManager) ? [{ id: "admin", label: "🛡 Dashboard" }] : []),
+    ...(isAuthenticated && !(isAdmin || isManager) ? [{ id: "portal", label: "🔑 Portal" }] : []),
     ...(!isAuthenticated ? [{ id: "login", label: "Sign In" }] : []),
   ];
 
