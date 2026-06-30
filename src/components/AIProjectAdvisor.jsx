@@ -61,14 +61,14 @@ export default function AIProjectAdvisor() {
       });
 
       // Sort by innovation score to surface best projects first
-      matches = matches.sort((a, b) => parseFloat(b.innovationScore) - parseFloat(a.innovationScore)).slice(0, 4);
+      matches = matches.sort((a, b) => parseFloat(b.innovationScore) - parseFloat(a.innovationScore)).slice(0, 10);
 
       let aiResponseText = "";
       if (matches.length > 0) {
         aiResponseText = `I found some highly relevant projects based on your query! Check these out:`;
       } else {
         aiResponseText = `I couldn't find exact matches for that, but here are some top trending projects you might like:`;
-        matches = studentProjects.slice(10, 14); // Trending fallback
+        matches = studentProjects.slice(10, 20); // Trending fallback
       }
 
       const newAiMsg = { id: Date.now() + 1, sender: "ai", text: aiResponseText, projects: matches };
@@ -103,7 +103,7 @@ export default function AIProjectAdvisor() {
 
   // Reusable Project Card Component
   const ProjectCard = ({ project, layout = "grid" }) => (
-    <div className={`bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-800 rounded-3xl p-6 flex flex-col justify-between shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 transition-all cursor-default group ${layout === 'horizontal' ? 'min-w-[280px] w-[280px] flex-shrink-0' : 'w-full'}`}>
+    <div className={`bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-800 rounded-3xl p-5 sm:p-6 flex flex-col justify-between shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] hover:-translate-y-1 transition-all cursor-default group ${layout === 'horizontal' ? 'min-w-[240px] w-[240px] sm:min-w-[280px] sm:w-[280px] flex-shrink-0' : 'w-full'}`}>
       <div className="space-y-4">
         <div className="flex justify-between items-start">
           <span className="text-[10px] font-black uppercase px-2 py-1 bg-neo-cyan text-slate-900 rounded-lg border border-slate-900">
