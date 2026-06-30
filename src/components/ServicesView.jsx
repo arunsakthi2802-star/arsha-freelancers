@@ -19,7 +19,7 @@ import { getServices } from "../api/services.api";
 
 export default function ServicesView({ onNavigate, onGetQuoteClick }) {
   const [activeCategory, setActiveCategory] = useState("All");
-  const [servicesList, setServicesList] = useState([]);
+  const [servicesList, setServicesList] = useState(servicesData); // Initialize with fallback to prevent blank flash
   const [loading, setLoading] = useState(true);
 
   const categories = [

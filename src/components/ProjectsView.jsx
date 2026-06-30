@@ -99,6 +99,8 @@ export const getProjectDomain = (project) => {
   return "Web App";
 };
 
+import AIProjectAdvisor from "./AIProjectAdvisor";
+
 export default function ProjectsView({
   onNavigate,
   openDetailsModal,
@@ -131,7 +133,7 @@ export default function ProjectsView({
   };
 
   // Navigation / View Tabs inside Projects
-  const [activeTab, setActiveTab] = useState("library");
+  const [activeTab, setActiveTab] = useState("advisor");
 
   // Library States
   const [search, setSearch] = useState("");
@@ -482,7 +484,7 @@ export default function ProjectsView({
 
       {/* VIEW SELECTOR SWITCH */}
       <div className="flex justify-center pt-4">
-        <div className="inline-flex bg-slate-100 dark:bg-slate-800 p-1 rounded-2xl border border-slate-200 dark:border-slate-700">
+        <div className="inline-flex bg-slate-100 dark:bg-slate-800 p-1 rounded-2xl border border-slate-200 dark:border-slate-700 flex-wrap justify-center gap-1">
           <button
             onClick={() => setActiveTab("library")}
             className={`px-5 py-2.5 rounded-xl text-xs font-black tracking-wide transition-all ${
@@ -492,6 +494,17 @@ export default function ProjectsView({
             }`}
           >
             Project Library Database
+          </button>
+          <button
+            onClick={() => setActiveTab("advisor")}
+            className={`px-5 py-2.5 rounded-xl text-xs font-black tracking-wide transition-all ${
+              activeTab === "advisor"
+                ? "bg-blue-600 text-white shadow"
+                : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
+            }`}
+          >
+            <Sparkles className="w-3.5 h-3.5 inline mr-1.5 mb-0.5" />
+            The AI Project Advisor
           </button>
           <button
             onClick={() => setActiveTab("submit")}
@@ -505,6 +518,11 @@ export default function ProjectsView({
           </button>
         </div>
       </div>
+
+      {/* NEW TAB: AI PROJECT ADVISOR */}
+      {activeTab === "advisor" && (
+        <AIProjectAdvisor />
+      )}
 
       {/* TAB 1: PROJECT LIBRARY */}
       {activeTab === "library" && (

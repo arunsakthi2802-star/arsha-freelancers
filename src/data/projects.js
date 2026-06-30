@@ -475,4 +475,54 @@ Object.keys(SUBJECTS).forEach(category => {
   });
 });
 
-export const studentProjects = [...baseProjects, ...generatedProjects];
+export const studentProjects = [...baseProjects, ...generatedProjects].map((project, idx) => {
+  // Deterministic random seeded by ID
+  const seed = parseInt(project.id.replace(/\\D/g, "")) || idx;
+  const innovationScore = ((seed % 30) / 10 + 7.0).toFixed(1); // Score between 7.0 and 9.9
+  
+  // 3 line summary
+  const summary = [
+    `Solves ${project.category.toLowerCase()} challenges using ${project.technology[0] || 'modern tech'}.`,
+    `Designed for students, researchers, and industry professionals.`,
+    `Leverages ${project.technology.slice(0, 3).join(', ')} for scalable deployment.`
+  ];
+  
+  // Generate additional fields for AI Advisor Modal
+  const problemStatement = `Currently, systems in the ${project.category} domain lack scalable and automated solutions. Users face manual inefficiencies, high latency, and lack of real-time insights, creating a massive gap in productivity.`;
+  const solutionOverview = project.description;
+  const securityFeatures = [
+    "Role-based Access Control (RBAC)",
+    "End-to-End Encryption (AES-256)",
+    "JWT Authentication Tokens",
+    "SQL Injection & XSS Protection"
+  ];
+  const deploymentPlan = [
+    "Phase 1: Local Environment Setup & DB Modeling",
+    "Phase 2: Core API & Frontend Integration",
+    "Phase 3: Testing & Quality Assurance",
+    "Phase 4: Cloud Deployment"
+  ];
+  const futureScope = [
+    "Integration with Mobile Applications",
+    "AI/ML Predictive Analytics module",
+    "Blockchain for immutable audit logs"
+  ];
+  const learningOutcomes = [
+    "Mastery in full-stack architecture design",
+    `Hands-on experience with ${project.technology[0] || 'modern frameworks'} and ${project.technology[1] || 'databases'}`,
+    "Understanding of modern deployment workflows",
+    "Implementation of industry-standard security practices"
+  ];
+
+  return {
+    ...project,
+    innovationScore,
+    summary,
+    problemStatement,
+    solutionOverview,
+    securityFeatures,
+    deploymentPlan,
+    futureScope,
+    learningOutcomes
+  };
+});

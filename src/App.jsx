@@ -22,7 +22,7 @@ import { AuthProvider } from "./context/AuthContext";
 
 export default function App() {
   const [activeView, setActiveView] = useState("home");
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(true);
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem("arsha_theme") || "neo-classic";
   });
@@ -271,10 +271,10 @@ export default function App() {
       <AnimatePresence mode="wait">
         <motion.div
           key={activeView}
-          initial={{ opacity: 0, y: 12, scale: 0.99 }}
+          initial={{ opacity: 0, y: 15, scale: 0.98 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: -12, scale: 0.99 }}
-          transition={{ duration: 0.22, ease: "easeOut" }}
+          exit={{ opacity: 0, y: -15, scale: 0.98 }}
+          transition={{ duration: 0.4, ease: "easeInOut" }}
           className="relative z-10"
         >
           {viewContent}
