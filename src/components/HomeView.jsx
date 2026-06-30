@@ -449,7 +449,7 @@ export default function HomeView({ onNavigate, onGetQuoteClick }) {
           </div>
 
           {/* Right Column: Narrative */}
-          <div className="text-left space-y-6">
+          <div className="text-left space-y-6 relative z-10">
             <h2 className="text-3xl font-black text-slate-950 dark:text-slate-50 tracking-tight leading-none">
               About Arsha Freelancers
             </h2>
