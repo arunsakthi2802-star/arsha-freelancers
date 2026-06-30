@@ -377,7 +377,7 @@ export default function HomeView({ onNavigate, onGetQuoteClick }) {
           </div>
 
           {/* Bento Block F: 400+ Reports Delivered count (lg:col-span-3) */}
-          <div className="col-span-1 bg-neo-orange dark:bg-slate-900 text-slate-950 dark:text-white brutalist-border rounded-3xl p-6 flex flex-col justify-center items-center text-center min-h-[160px]">
+          <div className="col-span-1 sm:col-span-1 lg:col-span-3 bg-neo-orange dark:bg-slate-900 text-slate-950 dark:text-white brutalist-border rounded-3xl p-6 flex flex-col justify-center items-center text-center min-h-[160px]">
             <BookOpen className="w-8 h-8 text-slate-950 dark:text-slate-400 mb-2" />
             <div className="text-3xl font-poppins font-black mb-1">400+</div>
             <div className="text-[10px] uppercase font-extrabold tracking-widest text-slate-800 dark:text-slate-400">
@@ -386,7 +386,7 @@ export default function HomeView({ onNavigate, onGetQuoteClick }) {
           </div>
 
           {/* Bento Block G: 120+ Projects Completed count (lg:col-span-3) */}
-          <div className="col-span-1 bg-neo-lime dark:bg-slate-900 text-slate-950 dark:text-white brutalist-border rounded-3xl p-6 flex flex-col justify-center items-center text-center min-h-[160px]">
+          <div className="col-span-1 sm:col-span-1 lg:col-span-3 bg-neo-lime dark:bg-slate-900 text-slate-950 dark:text-white brutalist-border rounded-3xl p-6 flex flex-col justify-center items-center text-center min-h-[160px]">
             <Laptop className="w-8 h-8 text-slate-950 dark:text-slate-400 mb-2" />
             <div className="text-3xl font-poppins font-black mb-1">120+</div>
             <div className="text-[10px] uppercase font-extrabold tracking-widest text-slate-800 dark:text-slate-400">
@@ -395,7 +395,7 @@ export default function HomeView({ onNavigate, onGetQuoteClick }) {
           </div>
 
           {/* Bento Block H: Experience stat (lg:col-span-3) */}
-          <div className="col-span-1 bg-neo-pink dark:bg-slate-900 text-slate-950 dark:text-white brutalist-border rounded-3xl p-6 flex flex-col justify-center items-center text-center min-h-[160px]">
+          <div className="col-span-1 sm:col-span-1 lg:col-span-3 bg-neo-pink dark:bg-slate-900 text-slate-950 dark:text-white brutalist-border rounded-3xl p-6 flex flex-col justify-center items-center text-center min-h-[160px]">
             <Zap className="w-8 h-8 text-slate-950 dark:text-slate-400 mb-2" />
             <div className="text-3xl font-poppins font-black mb-1">4+</div>
             <div className="text-[10px] uppercase font-extrabold tracking-widest text-slate-800 dark:text-slate-400">
@@ -404,7 +404,7 @@ export default function HomeView({ onNavigate, onGetQuoteClick }) {
           </div>
 
           {/* Bento Block I: Satisfaction Rating stat (lg:col-span-3) */}
-          <div className="col-span-1 bg-neo-green dark:bg-slate-900 text-slate-950 dark:text-white brutalist-border rounded-3xl p-6 flex flex-col justify-center items-center text-center min-h-[160px]">
+          <div className="col-span-1 sm:col-span-1 lg:col-span-3 bg-neo-green dark:bg-slate-900 text-slate-950 dark:text-white brutalist-border rounded-3xl p-6 flex flex-col justify-center items-center text-center min-h-[160px]">
             <Trophy className="w-8 h-8 text-slate-950 dark:text-slate-400 mb-2" />
             <div className="text-3xl font-poppins font-black mb-1">100%</div>
             <div className="text-[10px] uppercase font-extrabold tracking-widest text-slate-800 dark:text-slate-400">

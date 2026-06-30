@@ -39,6 +39,7 @@ export default function Navbar({
     { id: "about", label: "About" },
     { id: "services", label: "Services" },
     { id: "projects", label: "Student Projects" },
+    { id: "advisor", label: "AI Advisor" },
     { id: "portfolio", label: "Portfolio" },
     { id: "gallery", label: "Gallery" },
     { id: "stories", label: "Stories" },

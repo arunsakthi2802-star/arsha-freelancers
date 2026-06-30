@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
-import { Search, Filter, Sparkles, Flame, Star, Clock, BookOpen, Microscope, ArrowRight, Zap, Info, Send, User, Bot } from "lucide-react";
+import { Search, Filter, Sparkles, Flame, Star, Clock, BookOpen, Microscope, ArrowRight, Zap, Info, Send, User, Bot, Minus, X, Maximize2, MessageSquare } from "lucide-react";
 import { studentProjects } from "../data/projects";
 import AIAdvisorDetailsModal from "./AIAdvisorDetailsModal";
 
@@ -24,6 +24,10 @@ export default function AIProjectAdvisor() {
   const [selectedCategory, setSelectedCategory] = useState("All");
 
   const [selectedProject, setSelectedProject] = useState(null);
+
+  // Layout states for mobile minimize/cancel
+  const [isChatMinimized, setIsChatMinimized] = useState(false);
+  const [isChatClosed, setIsChatClosed] = useState(false);
 
   // Auto-scroll chat
   useEffect(() => {
@@ -163,29 +167,64 @@ export default function AIProjectAdvisor() {
   );
 
   return (
-    <div className="max-w-7xl mx-auto space-y-12 pb-16 pt-8">
+    <div className="max-w-7xl mx-auto space-y-8 pb-16 pt-4 px-4 sm:px-6 lg:px-8">
       
-      {/* Interactive Chat Hero Section */}
-      <div className="bg-slate-900 dark:bg-slate-950 rounded-3xl p-4 sm:p-10 relative overflow-hidden border-2 border-slate-800 shadow-xl flex flex-col h-[500px] sm:h-[600px]">
-        {/* Background elements */}
-        <div className="absolute top-0 right-0 p-12 opacity-10 pointer-events-none">
-          <Sparkles className="w-64 h-64 text-blue-400" />
+      {/* Reopen Chat Button if closed */}
+      {isChatClosed && (
+        <div className="flex justify-end mb-4">
+          <button 
+            onClick={() => setIsChatClosed(false)}
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] font-bold text-sm cursor-pointer"
+          >
+            <MessageSquare className="w-4 h-4" /> Open AI Advisor
+          </button>
         </div>
-        
-        <div className="relative z-10 flex flex-col h-full">
-          {/* Header */}
-          <div className="mb-6 flex items-center gap-3">
-            <div className="p-2 bg-blue-500/20 border border-blue-500/30 rounded-xl">
-              <Sparkles className="w-6 h-6 text-blue-400" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-black text-white tracking-tight">AI Project Advisor Chat</h1>
-              <p className="text-xs text-slate-400 font-bold">Ask for project recommendations</p>
-            </div>
-          </div>
+      )}
 
-          {/* Chat Messages Area */}
-          <div className="flex-1 overflow-y-auto custom-scrollbar space-y-6 pr-4 mb-6">
+      {/* Interactive Chat Hero Section */}
+      {!isChatClosed && (
+        <div className={`bg-slate-900 dark:bg-slate-950 rounded-3xl p-4 sm:p-8 relative overflow-hidden border-2 border-slate-800 shadow-xl flex flex-col transition-all duration-300 ${isChatMinimized ? 'h-24 sm:h-28' : 'h-[calc(100vh-120px)] min-h-[600px] max-h-[900px]'}`}>
+          {/* Background elements */}
+          <div className="absolute top-0 right-0 p-12 opacity-10 pointer-events-none">
+            <Sparkles className="w-64 h-64 text-blue-400" />
+          </div>
+          
+          <div className="relative z-10 flex flex-col h-full">
+            {/* Header */}
+            <div className="mb-4 sm:mb-6 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-blue-500/20 border border-blue-500/30 rounded-xl">
+                  <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-blue-400" />
+                </div>
+                <div>
+                  <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight leading-tight">AI Project Advisor Chat</h1>
+                  {!isChatMinimized && <p className="text-[10px] sm:text-xs text-slate-400 font-bold hidden sm:block">Ask for project recommendations</p>}
+                </div>
+              </div>
+              
+              {/* Window Controls (Minimize/Maximize, Close) */}
+              <div className="flex items-center gap-2">
+                <button 
+                  onClick={() => setIsChatMinimized(!isChatMinimized)}
+                  className="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg transition-colors cursor-pointer"
+                  title={isChatMinimized ? "Maximize Chat" : "Minimize Chat"}
+                >
+                  {isChatMinimized ? <Maximize2 className="w-4 h-4" /> : <Minus className="w-4 h-4" />}
+                </button>
+                <button 
+                  onClick={() => setIsChatClosed(true)}
+                  className="p-2 bg-slate-800 hover:bg-rose-500/20 text-slate-300 hover:text-rose-400 rounded-lg transition-colors cursor-pointer"
+                  title="Close Chat"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* Chat Messages Area */}
+            {!isChatMinimized && (
+              <>
+                <div className="flex-1 overflow-y-auto custom-scrollbar space-y-6 pr-2 sm:pr-4 mb-4 sm:mb-6">
             {chatHistory.map((msg) => (
               <div key={msg.id} className={`flex w-full ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
                 <div className={`flex max-w-[95%] sm:max-w-[85%] gap-2 sm:gap-3 ${msg.sender === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
@@ -226,28 +265,31 @@ export default function AIProjectAdvisor() {
                 </div>
               </div>
             )}
-            <div ref={chatEndRef} />
-          </div>
+                <div ref={chatEndRef} />
+              </div>
 
-          {/* Chat Input Area */}
-          <form onSubmit={handleChatSubmit} className="relative mt-auto">
-            <input 
-              type="text" 
-              value={chatInput}
-              onChange={(e) => setChatInput(e.target.value)}
-              placeholder="E.g., I want an IoT project for smart agriculture..."
-              className="w-full bg-slate-800/80 backdrop-blur text-white pl-6 pr-16 py-4 rounded-2xl border border-slate-700 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 font-bold shadow-xl transition-all"
-            />
-            <button 
-              type="submit"
-              disabled={!chatInput.trim() || isTyping}
-              className="absolute right-2 top-2 p-2.5 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 text-white rounded-xl transition-colors cursor-pointer"
-            >
-              <Send className="w-4 h-4" />
-            </button>
-          </form>
+              {/* Chat Input Area */}
+              <form onSubmit={handleChatSubmit} className="relative mt-auto">
+                <input 
+                  type="text" 
+                  value={chatInput}
+                  onChange={(e) => setChatInput(e.target.value)}
+                  placeholder="E.g., I want an IoT project for smart agriculture..."
+                  className="w-full bg-slate-800/80 backdrop-blur text-white pl-4 sm:pl-6 pr-14 sm:pr-16 py-3 sm:py-4 rounded-2xl border border-slate-700 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 font-bold shadow-xl transition-all text-xs sm:text-sm"
+                />
+                <button 
+                  type="submit"
+                  disabled={!chatInput.trim() || isTyping}
+                  className="absolute right-1.5 sm:right-2 top-1.5 sm:top-2 p-2 sm:p-2.5 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 text-white rounded-xl transition-colors cursor-pointer"
+                >
+                  <Send className="w-4 h-4" />
+                </button>
+              </form>
+            </>
+            )}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Advanced Filters */}
       <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl border-2 border-slate-900 dark:border-slate-800 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]">

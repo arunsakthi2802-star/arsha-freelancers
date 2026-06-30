@@ -18,6 +18,7 @@ import LoginView from "./components/LoginView";
 import ArshaChat from "./components/ArshaChat";
 import AdminView from "./components/admin/AdminView";
 import StudentPortal from "./components/StudentPortal";
+import AIProjectAdvisor from "./components/AIProjectAdvisor";
 import { AuthProvider } from "./context/AuthContext";
 
 export default function App() {
@@ -49,7 +50,7 @@ export default function App() {
   useEffect(() => {
     const handleUrlChange = () => {
       const path = window.location.pathname.replace(/^\/|\/$/g, "");
-      const validViews = ["home", "about", "services", "projects", "portfolio", "gallery", "contact", "faq", "review", "stories", "login", "admin", "portal"];
+      const validViews = ["home", "about", "services", "projects", "portfolio", "gallery", "contact", "faq", "review", "stories", "login", "admin", "portal", "advisor"];
       
       if (path === "student") {
         setActiveView("projects"); // Support legacy /student link
@@ -202,6 +203,9 @@ export default function App() {
             preselectedDept={preselectedDept}
           />
         );
+        break;
+      case "advisor":
+        viewContent = <AIProjectAdvisor />;
         break;
       case "portfolio":
         viewContent = (

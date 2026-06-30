@@ -99,7 +99,7 @@ export const getProjectDomain = (project) => {
   return "Web App";
 };
 
-import AIProjectAdvisor from "./AIProjectAdvisor";
+
 
 export default function ProjectsView({
   onNavigate,
@@ -495,17 +495,7 @@ export default function ProjectsView({
           >
             Project Library Database
           </button>
-          <button
-            onClick={() => setActiveTab("advisor")}
-            className={`px-5 py-2.5 rounded-xl text-xs font-black tracking-wide transition-all ${
-              activeTab === "advisor"
-                ? "bg-blue-600 text-white shadow"
-                : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
-            }`}
-          >
-            <Sparkles className="w-3.5 h-3.5 inline mr-1.5 mb-0.5" />
-            The AI Project Advisor
-          </button>
+
           <button
             onClick={() => setActiveTab("submit")}
             className={`px-5 py-2.5 rounded-xl text-xs font-black tracking-wide transition-all ${
@@ -519,10 +509,7 @@ export default function ProjectsView({
         </div>
       </div>
 
-      {/* NEW TAB: AI PROJECT ADVISOR */}
-      {activeTab === "advisor" && (
-        <AIProjectAdvisor />
-      )}
+
 
       {/* TAB 1: PROJECT LIBRARY */}
       {activeTab === "library" && (
