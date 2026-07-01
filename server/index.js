@@ -55,6 +55,10 @@ app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
 const allowedOrigins = [
   "http://localhost:3000",
   "https://arsha-freelancers.netlify.app",
+  "https://arshafreelancers.com",
+  "http://arshafreelancers.com",
+  "https://www.arshafreelancers.com",
+  "http://www.arshafreelancers.com",
 ];
 if (process.env.CLIENT_URL && !allowedOrigins.includes(process.env.CLIENT_URL)) {
   allowedOrigins.push(process.env.CLIENT_URL);
