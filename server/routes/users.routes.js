@@ -47,7 +47,7 @@ router.put("/profile", protect, async (req, res) => {
 // router.use(protect, adminOrManager); // TEMPORARILY DISABLED FOR TESTING
 
 // GET /api/users — list all users with pagination & search
-router.get("/", async (req, res) => {
+router.get("/", protect, async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 20;
@@ -95,7 +95,7 @@ router.post("/", protect, async (req, res) => {
 });
 
 // GET /api/users/:id
-router.get("/:id", async (req, res) => {
+router.get("/:id", protect, async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
     if (!user) return res.status(404).json({ success: false, message: "User not found." });
@@ -106,7 +106,7 @@ router.get("/:id", async (req, res) => {
 });
 
 // PUT /api/users/:id
-router.put("/:id", uploadProfile.single("profilePhoto"), async (req, res) => {
+router.put("/:id", protect, uploadProfile.single("profilePhoto"), async (req, res) => {
   try {
     const existingUser = await User.findById(req.params.id);
     if (!existingUser) return res.status(404).json({ success: false, message: "User not found." });
@@ -307,7 +307,7 @@ router.post("/:id/change-role", protect, async (req, res) => {
 });
 
 // POST /api/users/upload-resource
-router.post("/upload-resource", uploadGeneric.single("file"), async (req, res) => {
+router.post("/upload-resource", protect, uploadGeneric.single("file"), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ success: false, message: "No file uploaded." });
