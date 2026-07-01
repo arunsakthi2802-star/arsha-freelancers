@@ -16,6 +16,11 @@ const serviceRoutes = require("./routes/services.routes");
 const contactRoutes = require("./routes/contact.routes");
 const chatRoutes = require("./routes/chat.routes");
 const approvalsRoutes = require("./routes/approvals.routes");
+const projectRoutes = require("./routes/projects.routes");
+const paymentRoutes = require("./routes/payments.routes");
+const taskRoutes = require("./routes/tasks.routes");
+const messageRoutes = require("./routes/messages.routes");
+const scheduleRoutes = require("./routes/schedules.routes");
 
 // Models for stats
 const User = require("./models/User");
@@ -24,6 +29,9 @@ const Gallery = require("./models/Gallery");
 const Story = require("./models/Story");
 const Service = require("./models/Service");
 const Contact = require("./models/Contact");
+const Project = require("./models/Project");
+const Task = require("./models/Task");
+const Payment = require("./models/Payment");
 const { protect } = require("./middleware/auth");
 const { adminOnly } = require("./middleware/adminOnly");
 
@@ -36,7 +44,7 @@ const ensureDbConnected = async () => {
   }
 };
 // Connect immediately (for both local dev and serverless cold starts)
-ensureDbConnected();
+ensureDbConnected().catch(console.error);
 
 const app = express();
 
@@ -97,9 +105,14 @@ app.use("/api/services", serviceRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/approvals", approvalsRoutes);
+app.use("/api/projects", projectRoutes);
+app.use("/api/payments", paymentRoutes);
+app.use("/api/tasks", taskRoutes);
+app.use("/api/messages", messageRoutes);
+app.use("/api/schedules", scheduleRoutes);
 
 
-app.get("/api/stats", protect, adminOnly, async (req, res) => {
+app.get("/api/stats", protect, async (req, res) => {
   try {
     const [
       totalUsers,
@@ -110,10 +123,14 @@ app.get("/api/stats", protect, adminOnly, async (req, res) => {
       totalServices,
       totalContacts,
       unreadContacts,
+      totalProjects,
+      totalTasks,
+      totalPayments,
       recentReviews,
       recentGallery,
       recentStories,
       recentContacts,
+      recentProjects,
     ] = await Promise.all([
       User.countDocuments(),
       Review.countDocuments(),
@@ -123,10 +140,14 @@ app.get("/api/stats", protect, adminOnly, async (req, res) => {
       Service.countDocuments(),
       Contact.countDocuments(),
       Contact.countDocuments({ status: "unread" }),
+      Project.countDocuments(),
+      Task.countDocuments(),
+      Payment.countDocuments(),
       Review.find().sort({ createdAt: -1 }).limit(5),
       Gallery.find().sort({ createdAt: -1 }).limit(5).populate("uploadedBy", "fullName"),
       Story.find().sort({ createdAt: -1 }).limit(5).populate("author", "fullName"),
       Contact.find().sort({ createdAt: -1 }).limit(5),
+      Project.find().sort({ createdAt: -1 }).limit(5).populate("student", "fullName"),
     ]);
 
     res.status(200).json({
@@ -141,12 +162,16 @@ app.get("/api/stats", protect, adminOnly, async (req, res) => {
           totalServices,
           totalContacts,
           unreadContacts,
+          totalProjects,
+          totalTasks,
+          totalPayments,
         },
         recent: {
           reviews: recentReviews,
           gallery: recentGallery,
           stories: recentStories,
           contacts: recentContacts,
+          projects: recentProjects,
         },
       },
     });

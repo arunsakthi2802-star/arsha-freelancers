@@ -105,6 +105,7 @@ export default function ProjectsView({
   onNavigate,
   openDetailsModal,
   preselectedDept = "All",
+  defaultTab = "advisor",
 }) {
   // Department color helper
   const getDeptColorClass = (dept) => {
@@ -133,7 +134,7 @@ export default function ProjectsView({
   };
 
   // Navigation / View Tabs inside Projects
-  const [activeTab, setActiveTab] = useState("advisor");
+  const [activeTab, setActiveTab] = useState(defaultTab);
 
   // Library States
   const [search, setSearch] = useState("");

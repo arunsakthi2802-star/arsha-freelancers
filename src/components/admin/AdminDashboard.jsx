@@ -66,6 +66,9 @@ export default function AdminDashboard() {
 
   const statCards = [
     { label: "Total Users", value: c.totalUsers, icon: Users, color: "#2563EB" },
+    { label: "Total Projects", value: c.totalProjects, icon: Briefcase, color: "#4F46E5" },
+    { label: "Active Tasks", value: c.totalTasks, icon: Clock, color: "#10B981" },
+    { label: "Total Payments", value: c.totalPayments, icon: TrendingUp, color: "#059669" },
     { label: "Total Reviews", value: c.totalReviews, icon: Star, color: "#F59E0B", sub: c.pendingReviews },
     { label: "Gallery Images", value: c.totalGallery, icon: Images, color: "#14B8A6" },
     { label: "Stories", value: c.totalStories, icon: BookOpen, color: "#8B5CF6" },

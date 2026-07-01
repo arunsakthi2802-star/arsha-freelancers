@@ -16,8 +16,9 @@ import AnimatedBackground from "./components/AnimatedBackground";
 import StoriesView from "./components/StoriesView";
 import LoginView from "./components/LoginView";
 import ArshaChat from "./components/ArshaChat";
-import AdminView from "./components/admin/AdminView";
-import StudentPortal from "./components/StudentPortal";
+import AdminPortal from "./pages/admin/AdminPortal";
+import ManagerDashboard from "./pages/manager/ManagerDashboard";
+import UserDashboard from "./pages/user/UserDashboard";
 import AIProjectAdvisor from "./components/AIProjectAdvisor";
 import { AuthProvider } from "./context/AuthContext";
 
@@ -50,7 +51,7 @@ export default function App() {
   useEffect(() => {
     const handleUrlChange = () => {
       const path = window.location.pathname.replace(/^\/|\/$/g, "");
-      const validViews = ["home", "about", "services", "projects", "portfolio", "gallery", "contact", "faq", "review", "stories", "login", "admin", "portal", "advisor"];
+      const validViews = ["home", "about", "services", "projects", "portfolio", "gallery", "contact", "faq", "review", "stories", "login", "admin", "manager", "portal", "advisor"];
       
       if (path === "student") {
         setActiveView("projects"); // Support legacy /student link
@@ -201,6 +202,20 @@ export default function App() {
             }}
             openDetailsModal={(p) => setSelectedProject(p)}
             preselectedDept={preselectedDept}
+            defaultTab="library"
+          />
+        );
+        break;
+      case "custom_projects":
+        viewContent = (
+          <ProjectsView
+            onNavigate={(viewId) => {
+              setActiveView(viewId);
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
+            openDetailsModal={(p) => setSelectedProject(p)}
+            preselectedDept={preselectedDept}
+            defaultTab="submit"
           />
         );
         break;
@@ -244,7 +259,17 @@ export default function App() {
         break;
       case "admin":
         viewContent = (
-          <AdminView
+          <AdminPortal
+            onNavigate={(viewId) => {
+              setActiveView(viewId);
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
+          />
+        );
+        break;
+      case "manager":
+        viewContent = (
+          <ManagerDashboard
             onNavigate={(viewId) => {
               setActiveView(viewId);
               window.scrollTo({ top: 0, behavior: "smooth" });
@@ -254,7 +279,7 @@ export default function App() {
         break;
       case "portal":
         viewContent = (
-          <StudentPortal
+          <UserDashboard
             onNavigate={(viewId) => {
               setActiveView(viewId);
               window.scrollTo({ top: 0, behavior: "smooth" });

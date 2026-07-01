@@ -10,6 +10,7 @@ import {
   Palette,
   LogIn,
   Shield,
+  ChevronDown,
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { useAuth } from "../context/AuthContext";
@@ -26,6 +27,13 @@ export default function Navbar({
   const { isAdmin, isManager, isAuthenticated } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [themeDropdownOpen, setThemeDropdownOpen] = useState(false);
+  const [studentDropdownOpen, setStudentDropdownOpen] = useState(false);
+
+  const studentItems = [
+    { id: "projects", label: "Student Project Library" },
+    { id: "custom_projects", label: "Custom Project" },
+    { id: "advisor", label: "AI Advisor" }
+  ];
 
   const themes = [
     { id: "neo-classic", name: "Classic Slate", dot: "bg-neo-purple" },
@@ -38,8 +46,7 @@ export default function Navbar({
     { id: "home", label: "Home" },
     { id: "about", label: "About" },
     { id: "services", label: "Services" },
-    { id: "projects", label: "Student Projects" },
-    { id: "advisor", label: "AI Advisor" },
+    { id: "student_dropdown", label: "Student" },
     { id: "portfolio", label: "Portfolio" },
     { id: "gallery", label: "Gallery" },
     { id: "stories", label: "Stories" },
@@ -88,8 +95,64 @@ export default function Navbar({
           </div>
 
           {/* Desktop Navigation Items */}
-          <div className="hidden lg:flex items-center gap-1.5 bg-slate-100/50 dark:bg-slate-800/40 p-1 rounded-2xl border border-slate-200/60 dark:border-slate-700/50">
+          <div className="hidden xl:flex items-center gap-1 bg-slate-100/50 dark:bg-slate-800/40 p-1 rounded-2xl border border-slate-200/60 dark:border-slate-700/50">
             {menuItems.map((item) => {
+              if (item.id === "student_dropdown") {
+                const isStudentActive = studentItems.some((s) => s.id === activeView);
+                return (
+                  <div 
+                    key={item.id} 
+                    className="relative group"
+                    onMouseEnter={() => setStudentDropdownOpen(true)}
+                    onMouseLeave={() => setStudentDropdownOpen(false)}
+                  >
+                    <button
+                      onClick={() => setStudentDropdownOpen(!studentDropdownOpen)}
+                      className={`flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-semibold tracking-wide transition-all duration-300 cursor-pointer ${
+                        isStudentActive || studentDropdownOpen
+                          ? "bg-blue-600 text-white shadow-sm border border-blue-600"
+                          : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-white dark:hover:bg-slate-800 border border-transparent"
+                      }`}
+                    >
+                      {item.label}
+                      <ChevronDown className={`w-3.5 h-3.5 transition-transform ${studentDropdownOpen ? "rotate-180" : ""}`} />
+                    </button>
+                    
+                    <AnimatePresence>
+                      {studentDropdownOpen && (
+                        <motion.div
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: 10 }}
+                          transition={{ duration: 0.15 }}
+                          className="absolute left-0 mt-2 w-56 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 p-2 z-50 shadow-xl"
+                        >
+                          {studentItems.map((subItem) => {
+                            const isSubActive = activeView === subItem.id;
+                            return (
+                              <button
+                                key={subItem.id}
+                                onClick={() => {
+                                  handleNavClick(subItem.id);
+                                  setStudentDropdownOpen(false);
+                                }}
+                                className={`w-full text-left px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer mb-1 last:mb-0 ${
+                                  isSubActive
+                                    ? "bg-slate-100 dark:bg-slate-800 text-slate-950 dark:text-white"
+                                    : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800"
+                                }`}
+                              >
+                                {subItem.label}
+                              </button>
+                            );
+                          })}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                );
+              }
+
               const isActive = activeView === item.id;
               return (
                 <button
@@ -109,17 +172,17 @@ export default function Navbar({
           </div>
 
           {/* Right Action Controls */}
-          <div className="hidden md:flex items-center gap-2.5">
+          <div className="hidden md:flex items-center gap-2 lg:gap-2.5">
             {/* Theme Selector Dropdown */}
             <div className="relative">
               <button
                 onClick={() => setThemeDropdownOpen(!themeDropdownOpen)}
-                className="p-2.5 rounded-xl border-2 border-slate-900 dark:border-slate-100 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,0.15)] bg-white dark:bg-slate-900 flex items-center gap-1.5"
+                className="p-2 lg:p-2.5 rounded-xl border-2 border-slate-900 dark:border-slate-100 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,0.15)] bg-white dark:bg-slate-900 flex items-center gap-1.5"
                 aria-label="Customize Theme"
                 id="theme-palette-picker"
               >
                 <Palette className="w-4 h-4" />
-                <span className="text-[10px] font-black uppercase tracking-wider hidden xl:inline">
+                <span className="text-[10px] font-black uppercase tracking-wider hidden 2xl:inline">
                   Theme
                 </span>
               </button>
@@ -183,7 +246,7 @@ export default function Navbar({
             {/* Theme Toggle */}
             <button
               onClick={() => setDarkMode(!darkMode)}
-              className="p-2.5 rounded-xl border-2 border-slate-900 dark:border-slate-100 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,0.15)] bg-white dark:bg-slate-900"
+              className="p-2 lg:p-2.5 rounded-xl border-2 border-slate-900 dark:border-slate-100 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,0.15)] bg-white dark:bg-slate-900"
               aria-label="Toggle theme"
               id="theme-toggle"
             >
@@ -199,7 +262,7 @@ export default function Navbar({
               href="https://wa.me/918300799120?text=Hi+Arsha+Freelancers%2C+I+want+to+inquire+about+academic+project+services+and+pricing."
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-1.5 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl border-2 border-slate-900 dark:border-slate-100 transition-all cursor-pointer shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]"
+              className="hidden lg:inline-flex items-center gap-1.5 px-3 lg:px-4 py-2 lg:py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl border-2 border-slate-900 dark:border-slate-100 transition-all cursor-pointer shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]"
               id="nav-whatsapp-btn"
             >
               <MessageCircle className="w-4 h-4" />
@@ -209,7 +272,7 @@ export default function Navbar({
             {/* Get Quote Button */}
             <button
               onClick={onGetQuoteClick}
-              className="inline-flex items-center gap-1 px-4 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-xl border-2 border-slate-900 dark:border-slate-100 transition-all cursor-pointer shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] dark:shadow-[3px_3px_0px_0px_rgba(255,255,255,0.15)] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] dark:hover:shadow-[4px_4px_0px_0px_rgba(255,255,255,0.15)]"
+              className="inline-flex items-center gap-1 px-3 lg:px-4 py-2 lg:py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-xl border-2 border-slate-900 dark:border-slate-100 transition-all cursor-pointer shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] dark:shadow-[3px_3px_0px_0px_rgba(255,255,255,0.15)] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] dark:hover:shadow-[4px_4px_0px_0px_rgba(255,255,255,0.15)] whitespace-nowrap"
               id="nav-quote-btn"
             >
               Get Quote
@@ -218,7 +281,7 @@ export default function Navbar({
           </div>
 
           {/* Hamburger / Controls for Mobile & Tablet */}
-          <div className="flex lg:hidden items-center gap-2">
+          <div className="flex xl:hidden items-center gap-2">
             {/* Theme Toggle (Mobile) */}
             <button
               onClick={() => setDarkMode(!darkMode)}
@@ -262,6 +325,34 @@ export default function Navbar({
             <div className="px-4 py-5 space-y-2.5">
               <div className="grid grid-cols-2 gap-2">
                 {menuItems.map((item) => {
+                  if (item.id === "student_dropdown") {
+                    return (
+                      <div key={item.id} className="col-span-2 bg-slate-50 dark:bg-slate-800/30 rounded-xl border border-slate-100 dark:border-slate-800 p-3">
+                        <div className="text-[10px] font-black uppercase text-slate-400 tracking-wider mb-2">
+                          Student Section
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                          {studentItems.map((subItem) => {
+                            const isSubActive = activeView === subItem.id;
+                            return (
+                              <button
+                                key={subItem.id}
+                                onClick={() => handleNavClick(subItem.id)}
+                                className={`px-4 py-3 rounded-xl text-xs font-bold text-left transition-all ${
+                                  isSubActive
+                                    ? "bg-blue-600 text-white border border-blue-600 shadow-sm"
+                                    : "bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700"
+                                }`}
+                              >
+                                {subItem.label}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    );
+                  }
+
                   const isActive = activeView === item.id;
                   return (
                     <button

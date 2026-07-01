@@ -1,0 +1,220 @@
+import React, { useState, useEffect } from "react";
+import { Plus, Edit2, Trash2 } from "lucide-react";
+import { getAllTasks, createTask, updateTask } from "../../api/tasks.api";
+import { getAllProjects } from "../../api/projects.api";
+import { getUsers } from "../../api/admin.api";
+import api from "../../api/apiClient"; // Need this for deleting task if no api function exists
+
+export default function ManagerTasks() {
+  const [tasks, setTasks] = useState([]);
+  const [projects, setProjects] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Modals
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    project: "",
+    assignedTo: "",
+    priority: "medium",
+    status: "todo",
+    dueDate: ""
+  });
+  
+  const [editingId, setEditingId] = useState(null);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const [taskRes, projRes, userRes] = await Promise.all([
+        getAllTasks(),
+        getAllProjects(),
+        getUsers({ limit: 100 })
+      ]);
+      if (taskRes.success) setTasks(taskRes.data);
+      if (projRes.success) setProjects(projRes.data);
+      if (userRes.success) setUsers(userRes.data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCreate = async (e) => {
+    e.preventDefault();
+    try {
+      await createTask(formData);
+      setIsAddModalOpen(false);
+      fetchData();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    try {
+      await updateTask(editingId, formData);
+      setIsEditModalOpen(false);
+      fetchData();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (window.confirm("Are you sure you want to delete this task?")) {
+      try {
+        await api.delete(`/tasks/${id}`);
+        fetchData();
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  };
+
+  const openEditModal = (t) => {
+    setEditingId(t._id);
+    setFormData({
+      title: t.title || "",
+      description: t.description || "",
+      project: t.project?._id || "",
+      assignedTo: t.assignedTo?._id || "",
+      priority: t.priority || "medium",
+      status: t.status || "todo",
+      dueDate: t.dueDate ? t.dueDate.split("T")[0] : ""
+    });
+    setIsEditModalOpen(true);
+  };
+
+  if (loading) return <div className="text-center p-10">Loading...</div>;
+
+  return (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Task Management</h2>
+        <button 
+          onClick={() => {
+            setFormData({ title: "", description: "", project: "", assignedTo: "", priority: "medium", status: "todo", dueDate: "" });
+            setIsAddModalOpen(true);
+          }}
+          className="bg-blue-600 text-white px-4 py-2 rounded-xl flex items-center gap-2 hover:bg-blue-500"
+        >
+          <Plus className="w-4 h-4" /> Add Task
+        </button>
+      </div>
+
+      <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-700">
+                <th className="p-4 font-semibold text-sm text-slate-600 dark:text-slate-300">Title</th>
+                <th className="p-4 font-semibold text-sm text-slate-600 dark:text-slate-300">Project</th>
+                <th className="p-4 font-semibold text-sm text-slate-600 dark:text-slate-300">Assigned To</th>
+                <th className="p-4 font-semibold text-sm text-slate-600 dark:text-slate-300">Status</th>
+                <th className="p-4 font-semibold text-sm text-slate-600 dark:text-slate-300">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
+              {tasks.map((t) => (
+                <tr key={t._id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                  <td className="p-4 text-sm font-medium text-slate-900 dark:text-white">{t.title}</td>
+                  <td className="p-4 text-sm text-slate-600 dark:text-slate-400">{t.project?.title || "N/A"}</td>
+                  <td className="p-4 text-sm text-slate-600 dark:text-slate-400">{t.assignedTo?.fullName || "Unassigned"}</td>
+                  <td className="p-4 text-sm text-slate-600 dark:text-slate-400">
+                    <span className="px-3 py-1 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-700">{t.status}</span>
+                  </td>
+                  <td className="p-4 text-sm">
+                    <div className="flex gap-2">
+                      <button onClick={() => openEditModal(t)} className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg">
+                        <Edit2 className="w-4 h-4" />
+                      </button>
+                      <button onClick={() => handleDelete(t._id)} className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg">
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Add/Edit Modal */}
+      {(isAddModalOpen || isEditModalOpen) && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl w-full max-w-lg shadow-xl border border-slate-200 dark:border-slate-800">
+            <h3 className="text-xl font-bold mb-4">{isEditModalOpen ? "Edit Task" : "Add Task"}</h3>
+            <form onSubmit={isEditModalOpen ? handleUpdate : handleCreate} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">Title</label>
+                <input required value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className="w-full p-2 border rounded dark:bg-slate-800 dark:border-slate-700" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Description</label>
+                <textarea value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full p-2 border rounded dark:bg-slate-800 dark:border-slate-700" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Project</label>
+                <select required value={formData.project} onChange={e => setFormData({...formData, project: e.target.value})} className="w-full p-2 border rounded dark:bg-slate-800 dark:border-slate-700">
+                  <option value="">Select Project</option>
+                  {projects.map(p => (
+                    <option key={p._id} value={p._id}>{p.title}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Assigned To</label>
+                <select value={formData.assignedTo} onChange={e => setFormData({...formData, assignedTo: e.target.value})} className="w-full p-2 border rounded dark:bg-slate-800 dark:border-slate-700">
+                  <option value="">Select User/Developer</option>
+                  {users.map(u => (
+                    <option key={u._id} value={u._id}>{u.fullName} ({u.role})</option>
+                  ))}
+                </select>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1">Status</label>
+                  <select value={formData.status} onChange={e => setFormData({...formData, status: e.target.value})} className="w-full p-2 border rounded dark:bg-slate-800 dark:border-slate-700">
+                    <option value="todo">To Do</option>
+                    <option value="in-progress">In Progress</option>
+                    <option value="review">Review</option>
+                    <option value="completed">Completed</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Priority</label>
+                  <select value={formData.priority} onChange={e => setFormData({...formData, priority: e.target.value})} className="w-full p-2 border rounded dark:bg-slate-800 dark:border-slate-700">
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Due Date</label>
+                <input type="date" value={formData.dueDate} onChange={e => setFormData({...formData, dueDate: e.target.value})} className="w-full p-2 border rounded dark:bg-slate-800 dark:border-slate-700" />
+              </div>
+              
+              <div className="flex justify-end gap-3 pt-4">
+                <button type="button" onClick={() => { setIsAddModalOpen(false); setIsEditModalOpen(false); }} className="px-4 py-2 bg-slate-200 dark:bg-slate-800 rounded">Cancel</button>
+                <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded">{isEditModalOpen ? "Update" : "Create"}</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
