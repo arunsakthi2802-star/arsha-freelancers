@@ -110,8 +110,51 @@ export default function UserDashboard({ onNavigate }) {
         ) : (
           <>
             {activeTab === "overview" && (
-              <div className="space-y-6">
-                <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Overview</h2>
+              <div className="space-y-8">
+                {/* Welcome & User Details Card */}
+                <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-3xl p-8 md:p-10 text-white shadow-lg relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
+                  <div className="absolute bottom-0 left-0 w-48 h-48 bg-blue-400/20 rounded-full blur-2xl translate-y-1/3 -translate-x-1/4"></div>
+                  
+                  <div className="relative z-10 flex flex-col md:flex-row gap-8 items-start md:items-center justify-between">
+                    <div>
+                      <h2 className="text-3xl md:text-4xl font-black mb-2">Welcome back, {user?.fullName?.split(' ')[0]}! 👋</h2>
+                      <div className="mb-3">
+                        <span className="inline-block px-3 py-1 bg-white/20 backdrop-blur-sm rounded-lg text-white font-mono text-sm font-black border border-white/10">ID: {user?.uniqueId || "—"}</span>
+                      </div>
+                      <p className="text-blue-100 text-lg max-w-2xl">
+                        Here's what's happening with your projects, payments, and schedules today.
+                      </p>
+                    </div>
+                    <div className="hidden md:flex items-center justify-center w-20 h-20 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20">
+                       <User className="w-10 h-10 text-white/90" />
+                    </div>
+                  </div>
+
+                  <div className="relative z-10 mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pt-8 border-t border-white/20">
+                    <div>
+                      <p className="text-blue-200 text-xs font-semibold uppercase tracking-wider mb-1">Email</p>
+                      <p className="font-medium text-sm md:text-base truncate" title={user?.email}>{user?.email}</p>
+                    </div>
+                    {user?.phone && (
+                      <div>
+                        <p className="text-blue-200 text-xs font-semibold uppercase tracking-wider mb-1">Phone</p>
+                        <p className="font-medium text-sm md:text-base">{user?.phone}</p>
+                      </div>
+                    )}
+                    <div>
+                      <p className="text-blue-200 text-xs font-semibold uppercase tracking-wider mb-1">Role</p>
+                      <p className="font-medium text-sm md:text-base capitalize">{user?.role}</p>
+                    </div>
+                    {user?.college && (
+                      <div>
+                        <p className="text-blue-200 text-xs font-semibold uppercase tracking-wider mb-1">Institution</p>
+                        <p className="font-medium text-sm md:text-base truncate" title={user?.college}>{user?.college}</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
                     <h3 className="text-slate-500 dark:text-slate-400 font-medium">Active Projects</h3>

@@ -51,11 +51,16 @@ const projectSchema = new mongoose.Schema(
       min: 0,
       max: 100,
     },
+    mainDriveLink: {
+      type: String,
+      default: "",
+    },
     files: [
       {
-        title: String,
-        url: String,
-        fileType: { type: String, enum: ["source_code", "report", "ppt", "document", "other"] },
+        title: { type: String, required: true },
+        url: { type: String, required: true },
+        fileType: { type: String, enum: ["drive", "pdf", "zip", "image"], default: "drive" },
+        isUnlocked: { type: Boolean, default: true },
         uploadedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
         uploadedAt: { type: Date, default: Date.now },
       }

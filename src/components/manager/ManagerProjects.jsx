@@ -133,7 +133,14 @@ export default function ManagerProjects() {
               {projects.map((p) => (
                 <tr key={p._id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50">
                   <td className="p-4 text-sm font-medium text-slate-900 dark:text-white">{p.title}</td>
-                  <td className="p-4 text-sm text-slate-600 dark:text-slate-400">{p.student?.fullName || "Unassigned"}</td>
+                  <td className="p-4 text-sm text-slate-600 dark:text-slate-400">
+                    {p.student?.fullName || "Unassigned"}
+                    {p.student?.uniqueId && (
+                      <span className="ml-2 font-mono text-[10px] bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded text-slate-500 dark:text-slate-400">
+                        {p.student.uniqueId}
+                      </span>
+                    )}
+                  </td>
                   <td className="p-4 text-sm text-slate-600 dark:text-slate-400">
                     <span className="px-3 py-1 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-700">{p.status}</span>
                   </td>
@@ -177,7 +184,7 @@ export default function ManagerProjects() {
                 <select required value={formData.student} onChange={e => setFormData({...formData, student: e.target.value})} className="w-full p-2 border rounded dark:bg-slate-800 dark:border-slate-700">
                   <option value="">Select Student</option>
                   {users.filter(u => u.role === "student" || u.role === "user").map(u => (
-                    <option key={u._id} value={u._id}>{u.fullName} ({u.email})</option>
+                    <option key={u._id} value={u._id}>{u.fullName} ({u.uniqueId || u.email})</option>
                   ))}
                 </select>
               </div>

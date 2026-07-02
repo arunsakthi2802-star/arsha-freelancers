@@ -23,7 +23,7 @@ router.get("/my-projects", protect, async (req, res) => {
 router.get("/all", protect, async (req, res) => {
   try {
     const projects = await Project.find()
-      .populate("student", "fullName email")
+      .populate("student", "fullName email uniqueId")
       .populate("developer", "fullName email")
       .sort({ createdAt: -1 });
     res.status(200).json({ success: true, data: projects });
@@ -56,7 +56,7 @@ router.post("/", protect, async (req, res) => {
   try {
     const project = await Project.create(req.body);
     const populatedProject = await Project.findById(project._id)
-      .populate("student", "fullName email")
+      .populate("student", "fullName email uniqueId")
       .populate("developer", "fullName email");
     res.status(201).json({ success: true, data: populatedProject });
   } catch (error) {

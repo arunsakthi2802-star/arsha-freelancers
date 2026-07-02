@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Search, Trash2, Ban, UserCheck, Shield, User, Loader2, RefreshCw, Key, FolderOpen, Link2, Plus, X, Pencil, Check } from "lucide-react";
 import { getUsers, deleteUser, blockUser, changeUserRole, resetUserPassword, updateUser, createUser, uploadResourceFile } from "../../api/admin.api";
+import { getAllProjects, createProject, updateProject } from "../../api/projects.api";
 import { useAuth } from "../../context/AuthContext";
 
 export default function AdminUsers() {
@@ -44,6 +45,8 @@ export default function AdminUsers() {
 
   // Project Resources Modal State
   const [resourceModal, setResourceModal] = useState(null);
+  const [userProjects, setUserProjects] = useState([]);
+  const [selectedProjectId, setSelectedProjectId] = useState("new");
   const [projectTitle, setProjectTitle] = useState("");
   const [driveLink, setDriveLink] = useState("");
   const [resources, setResources] = useState([]);
@@ -79,12 +82,28 @@ export default function AdminUsers() {
     }
   };
 
-  const openResourceModal = (u) => {
+  const openResourceModal = async (u) => {
     setResourceModal(u);
     setProjectTitle(u.projectTitle || "");
     setDriveLink(u.driveLink || "");
     setResources(u.resources || []);
+    setSelectedProjectId("new");
     setEditingIndex(null);
+    try {
+      const res = await getAllProjects();
+      if (res.success) {
+        const studentProjects = res.data.filter(p => p.student?._id === u._id || p.student === u._id);
+        setUserProjects(studentProjects);
+        if (studentProjects.length > 0) {
+          setSelectedProjectId(studentProjects[0]._id);
+          setProjectTitle(studentProjects[0].title);
+          setDriveLink(studentProjects[0].mainDriveLink || "");
+          setResources(studentProjects[0].files || []);
+        }
+      }
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const addResourceItem = () => {
@@ -223,18 +242,33 @@ export default function AdminUsers() {
     }
     setResourceLoading(true);
     try {
+      // 1. Legacy compatibility: save to User model so the table and old components still work
       const fd = new FormData();
       fd.append("projectTitle", projectTitle);
       fd.append("driveLink", driveLink);
       fd.append("resources", JSON.stringify(resources));
-      
-      const res = await updateUser(resourceModal._id, fd);
-      if (res.success) {
-        const formattedDate = new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });
-        triggerToast(`Shared resources uploaded & saved to MongoDB database at ${formattedDate}!`);
-        setResourceModal(null);
-        load();
+      await updateUser(resourceModal._id, fd);
+
+      // 2. Save to Project model (New Architecture)
+      const projectPayload = {
+        student: resourceModal._id,
+        title: projectTitle,
+        mainDriveLink: driveLink,
+        files: resources,
+        projectType: "academic",
+        deadline: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() // default 30 days
+      };
+
+      if (selectedProjectId === "new") {
+        await createProject(projectPayload);
+      } else {
+        await updateProject(selectedProjectId, projectPayload);
       }
+
+      const formattedDate = new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });
+      triggerToast(`Shared resources uploaded & saved to MongoDB database at ${formattedDate}!`);
+      setResourceModal(null);
+      load();
     } catch (err) {
       triggerToast(err.message || "Failed to update resources.", "error");
     } finally {
@@ -404,14 +438,40 @@ export default function AdminUsers() {
               {/* Main project title and main drive */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase text-slate-400">Project Title</label>
-                  <input
-                    type="text"
-                    value={projectTitle}
-                    onChange={(e) => setProjectTitle(e.target.value)}
-                    placeholder="e.g. AI-Powered Smart Parking System"
-                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-white focus:outline-none"
-                  />
+                  <label className="text-[10px] font-black uppercase text-slate-400">Select or Create Project</label>
+                  <div className="flex gap-2">
+                    <select
+                      value={selectedProjectId}
+                      onChange={(e) => {
+                        setSelectedProjectId(e.target.value);
+                        if (e.target.value === "new") {
+                          setProjectTitle("");
+                          setDriveLink("");
+                          setResources([]);
+                        } else {
+                          const proj = userProjects.find(p => p._id === e.target.value);
+                          if (proj) {
+                            setProjectTitle(proj.title);
+                            setDriveLink(proj.mainDriveLink || "");
+                            setResources(proj.files || []);
+                          }
+                        }
+                      }}
+                      className="w-1/2 px-2 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-white focus:outline-none cursor-pointer"
+                    >
+                      <option value="new">+ Create New Project</option>
+                      {userProjects.map(p => (
+                        <option key={p._id} value={p._id}>{p.title}</option>
+                      ))}
+                    </select>
+                    <input
+                      type="text"
+                      value={projectTitle}
+                      onChange={(e) => setProjectTitle(e.target.value)}
+                      placeholder="Project Title"
+                      className="w-1/2 px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-white focus:outline-none"
+                    />
+                  </div>
                 </div>
                 <div className="space-y-1">
                   <label className="text-[10px] font-black uppercase text-slate-400">Main Google Drive Link</label>
@@ -761,7 +821,7 @@ export default function AdminUsers() {
             <table className="w-full text-xs">
               <thead>
                 <tr className="border-b-2 border-slate-100 dark:border-slate-800">
-                  {["User", "Email", "Phone", "Role", "Status", "Joined", ...((me?.role === "admin" || me?.role === "manager") ? ["Actions"] : [])].map((h) => (
+                  {["User", "ID", "Email", "Phone", "Role", "Status", "Joined", ...((me?.role === "admin" || me?.role === "manager") ? ["Actions"] : [])].map((h) => (
                     <th key={h} className="text-left px-4 py-3 font-black text-slate-400 uppercase text-[10px]">{h}</th>
                   ))}
                 </tr>
@@ -795,6 +855,7 @@ export default function AdminUsers() {
                         </div>
                       </div>
                     </td>
+                    <td className="px-4 py-3 text-slate-600 dark:text-slate-400 font-mono text-[10px] bg-slate-50/50 dark:bg-slate-800/30 rounded-lg">{u.uniqueId || "—"}</td>
                     <td className="px-4 py-3 text-slate-600 dark:text-slate-400 max-w-[140px] truncate">{u.email}</td>
                     <td className="px-4 py-3 text-slate-500">{u.phone || "—"}</td>
                     <td className="px-4 py-3">

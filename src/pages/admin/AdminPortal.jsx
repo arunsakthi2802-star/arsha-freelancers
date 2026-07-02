@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
-import { Shield, LayoutDashboard, Users, Database, LogOut, Home, CreditCard, MessageSquare, Calendar } from "lucide-react";
+import { Shield, LayoutDashboard, Users, Database, LogOut, Home, CreditCard, MessageSquare, Calendar, Briefcase } from "lucide-react";
 import AdminDashboard from "../../components/admin/AdminDashboard";
+import AdminProjects from "../../components/admin/AdminProjects";
 import AdminUsers from "../../components/admin/AdminUsers";
 import AdminReviews from "../../components/admin/AdminReviews";
 import AdminGallery from "../../components/admin/AdminGallery";
@@ -59,6 +60,7 @@ export default function AdminPortal({ onNavigate }) {
 
   const navItems = [
     { id: "overview", label: "Global Overview", icon: LayoutDashboard },
+    { id: "projects", label: "Projects Management", icon: Briefcase },
     { id: "users", label: "User Management", icon: Users },
     { id: "payments", label: "Payment Management", icon: CreditCard },
     { id: "messages", label: "Message Management", icon: MessageSquare },
@@ -134,6 +136,12 @@ export default function AdminPortal({ onNavigate }) {
         {activeTab === "users" && (
           <div className="h-full">
             <AdminUsers />
+          </div>
+        )}
+
+        {activeTab === "projects" && (
+          <div className="h-full p-6 md:p-10">
+            <AdminProjects />
           </div>
         )}
 

@@ -56,6 +56,11 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    uniqueId: {
+      type: String,
+      unique: true,
+      sparse: true,
+    },
     projectTitle: {
       type: String,
       default: "",
@@ -72,8 +77,23 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// Hash password before saving
+// Hash password and generate unique ID before saving
 userSchema.pre("save", async function (next) {
+  // Generate unique ID if not exists
+  if (!this.uniqueId) {
+    let isUnique = false;
+    while (!isUnique) {
+      const randomStr = Math.random().toString(36).substring(2, 8).toUpperCase();
+      const generatedId = `ARSHA-${randomStr}`;
+      const existing = await mongoose.models.User.findOne({ uniqueId: generatedId });
+      if (!existing) {
+        this.uniqueId = generatedId;
+        isUnique = true;
+      }
+    }
+  }
+
+  // Hash password
   if (!this.isModified("password")) return next();
   this.password = await bcrypt.hash(this.password, 12);
   next();
