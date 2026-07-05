@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
-import { LayoutDashboard, FolderKanban, CreditCard, MessageSquare, LogOut, Calendar, User, Code, FileText, ExternalLink, History } from "lucide-react";
+import { LayoutDashboard, FolderKanban, CreditCard, MessageSquare, LogOut, Calendar, User, Code, FileText, ExternalLink, History, Lock } from "lucide-react";
 import { getMyProjects } from "../../api/projects.api";
 import { getMyPayments } from "../../api/payments.api";
 import { getMySchedules } from "../../api/schedules.api";
@@ -278,24 +278,45 @@ export default function UserDashboard({ onNavigate }) {
                             <div className="space-y-3">
                               {p.files && p.files.length > 0 ? (
                                 p.files.map((file, i) => (
-                                  <a 
-                                    key={i} 
-                                    href={file.url} 
-                                    target="_blank" 
-                                    rel="noreferrer"
-                                    className="flex items-center justify-between p-3 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-blue-300 hover:bg-blue-50 dark:hover:border-blue-900 dark:hover:bg-blue-900/20 transition-colors group"
-                                  >
-                                    <div className="flex items-center gap-3">
-                                      <div className="p-2 bg-slate-100 dark:bg-slate-800 rounded-lg group-hover:bg-blue-100 dark:group-hover:bg-blue-900/50">
-                                        <FileText className="w-4 h-4 text-slate-600 dark:text-slate-400 group-hover:text-blue-600 dark:group-hover:text-blue-400" />
+                                  file.isUnlocked !== false ? (
+                                    <a 
+                                      key={i} 
+                                      href={file.url} 
+                                      target="_blank" 
+                                      rel="noreferrer"
+                                      className="flex items-center justify-between p-3 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-blue-300 hover:bg-blue-50 dark:hover:border-blue-900 dark:hover:bg-blue-900/20 transition-colors group"
+                                    >
+                                      <div className="flex items-center gap-3">
+                                        <div className="p-2 bg-slate-100 dark:bg-slate-800 rounded-lg group-hover:bg-blue-100 dark:group-hover:bg-blue-900/50">
+                                          <FileText className="w-4 h-4 text-slate-600 dark:text-slate-400 group-hover:text-blue-600 dark:group-hover:text-blue-400" />
+                                        </div>
+                                        <div>
+                                          <p className="text-sm font-semibold text-slate-900 dark:text-white">{file.title}</p>
+                                          <p className="text-xs text-slate-500 capitalize">{file.fileType.replace("_", " ")}</p>
+                                        </div>
                                       </div>
-                                      <div>
-                                        <p className="text-sm font-semibold text-slate-900 dark:text-white">{file.title}</p>
-                                        <p className="text-xs text-slate-500 capitalize">{file.fileType.replace("_", " ")}</p>
+                                      <ExternalLink className="w-4 h-4 text-slate-400 group-hover:text-blue-500" />
+                                    </a>
+                                  ) : (
+                                    <div 
+                                      key={i} 
+                                      className="flex items-center justify-between p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 opacity-75 cursor-not-allowed"
+                                      title="Locked (Unlocks on milestone completion)"
+                                    >
+                                      <div className="flex items-center gap-3">
+                                        <div className="p-2 bg-slate-200 dark:bg-slate-700 rounded-lg">
+                                          <Lock className="w-4 h-4 text-slate-400 dark:text-slate-500" />
+                                        </div>
+                                        <div>
+                                          <p className="text-sm font-semibold text-slate-500 dark:text-slate-400 flex items-center gap-2">
+                                            {file.title} 
+                                            <span className="text-[10px] bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 px-2 py-0.5 rounded-full font-bold">LOCKED</span>
+                                          </p>
+                                          <p className="text-xs text-slate-400 capitalize">{file.fileType.replace("_", " ")}</p>
+                                        </div>
                                       </div>
                                     </div>
-                                    <ExternalLink className="w-4 h-4 text-slate-400 group-hover:text-blue-500" />
-                                  </a>
+                                  )
                                 ))
                               ) : (
                                 <p className="text-sm text-slate-500 italic p-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-100 dark:border-slate-800">
