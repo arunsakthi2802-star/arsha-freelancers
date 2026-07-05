@@ -248,25 +248,7 @@ export default function UserDashboard({ onNavigate }) {
                             </div>
                           </div>
 
-                          <div>
-                            <div className="flex items-center gap-2 text-sm text-slate-500 mb-2 font-medium">
-                              <User className="w-4 h-4" /> Assigned Developer
-                            </div>
-                            <p className="font-semibold text-slate-900 dark:text-white">
-                              {p.developer ? p.developer.fullName : <span className="text-slate-400 italic font-normal">Pending Assignment</span>}
-                            </p>
-                            {p.developer && <p className="text-xs text-slate-500">{p.developer.email}</p>}
-                          </div>
 
-                          <div>
-                            <div className="flex items-center gap-2 text-sm text-slate-500 mb-2 font-medium">
-                              <User className="w-4 h-4" /> Project Manager
-                            </div>
-                            <p className="font-semibold text-slate-900 dark:text-white">
-                              {p.manager ? p.manager.fullName : <span className="text-slate-400 italic font-normal">Pending Assignment</span>}
-                            </p>
-                            {p.manager && <p className="text-xs text-slate-500">{p.manager.email}</p>}
-                          </div>
                         </div>
 
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
