@@ -1,16 +1,11 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Menu,
   X,
-  MessageCircle,
-  FileText,
   Sun,
   Moon,
-  ArrowRight,
-  Palette,
-  LogIn,
-  Shield,
   ChevronDown,
+  LayoutDashboard,
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { useAuth } from "../context/AuthContext";
@@ -20,404 +15,251 @@ export default function Navbar({
   setActiveView,
   darkMode,
   setDarkMode,
-  theme,
-  setTheme,
   onGetQuoteClick,
 }) {
   const { isAdmin, isManager, isAuthenticated } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [themeDropdownOpen, setThemeDropdownOpen] = useState(false);
-  const [studentDropdownOpen, setStudentDropdownOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [servicesDropdownOpen, setServicesDropdownOpen] = useState(false);
 
-  const studentItems = [
-    { id: "projects", label: "Student Project Library" },
-    { id: "custom_projects", label: "Custom Project" },
-    { id: "advisor", label: "AI Advisor" }
-  ];
-
-  const themes = [
-    { id: "neo-classic", name: "Classic Slate", dot: "bg-neo-purple" },
-    { id: "neo-cyber", name: "Cyber Neon", dot: "bg-neo-yellow" },
-    { id: "neo-mint", name: "Forest Mint", dot: "bg-neo-lime" },
-    { id: "neo-sunset", name: "Sunset Rose", dot: "bg-neo-pink" },
-  ];
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 20) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const menuItems = [
     { id: "home", label: "Home" },
     { id: "about", label: "About" },
-    { id: "services", label: "Services" },
-    { id: "student_dropdown", label: "Student" },
-    { id: "portfolio", label: "Portfolio" },
-    { id: "gallery", label: "Gallery" },
-    { id: "stories", label: "Stories" },
+    { id: "projects", label: "Project Library" },
+    { id: "review", label: "Testimonials" },
     { id: "faq", label: "FAQ" },
     { id: "contact", label: "Contact" },
-    { id: "review", label: "⭐ Reviews" },
-    ...(isAuthenticated && (isAdmin || isManager) ? [{ id: "admin", label: "🛡 Dashboard" }] : []),
-    ...(isAuthenticated && !(isAdmin || isManager) ? [{ id: "portal", label: "🔑 Portal" }] : []),
-    ...(!isAuthenticated ? [{ id: "login", label: "Sign In" }] : []),
   ];
 
-  const handleNavClick = (viewId) => {
-    setActiveView(viewId);
-    setMobileMenuOpen(false);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
+  const serviceItems = [
+    { id: "services", label: "All Services" },
+    { id: "advisor", label: "AI Advisor" },
+  ];
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b border-slate-200/80 dark:border-slate-800/80 bg-white/70 dark:bg-slate-900/70 backdrop-blur-md transition-all duration-300">
+    <nav
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        scrolled
+          ? "glass shadow-sm py-2"
+          : "bg-transparent py-4"
+      }`}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
-          {/* Logo / Brand */}
+        <div className="flex items-center justify-between h-14">
+          {/* Logo */}
           <div
-            onClick={() => handleNavClick("home")}
-            className="flex items-center gap-2.5 cursor-pointer group"
-            id="nav-logo"
+            className="flex-shrink-0 cursor-pointer flex items-center gap-2 group"
+            onClick={() => setActiveView("home")}
           >
-            <div className="overflow-hidden rounded-xl transition-all duration-300 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,0.15)] border-2 border-slate-900 dark:border-slate-100 flex items-center justify-center bg-white w-10 h-10">
-              <img
-                src="/arsha logo.jpeg"
-                alt="Arsha Logo"
-                className="w-full h-full object-cover"
-              />
-            </div>
+            <img 
+              src="/ARSHA LOGO.png" 
+              alt="Arsha Logo" 
+              className="h-10 w-auto object-contain transform group-hover:scale-105 transition-transform duration-300"
+            />
             <div className="flex flex-col">
-              <span className="text-lg font-black tracking-tight text-slate-900 dark:text-slate-50 leading-none">
-                ARSHA{" "}
-                <span className="text-blue-600 dark:text-cyan-400">
-                  FREELANCERS
-                </span>
+              <span className={`text-xl font-bold tracking-tight ${darkMode ? "text-white" : "text-slate-900"}`}>
+                Arsha <span className="text-blue-600">Freelancers</span>
               </span>
-              <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mt-0.5 leading-none">
+              <span className="text-[10px] uppercase font-bold tracking-widest text-slate-400 -mt-1">
                 Software Solutions
               </span>
             </div>
           </div>
 
-          {/* Desktop Navigation Items */}
-          <div className="hidden xl:flex items-center gap-1 bg-slate-100/50 dark:bg-slate-800/40 p-1 rounded-2xl border border-slate-200/60 dark:border-slate-700/50">
-            {menuItems.map((item) => {
-              if (item.id === "student_dropdown") {
-                const isStudentActive = studentItems.some((s) => s.id === activeView);
-                return (
-                  <div 
-                    key={item.id} 
-                    className="relative group"
-                    onMouseEnter={() => setStudentDropdownOpen(true)}
-                    onMouseLeave={() => setStudentDropdownOpen(false)}
-                  >
-                    <button
-                      onClick={() => setStudentDropdownOpen(!studentDropdownOpen)}
-                      className={`flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-semibold tracking-wide transition-all duration-300 cursor-pointer ${
-                        isStudentActive || studentDropdownOpen
-                          ? "bg-blue-600 text-white shadow-sm border border-blue-600"
-                          : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-white dark:hover:bg-slate-800 border border-transparent"
-                      }`}
-                    >
-                      {item.label}
-                      <ChevronDown className={`w-3.5 h-3.5 transition-transform ${studentDropdownOpen ? "rotate-180" : ""}`} />
-                    </button>
-                    
-                    <AnimatePresence>
-                      {studentDropdownOpen && (
-                        <motion.div
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: 10 }}
-                          transition={{ duration: 0.15 }}
-                          className="absolute left-0 mt-2 w-56 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 p-2 z-50 shadow-xl"
-                        >
-                          {studentItems.map((subItem) => {
-                            const isSubActive = activeView === subItem.id;
-                            return (
-                              <button
-                                key={subItem.id}
-                                onClick={() => {
-                                  handleNavClick(subItem.id);
-                                  setStudentDropdownOpen(false);
-                                }}
-                                className={`w-full text-left px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer mb-1 last:mb-0 ${
-                                  isSubActive
-                                    ? "bg-slate-100 dark:bg-slate-800 text-slate-950 dark:text-white"
-                                    : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800"
-                                }`}
-                              >
-                                {subItem.label}
-                              </button>
-                            );
-                          })}
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                );
-              }
-
-              const isActive = activeView === item.id;
-              return (
-                <button
-                  key={item.id}
-                  id={`nav-item-${item.id}`}
-                  onClick={() => handleNavClick(item.id)}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold tracking-wide transition-all duration-300 cursor-pointer ${
-                    isActive
-                      ? "bg-blue-600 text-white shadow-sm border border-blue-600"
-                      : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-white dark:hover:bg-slate-800 border border-transparent"
-                  }`}
-                >
-                  {item.label}
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Right Action Controls */}
-          <div className="hidden md:flex items-center gap-2 lg:gap-2.5">
-            {/* Theme Selector Dropdown */}
-            <div className="relative">
+          {/* Desktop Navigation */}
+          <div className="hidden xl:flex items-center space-x-1">
+            {menuItems.map((item) => (
               <button
-                onClick={() => setThemeDropdownOpen(!themeDropdownOpen)}
-                className="p-2 lg:p-2.5 rounded-xl border-2 border-slate-900 dark:border-slate-100 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,0.15)] bg-white dark:bg-slate-900 flex items-center gap-1.5"
-                aria-label="Customize Theme"
-                id="theme-palette-picker"
+                key={item.id}
+                onClick={() => setActiveView(item.id)}
+                className={`px-4 py-2 rounded-full text-sm font-semibold transition-all relative group ${
+                  activeView === item.id
+                    ? darkMode ? "text-white" : "text-slate-900"
+                    : darkMode ? "text-slate-400 hover:text-white" : "text-slate-500 hover:text-slate-900"
+                }`}
               >
-                <Palette className="w-4 h-4" />
-                <span className="text-[10px] font-black uppercase tracking-wider hidden 2xl:inline">
-                  Theme
-                </span>
+                {item.label}
+                {activeView === item.id && (
+                  <motion.div
+                    layoutId="navbar-indicator"
+                    className="absolute inset-0 bg-blue-500/10 dark:bg-white/10 rounded-full -z-10"
+                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                  />
+                )}
+                {/* Hover Underline */}
+                <span className={`absolute bottom-1 left-4 right-4 h-0.5 bg-blue-500 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left ${activeView === item.id ? "hidden" : ""}`}></span>
               </button>
+            ))}
 
+            {/* Services Dropdown */}
+            <div
+              className="relative"
+              onMouseEnter={() => setServicesDropdownOpen(true)}
+              onMouseLeave={() => setServicesDropdownOpen(false)}
+            >
+              <button
+                className={`flex items-center gap-1 px-4 py-2 rounded-full text-sm font-semibold transition-all relative group ${
+                  activeView === "services" || activeView === "advisor"
+                    ? darkMode ? "text-white" : "text-slate-900"
+                    : darkMode ? "text-slate-400 hover:text-white" : "text-slate-500 hover:text-slate-900"
+                }`}
+              >
+                Services
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-300 ${servicesDropdownOpen ? "rotate-180" : ""}`} />
+              </button>
+              
               <AnimatePresence>
-                {themeDropdownOpen && (
-                  <>
-                    {/* Backdrop for easy dismiss */}
-                    <div
-                      className="fixed inset-0 z-40"
-                      onClick={() => setThemeDropdownOpen(false)}
-                    />
-
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.95, y: 10 }}
-                      animate={{ opacity: 1, scale: 1, y: 0 }}
-                      exit={{ opacity: 0, scale: 0.95, y: 10 }}
-                      transition={{ duration: 0.15 }}
-                      className="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-900 rounded-2xl brutalist-border p-2.5 z-50 shadow-xl space-y-1 text-left"
-                    >
-                      <div className="px-2.5 py-1.5 border-b border-slate-100 dark:border-slate-800">
-                        <span className="text-[9px] font-black uppercase text-slate-450 tracking-wider">
-                          Select Style Mood
-                        </span>
-                      </div>
-                      {themes.map((t) => {
-                        const isSelected = theme === t.id;
-                        return (
-                          <button
-                            key={t.id}
-                            onClick={() => {
-                              setTheme(t.id);
-                              setThemeDropdownOpen(false);
-                            }}
-                            className={`w-full flex items-center justify-between px-2.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                              isSelected
-                                ? "bg-slate-100 dark:bg-slate-800 text-slate-950 dark:text-white"
-                                : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800"
-                            }`}
-                          >
-                            <span className="flex items-center gap-2">
-                              <span
-                                className={`w-3 h-3 rounded-full border border-slate-950 ${t.dot}`}
-                              />
-                              {t.name}
-                            </span>
-                            {isSelected && (
-                              <span className="text-blue-600 dark:text-cyan-400 text-[10px]">
-                                ●
-                              </span>
-                            )}
-                          </button>
-                        );
-                      })}
-                    </motion.div>
-                  </>
+                {servicesDropdownOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                    transition={{ duration: 0.2 }}
+                    className="absolute top-full left-0 mt-2 w-48 rounded-xl glass-card overflow-hidden"
+                  >
+                    <div className="py-2">
+                      {serviceItems.map((subItem) => (
+                        <button
+                          key={subItem.id}
+                          onClick={() => {
+                            setActiveView(subItem.id);
+                            setServicesDropdownOpen(false);
+                          }}
+                          className={`w-full text-left px-4 py-2.5 text-sm font-medium transition-colors ${
+                            darkMode
+                              ? "text-slate-300 hover:text-white hover:bg-white/10"
+                              : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+                          }`}
+                        >
+                          {subItem.label}
+                        </button>
+                      ))}
+                    </div>
+                  </motion.div>
                 )}
               </AnimatePresence>
             </div>
+          </div>
 
-            {/* Theme Toggle */}
+          {/* Right Action Controls */}
+          <div className="hidden xl:flex items-center gap-4">
             <button
               onClick={() => setDarkMode(!darkMode)}
-              className="p-2 lg:p-2.5 rounded-xl border-2 border-slate-900 dark:border-slate-100 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,0.15)] bg-white dark:bg-slate-900"
+              className={`p-2.5 rounded-full transition-colors ${
+                darkMode ? "bg-white/10 text-yellow-300 hover:bg-white/20" : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+              }`}
               aria-label="Toggle theme"
-              id="theme-toggle"
             >
-              {darkMode ? (
-                <Sun className="w-4 h-4" />
-              ) : (
-                <Moon className="w-4 h-4" />
-              )}
+              {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
             </button>
 
-            {/* WhatsApp */}
-            <a
-              href="https://wa.me/918300799120?text=Hi+Arsha+Freelancers%2C+I+want+to+inquire+about+academic+project+services+and+pricing."
-              target="_blank"
-              rel="noreferrer"
-              className="hidden lg:inline-flex items-center gap-1.5 px-3 lg:px-4 py-2 lg:py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl border-2 border-slate-900 dark:border-slate-100 transition-all cursor-pointer shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]"
-              id="nav-whatsapp-btn"
-            >
-              <MessageCircle className="w-4 h-4" />
-              WhatsApp
-            </a>
+            {isAuthenticated ? (
+              <button
+                onClick={() => setActiveView(isAdmin ? "admin" : isManager ? "manager" : "portal")}
+                className={`flex items-center gap-2 px-4 py-2 rounded-full font-bold text-sm transition-all border ${
+                  darkMode
+                    ? "border-slate-700 hover:bg-slate-800 text-white"
+                    : "border-slate-200 hover:bg-slate-50 text-slate-900"
+                }`}
+              >
+                <LayoutDashboard className="w-4 h-4" />
+                Dashboard
+              </button>
+            ) : (
+              <button
+                onClick={() => setActiveView("login")}
+                className={`font-semibold text-sm transition-colors ${
+                  darkMode ? "text-slate-300 hover:text-white" : "text-slate-600 hover:text-slate-900"
+                }`}
+              >
+                Log In
+              </button>
+            )}
 
-            {/* Get Quote Button */}
             <button
               onClick={onGetQuoteClick}
-              className="inline-flex items-center gap-1 px-3 lg:px-4 py-2 lg:py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-xl border-2 border-slate-900 dark:border-slate-100 transition-all cursor-pointer shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] dark:shadow-[3px_3px_0px_0px_rgba(255,255,255,0.15)] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] dark:hover:shadow-[4px_4px_0px_0px_rgba(255,255,255,0.15)] whitespace-nowrap"
-              id="nav-quote-btn"
+              className="px-6 py-2.5 rounded-full font-bold text-sm text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg hover:shadow-blue-500/25 transition-all transform hover:-translate-y-0.5"
             >
-              Get Quote
-              <ArrowRight className="w-3.5 h-3.5" />
+              Get Started
             </button>
           </div>
 
-          {/* Hamburger / Controls for Mobile & Tablet */}
-          <div className="flex xl:hidden items-center gap-2">
-            {/* Theme Toggle (Mobile) */}
+          {/* Mobile Menu Toggle */}
+          <div className="flex xl:hidden items-center gap-3">
             <button
               onClick={() => setDarkMode(!darkMode)}
-              className="p-2 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-900 cursor-pointer"
-              aria-label="Toggle theme"
+              className={`p-2 rounded-full ${darkMode ? "text-yellow-300" : "text-slate-600"}`}
             >
-              {darkMode ? (
-                <Sun className="w-4 h-4" />
-              ) : (
-                <Moon className="w-4 h-4" />
-              )}
+              {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
-
-            {/* Hamburger Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-900 cursor-pointer"
-              aria-label="Toggle menu"
-              id="hamburger-btn"
+              className={`p-2 ${darkMode ? "text-white" : "text-slate-900"}`}
             >
-              {mobileMenuOpen ? (
-                <X className="w-6 h-6" />
-              ) : (
-                <Menu className="w-6 h-6" />
-              )}
+              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
           </div>
         </div>
       </div>
 
-      {/* Mobile Menu Panel */}
+      {/* Mobile Menu */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.25 }}
-            className="lg:hidden border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden"
+            className={`xl:hidden border-t ${darkMode ? "bg-slate-900 border-slate-800" : "bg-white border-slate-100"}`}
           >
-            <div className="px-4 py-5 space-y-2.5">
-              <div className="grid grid-cols-2 gap-2">
-                {menuItems.map((item) => {
-                  if (item.id === "student_dropdown") {
-                    return (
-                      <div key={item.id} className="col-span-2 bg-slate-50 dark:bg-slate-800/30 rounded-xl border border-slate-100 dark:border-slate-800 p-3">
-                        <div className="text-[10px] font-black uppercase text-slate-400 tracking-wider mb-2">
-                          Student Section
-                        </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                          {studentItems.map((subItem) => {
-                            const isSubActive = activeView === subItem.id;
-                            return (
-                              <button
-                                key={subItem.id}
-                                onClick={() => handleNavClick(subItem.id)}
-                                className={`px-4 py-3 rounded-xl text-xs font-bold text-left transition-all ${
-                                  isSubActive
-                                    ? "bg-blue-600 text-white border border-blue-600 shadow-sm"
-                                    : "bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700"
-                                }`}
-                              >
-                                {subItem.label}
-                              </button>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    );
-                  }
-
-                  const isActive = activeView === item.id;
-                  return (
-                    <button
-                      key={item.id}
-                      onClick={() => handleNavClick(item.id)}
-                      className={`px-4 py-3 rounded-xl text-xs font-bold text-left transition-all ${
-                        isActive
-                          ? "bg-blue-600 text-white border border-blue-600"
-                          : "bg-slate-50 dark:bg-slate-800/50 text-slate-700 dark:text-slate-300 border border-transparent"
-                      }`}
-                    >
-                      {item.label}
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* Mobile Theme Picker Option */}
-              <div className="py-2 space-y-1.5 border-t border-slate-100 dark:border-slate-800">
-                <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 block px-1">
-                  Select Style Mood
-                </span>
-                <div className="grid grid-cols-2 gap-2">
-                  {themes.map((t) => {
-                    const isSelected = theme === t.id;
-                    return (
-                      <button
-                        key={t.id}
-                        onClick={() => setTheme(t.id)}
-                        className={`px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 brutalist-border-sm hover:translate-y-0 ${
-                          isSelected
-                            ? "bg-slate-100 dark:bg-slate-800 text-slate-950 dark:text-white"
-                            : "bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400"
-                        }`}
-                      >
-                        <span
-                          className={`w-2.5 h-2.5 rounded-full border border-slate-950 ${t.dot}`}
-                        />
-                        <span className="truncate">{t.name}</span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="grid grid-cols-2 gap-2.5 pt-2.5 border-t border-slate-100 dark:border-slate-800">
-                <a
-                  href="https://wa.me/918300799120?text=Hi+Arsha+Freelancers%2C+I+want+to+inquire+about+academic+project+services+and+pricing."
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex items-center justify-center gap-1.5 py-3 bg-emerald-600 text-white text-xs font-extrabold rounded-xl"
+            <div className="px-4 pt-2 pb-6 space-y-1">
+              {[...menuItems, ...serviceItems].map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => {
+                    setActiveView(item.id);
+                    setMobileMenuOpen(false);
+                  }}
+                  className={`block w-full text-left px-4 py-3 rounded-xl font-medium ${
+                    activeView === item.id
+                      ? "bg-blue-500/10 text-blue-600"
+                      : darkMode ? "text-slate-300" : "text-slate-700"
+                  }`}
                 >
-                  <MessageCircle className="w-4 h-4" />
-                  WhatsApp
-                </a>
+                  {item.label}
+                </button>
+              ))}
+              <div className="pt-4 flex flex-col gap-3">
                 <button
                   onClick={() => {
-                    setMobileMenuOpen(false);
                     onGetQuoteClick();
+                    setMobileMenuOpen(false);
                   }}
-                  className="flex items-center justify-center gap-1 py-3 bg-blue-600 text-white text-xs font-extrabold rounded-xl"
+                  className="w-full py-3 rounded-xl font-bold text-sm text-white bg-gradient-to-r from-blue-600 to-indigo-600"
                 >
-                  <FileText className="w-4 h-4" />
-                  Get Quote
+                  Get Started
+                </button>
+                <button
+                  onClick={() => {
+                    setActiveView(isAuthenticated ? (isAdmin ? "admin" : isManager ? "manager" : "portal") : "login");
+                    setMobileMenuOpen(false);
+                  }}
+                  className={`w-full py-3 rounded-xl font-bold text-sm border ${
+                    darkMode ? "border-slate-700 text-white" : "border-slate-200 text-slate-900"
+                  }`}
+                >
+                  {isAuthenticated ? "Dashboard" : "Log In"}
                 </button>
               </div>
             </div>

@@ -1,8 +1,8 @@
-import api from "./apiClient";
+import api from"./apiClient";
 
 export const getServices = (params = {}) => {
-  const qs = new URLSearchParams(params).toString();
-  return api.get(`/services${qs ? `?${qs}` : ""}`);
+ const qs = new URLSearchParams(params).toString();
+ return api.get(`/services${qs ? `?${qs}` :""}`);
 };
 
 export const getAllServicesAdmin = () => api.get("/services/all");

@@ -1,4 +1,4 @@
-import api from "./apiClient";
+import api from"./apiClient";
 
 export const createSchedule = (data) => api.post("/schedules", data);
 

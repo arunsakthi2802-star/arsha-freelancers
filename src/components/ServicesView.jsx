@@ -1,358 +1,138 @@
-import { useState, useEffect } from "react";
-import {
-  GraduationCap,
-  BookOpen,
-  Tv,
-  Globe,
-  Cpu,
-  UserCheck,
-  Check,
-  MessageCircle,
-  FileCode,
-  FileText,
-  Download,
-  Loader2,
+import React, { useState, useEffect } from "react";
+import { motion } from "motion/react";
+import { 
+  Code, Layout, Smartphone, PenTool, Image, Hexagon, Search, 
+  Megaphone, Cpu, Shield, Cloud, Server, Database, Users, 
+  ShoppingCart, HardDrive, HeadphonesIcon, GraduationCap 
 } from "lucide-react";
-import { servicesData } from "../data/services";
-import { generateServicesBrochure } from "../utils/brochurePdf";
-import { getServices } from "../api/services.api";
 
-export default function ServicesView({ onNavigate, onGetQuoteClick }) {
+export default function ServicesView({ onNavigate, onGetQuoteClick, darkMode }) {
   const [activeCategory, setActiveCategory] = useState("All");
-  const [servicesList, setServicesList] = useState(servicesData); // Initialize with fallback to prevent blank flash
-  const [loading, setLoading] = useState(true);
 
   const categories = [
-    "All",
-    "Academic Projects",
-    "Documentation",
-    "Presentation Services",
-    "Software Development",
-    "Emerging Technologies",
-    "Career Services",
+    "All", "Web & Mobile", "Design & Brand", "Digital Marketing", "Enterprise Solutions", "Academic Projects"
   ];
 
-  const loadServices = async () => {
-    try {
-      const res = await getServices();
-      if (res.success && res.data && res.data.length > 0) {
-        // Map DB services to match the layout
-        const mapped = res.data.map((s, idx) => ({
-          id: s._id || idx,
-          title: s.serviceName,
-          category: s.category || "Academic Projects", // Fallback to category
-          description: s.description,
-          icon: s.icon || "GraduationCap",
-          features: s.features || []
-        }));
-        setServicesList(mapped);
-      } else {
-        setServicesList(servicesData);
-      }
-    } catch (err) {
-      console.warn("Failed to load services from API, using default catalog:", err);
-      setServicesList(servicesData);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const premiumServices = [
+    { title: "Website Development", category: "Web & Mobile", icon: Layout, desc: "Custom, responsive, and blazing fast websites." },
+    { title: "Web Applications", category: "Web & Mobile", icon: Code, desc: "Scalable full-stack web platforms." },
+    { title: "Mobile App Development", category: "Web & Mobile", icon: Smartphone, desc: "Native iOS and Android applications." },
+    { title: "UI/UX Design", category: "Design & Brand", icon: PenTool, desc: "Intuitive, user-centered interface design." },
+    { title: "Graphic Design", category: "Design & Brand", icon: Image, desc: "Professional visual assets and illustrations." },
+    { title: "Logo Design & Branding", category: "Design & Brand", icon: Hexagon, desc: "Brand identity, logos, and style guides." },
+    { title: "SEO Optimization", category: "Digital Marketing", icon: Search, desc: "Rank higher and drive organic traffic." },
+    { title: "Digital Marketing", category: "Digital Marketing", icon: Megaphone, desc: "Data-driven marketing campaigns." },
+    { title: "AI Solutions", category: "Enterprise Solutions", icon: Cpu, desc: "Machine learning and AI integrations." },
+    { title: "Cybersecurity", category: "Enterprise Solutions", icon: Shield, desc: "Vulnerability assessment and protection." },
+    { title: "Cloud Services", category: "Enterprise Solutions", icon: Cloud, desc: "AWS, Azure, and Google Cloud management." },
+    { title: "ERP Solutions", category: "Enterprise Solutions", icon: Server, desc: "Enterprise Resource Planning software." },
+    { title: "CRM Development", category: "Enterprise Solutions", icon: Users, desc: "Custom Customer Relationship Management." },
+    { title: "E-Commerce", category: "Web & Mobile", icon: ShoppingCart, desc: "Online stores and payment gateways." },
+    { title: "Hosting & Domain", category: "Enterprise Solutions", icon: HardDrive, desc: "Secure server hosting and deployment." },
+    { title: "Technical Support", category: "Enterprise Solutions", icon: HeadphonesIcon, desc: "24/7 technical assistance and maintenance." },
+    // Retaining core academic roots for Arsha Freelancers
+    { title: "Final Year Academic Projects", category: "Academic Projects", icon: GraduationCap, desc: "IEEE standard complete software project packages." }
+  ];
 
-  useEffect(() => {
-    loadServices();
-  }, []);
-
-  // Specific list items requested in prompt
-  const detailedServiceItems = {
-    "Academic Projects": [
-      "Final Year Projects (B.Sc, BCA, MCA, BE, B.Tech)",
-      "Mini Projects (Semester-level custom prototypes)",
-      "Major Projects (Complex architectural software development)",
-      "IEEE Projects (Based on latest peer-reviewed science papers)",
-    ],
-    Documentation: [
-      "Internship Reports (Weekly task logs & summaries)",
-      "Project Documentation (System design, ERDs, UMLs)",
-      "Synopsis Writing (Early university approval drafts)",
-      "Research Documentation (Thesis support, academic articles)",
-      "IEEE Paper Formatting (Exact style guides conformities)",
-    ],
-    "Presentation Services": [
-      "Seminar PPT (Detailed tech review presentation slides)",
-      "Project PPT (Core presentation of project deliverables)",
-      "Viva Slides (Dynamic, question-anticipating slides)",
-      "Professional Presentation Design (Flowcharts, high-contrast layouts)",
-    ],
-    "Software Development": [
-      "Business Websites (Commercial web portals, landing pages)",
-      "Portfolio Websites (Showcasing single-developer achievements)",
-      "Android Applications (Java/Kotlin & Flutter apps)",
-      "Desktop Applications (Windows standalone software)",
-      "REST APIs & Web Services (Express, Django, Flask servers)",
-      "Database Design (MySQL, PostgreSQL, MongoDB structures)",
-    ],
-    "Emerging Technologies": [
-      "Artificial Intelligence (Machine learning models, prediction grids)",
-      "Machine & Deep Learning (Image, speech, neural classification)",
-      "Data Science & Predictive Analytics (CSV/Pandas charts)",
-      "Natural Language Processing (SpaCy NLP, sentiment classifiers)",
-      "Blockchain (Solidity web3 smart contracts & ledgers)",
-      "Cloud Computing & Cybersecurity (AWS setups, encryption keys)",
-      "Ethical Hacking & Network Intrusion (NIDS scanners)",
-      "SOC Analyst & Digital Forensics Projects (Image capture verifiers)",
-      "Internet of Things (IoT) (Arduino, Raspberry Pi relay networks)",
-    ],
-    "Career Services": [
-      "ATS Resume Writing (High scoring format resumes)",
-      "LinkedIn Profile Optimization (Branding, content layout polishing)",
-      "Personal Portfolio Web Design (Hosting code project gallery)",
-      "Career Guidance & Technical Interview Coaching",
-    ],
-  };
-
-  const getIcon = (iconName) => {
-    switch (iconName) {
-      case "GraduationCap":
-        return <GraduationCap className="w-6 h-6 text-slate-950" />;
-      case "FileCode":
-        return <FileCode className="w-6 h-6 text-slate-950" />;
-      case "BookOpen":
-        return <BookOpen className="w-6 h-6 text-slate-950" />;
-      case "FileText":
-        return <FileText className="w-6 h-6 text-slate-950" />;
-      case "Tv":
-        return <Tv className="w-6 h-6 text-slate-950" />;
-      case "Globe":
-        return <Globe className="w-6 h-6 text-slate-950" />;
-      case "Cpu":
-        return <Cpu className="w-6 h-6 text-slate-950" />;
-      case "UserCheck":
-        return <UserCheck className="w-6 h-6 text-slate-950" />;
-      default:
-        return <GraduationCap className="w-6 h-6 text-slate-950" />;
-    }
-  };
-
-  const getCategoryColorClass = (category) => {
-    switch (category) {
-      case "Academic Projects":
-        return "bg-neo-yellow text-slate-950";
-      case "Documentation":
-        return "bg-neo-pink text-slate-950";
-      case "Presentation Services":
-        return "bg-neo-orange text-slate-950";
-      case "Software Development":
-        return "bg-neo-lime text-slate-950";
-      case "Emerging Technologies":
-        return "bg-neo-cyan text-slate-950";
-      case "Career Services":
-        return "bg-neo-purple text-slate-950";
-      default:
-        return "bg-neo-blue text-slate-950";
-    }
-  };
-
-  const filteredServices =
-    activeCategory === "All"
-      ? servicesList
-      : servicesList.filter((s) => s.category === activeCategory);
-
-  const handleInquiryLink = (title) => {
-    const text = `Hi Arsha Freelancers! I want to inquire about your professional services for: *${title}*. Could you please share the pricing, standard timeline, and deliverables list?`;
-    return `https://wa.me/918300799120?text=${encodeURIComponent(text)}`;
-  };
+  const filteredServices = activeCategory === "All" 
+    ? premiumServices 
+    : premiumServices.filter(s => s.category === activeCategory);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16 pb-16 pt-8 text-left">
-      {/* HEADER SECTION */}
-      <section className="text-center space-y-4 max-w-4xl mx-auto">
-        <span className="text-xs uppercase font-extrabold tracking-widest text-slate-950 bg-neo-yellow px-3 py-1.5 rounded-full brutalist-border-sm">
-          Our Catalog
-        </span>
-        <h1 className="text-4xl sm:text-5xl font-black text-slate-950 dark:text-slate-50 tracking-tight">
-          Comprehensive Educational & Software Development Services
-        </h1>
-        <p className="text-sm sm:text-base text-slate-500 dark:text-slate-400 font-medium max-w-2xl mx-auto leading-relaxed">
-          From brainstorming custom project concepts to full-scale engineering
-          deployments and flawless institution documentation, we support you
-          through every major milestone.
-        </p>
-        <div className="pt-2 flex justify-center">
-          <button
-            onClick={() => generateServicesBrochure()}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-neo-purple hover:bg-[#b070f8] text-slate-950 font-display font-black rounded-xl brutalist-border-sm hover:translate-y-[-1px] transition-all text-xs sm:text-sm cursor-pointer"
-          >
-            <Download className="w-4.5 h-4.5" />
-            Download Service Brochure (PDF)
-          </button>
-        </div>
-      </section>
+    <div className={`min-h-screen pt-24 pb-20 bg-transparent`}>
+      
+      {/* Background glow */}
+      <div className="absolute top-40 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-blue-600/20 rounded-full blur-[120px] pointer-events-none"></div>
 
-      {/* HORIZONTAL CATEGORY FILTER TABS */}
-      <section className="flex flex-wrap justify-center gap-2.5 border-b border-slate-200 dark:border-slate-800 pb-8">
-        {categories.map((cat) => {
-          const isSelected = activeCategory === cat;
-          return (
-            <button
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="text-center mb-16">
+          <motion.h1 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className={`text-4xl md:text-6xl font-extrabold mb-6 tracking-tight ${darkMode ? 'text-white' : 'text-slate-900'}`}
+          >
+            Premium <span className="text-gradient-primary">Digital Services</span>
+          </motion.h1>
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className={`max-w-3xl mx-auto text-lg ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}
+          >
+            From cutting-edge web applications to robust cybersecurity and academic prototypes, our expert team delivers excellence at every step.
+          </motion.p>
+        </div>
+
+        {/* Categories Filter */}
+        <div className="flex flex-wrap justify-center gap-2 mb-12">
+          {categories.map((cat, i) => (
+            <motion.button
               key={cat}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.1 }}
               onClick={() => setActiveCategory(cat)}
-              className={`px-4.5 py-2.5 text-xs font-black rounded-xl transition-all cursor-pointer ${
-                isSelected
-                  ? "bg-slate-950 dark:bg-slate-50 text-white dark:text-slate-950 brutalist-border-sm"
-                  : "bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-800 hover:border-slate-950 dark:hover:border-slate-50"
+              className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all ${
+                activeCategory === cat
+                  ? "bg-blue-600 text-white shadow-lg shadow-blue-500/30"
+                  : `glass hover:bg-blue-50 hover:text-blue-600 ${darkMode ? 'text-slate-300 border-slate-700' : 'text-slate-600 border-slate-200'}`
               }`}
             >
               {cat}
-            </button>
-          );
-        })}
-      </section>
+            </motion.button>
+          ))}
+        </div>
 
-      {/* SERVICE LIST GRID */}
-      <section className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {filteredServices.map((srv) => {
-          const subItems = detailedServiceItems[srv.category] || [];
-          const categoryColor = getCategoryColorClass(srv.category);
-          return (
-            <div
-              key={srv.id}
-              className="bg-white dark:bg-slate-900 brutalist-border rounded-3xl p-6 sm:p-8 flex flex-col justify-between"
+        {/* Service Grid with 3D Hover & Glow */}
+        <motion.div 
+          layout
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+        >
+          {filteredServices.map((srv, index) => (
+            <motion.div
+              layout
+              key={srv.title}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ duration: 0.3 }}
+              whileHover={{ 
+                y: -10,
+                rotateX: 5,
+                rotateY: -5,
+                scale: 1.02,
+                transition: { type: "spring", stiffness: 300 }
+              }}
+              className={`relative group cursor-pointer glass-card rounded-2xl p-6 h-full transition-all duration-300 ${
+                darkMode ? 'hover:shadow-[0_0_30px_rgba(37,99,235,0.2)] hover:border-blue-500/50' : 'hover:shadow-2xl hover:border-blue-400'
+              }`}
+              style={{ perspective: 1000 }}
+              onClick={onGetQuoteClick}
             >
-              <div className="space-y-6">
-                {/* Header */}
-                <div className="flex items-center gap-4">
-                  <div
-                    className={`p-3 rounded-2xl brutalist-border-sm flex items-center justify-center ${categoryColor}`}
-                  >
-                    {getIcon(srv.icon)}
-                  </div>
-                  <div>
-                    <span
-                      className={`text-[9px] uppercase font-black tracking-wider px-2 py-0.5 rounded border border-slate-950 shadow-[1px_1px_0px_0px_rgba(15,23,42,1)] ${categoryColor}`}
-                    >
-                      {srv.category}
-                    </span>
-                    <h3 className="text-xl font-black text-slate-950 dark:text-slate-50 tracking-tight leading-tight mt-1.5">
-                      {srv.title}
-                    </h3>
-                  </div>
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              
+              <div className="relative z-10">
+                <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white mb-6 shadow-lg group-hover:scale-110 transition-transform">
+                  <srv.icon className="w-7 h-7" />
                 </div>
-
-                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
-                  {srv.description}
+                
+                <h3 className={`text-xl font-bold mb-3 ${darkMode ? 'text-white' : 'text-slate-900'}`}>
+                  {srv.title}
+                </h3>
+                
+                <p className={`text-sm mb-6 ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+                  {srv.desc}
                 </p>
 
-                {/* Sub-items list requested explicitly in the prompt */}
-                {subItems.length > 0 && (
-                  <div className="space-y-2.5 pt-2">
-                    <h4 className="text-[10px] font-extrabold uppercase text-slate-400 tracking-widest">
-                      Included Specializations:
-                    </h4>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                      {subItems.map((item, idx) => (
-                        <div key={idx} className="flex items-start gap-2">
-                          <Check className="w-3.5 h-3.5 text-slate-950 dark:text-slate-300 mt-0.5 flex-shrink-0" />
-                          <span className="text-xs text-slate-700 dark:text-slate-300 font-bold leading-tight">
-                            {item}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Highlights check bullet points */}
-                <div className="space-y-2 border-t border-slate-100 dark:border-slate-800 pt-4">
-                  <h4 className="text-[10px] font-extrabold uppercase text-slate-400 tracking-widest">
-                    Standard Deliverables Package:
-                  </h4>
-                  <ul className="space-y-1.5">
-                    {srv.details.map((detail, idx) => (
-                      <li
-                        key={idx}
-                        className="flex items-start gap-2.5 text-xs text-slate-500 dark:text-slate-400 font-medium"
-                      >
-                        <span className="w-1.5 h-1.5 rounded-full bg-slate-950 dark:bg-cyan-400 mt-1.5 flex-shrink-0"></span>
-                        <span>{detail}</span>
-                      </li>
-                    ))}
-                  </ul>
+                <div className="absolute bottom-6 left-6 flex items-center gap-2 text-blue-500 font-semibold text-sm opacity-0 group-hover:opacity-100 transition-all transform translate-y-2 group-hover:translate-y-0">
+                  Request Quote <span className="group-hover:translate-x-1 transition-transform">→</span>
                 </div>
               </div>
+            </motion.div>
+          ))}
+        </motion.div>
 
-              {/* Action Buttons */}
-              <div className="grid grid-cols-2 gap-3.5 pt-6 mt-6 border-t border-slate-100 dark:border-slate-800">
-                <button
-                  onClick={onGetQuoteClick}
-                  className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-750 text-slate-900 dark:text-slate-100 text-xs font-black rounded-xl text-center cursor-pointer brutalist-border-sm"
-                >
-                  Request Quote
-                </button>
-                <a
-                  href={handleInquiryLink(srv.title)}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-extrabold rounded-xl text-center brutalist-border-sm"
-                >
-                  <MessageCircle className="w-4 h-4" />
-                  WhatsApp Now
-                </a>
-              </div>
-            </div>
-          );
-        })}
-      </section>
-
-      {/* CORE STUDENT BENEFITS WRAPPER */}
-      <section className="bg-white dark:bg-slate-900 brutalist-border rounded-3xl p-8 space-y-6 bg-dot-grid">
-        <div className="text-center space-y-2 max-w-xl mx-auto">
-          <h3 className="text-xl font-black text-slate-950 dark:text-slate-50 tracking-tight">
-            Our Absolute Standard for Every Delivery
-          </h3>
-          <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-            Irrespective of the package chosen, we guarantee these premium
-            elements.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-          <div className="space-y-2">
-            <div className="text-2xl">🧩</div>
-            <h4 className="font-extrabold text-xs text-slate-900 dark:text-slate-100">
-              Clean Source Code
-            </h4>
-            <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
-              Fully uncompiled, raw, and easy to run.
-            </p>
-          </div>
-          <div className="space-y-2">
-            <div className="text-2xl">📚</div>
-            <h4 className="font-extrabold text-xs text-slate-900 dark:text-slate-100">
-              Zero Plagiarism
-            </h4>
-            <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
-              Every page written uniquely for you.
-            </p>
-          </div>
-          <div className="space-y-2">
-            <div className="text-2xl">🎙</div>
-            <h4 className="font-extrabold text-xs text-slate-900 dark:text-slate-100">
-              Expert Walkthroughs
-            </h4>
-            <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
-              One-to-one tutoring before your external viva.
-            </p>
-          </div>
-          <div className="space-y-2">
-            <div className="text-2xl">🛡</div>
-            <h4 className="font-extrabold text-xs text-slate-900 dark:text-slate-100">
-              Free Minor Revisions
-            </h4>
-            <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
-              Accommodating feedback from project guides.
-            </p>
-          </div>
-        </div>
-      </section>
+      </div>
     </div>
   );
 }

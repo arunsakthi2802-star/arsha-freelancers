@@ -1,341 +1,169 @@
-import {
-  Compass,
-  Eye,
-  Award,
-  Heart,
-  MessageCircle,
-  Cpu,
-  Database,
-  Terminal,
-} from "lucide-react";
+import React from "react";
+import { motion } from "motion/react";
+import { Users, Target, Zap, ShieldCheck, Heart, Award, ChevronRight } from "lucide-react";
 
-export default function AboutView({ onNavigate }) {
-  const coreValues = [
-    {
-      title: "Academic Authenticity",
-      desc: "We strictly write original, clean source codes and non-plagiarized manuals adhering fully to your institution guidelines.",
-      icon: Award,
-      color: "text-blue-600 bg-blue-50 dark:bg-blue-900/20",
-    },
-    {
-      title: "Student Centricity",
-      desc: "Our work isn't done at delivery. We stay online past late nights answering examiner prep doubts or doing re-explanations.",
-      icon: Heart,
-      color: "text-rose-600 bg-rose-50 dark:bg-rose-900/20",
-    },
-    {
-      title: "Excellence & Precision",
-      desc: "No generic templates. From ER diagrams to system architectures, everything is generated to industrial norms.",
-      icon: Compass,
-      color: "text-purple-600 bg-purple-50 dark:bg-purple-900/20",
-    },
+export default function AboutView({ onNavigate, darkMode }) {
+  
+  const stats = [
+    { label: "Completed Projects", value: "250+", icon: Award },
+    { label: "Happy Clients", value: "150+", icon: Heart },
+    { label: "Expert Developers", value: "15+", icon: Users },
+    { label: "Years Experience", value: "5+", icon: Zap },
   ];
 
-  const technologies = [
-    {
-      category: "Languages & Frameworks",
-      items: [
-        "Python",
-        "Java",
-        "JavaScript",
-        "TypeScript",
-        "C#",
-        "PHP",
-        "Kotlin",
-        "React.js",
-        "Node.js",
-        "Django",
-        "Flask",
-        "Flutter",
-        "Spring Boot",
-      ],
-      icon: Terminal,
-    },
-    {
-      category: "Databases & Cloud",
-      items: [
-        "MySQL",
-        "PostgreSQL",
-        "MongoDB",
-        "SQLite",
-        "AWS S3",
-        "Firebase Firestore",
-        "Neon",
-        "Supabase",
-      ],
-      icon: Database,
-    },
-    {
-      category: "Specializations & AI",
-      items: [
-        "TensorFlow",
-        "Keras",
-        "Scikit-Learn",
-        "OpenCV",
-        "MediaPipe",
-        "NLTK",
-        "MQTT IoT Broker",
-        "Solidity Web3",
-        "Wireshark",
-        "Metasploit",
-      ],
-      icon: Cpu,
-    },
+  const values = [
+    { title: "Innovation", desc: "We constantly explore emerging technologies to deliver cutting-edge solutions.", icon: Zap, color: "text-blue-500" },
+    { title: "Integrity", desc: "Transparent processes and honest communication form the foundation of our work.", icon: ShieldCheck, color: "text-emerald-500" },
+    { title: "Excellence", desc: "We don't settle for good. We strive for world-class quality in every line of code.", icon: Target, color: "text-purple-500" },
   ];
 
-  const journeyMilestones = [
-    {
-      year: "Year 1",
-      title: "Humbling Beginnings",
-      desc: "Started as a micro freelance collective assisting 10 local BCA students with simple database scripts.",
-    },
-    {
-      year: "Year 2",
-      title: "Expanding the Panel",
-      desc: "Onboarded senior software architects. Successfully delivered 50+ final-year BE, B.Tech, and MCA projects.",
-    },
-    {
-      year: "Year 3",
-      title: "IEEE Focus Group",
-      desc: "Engineered robust algorithms replicating international research papers, becoming Salem's top research guidance provider.",
-    },
-    {
-      year: "Year 4 & Beyond",
-      title: "SaaS & EdTech Platform",
-      desc: "Reached the milestone of supporting 250+ scholars. Fully structured as Arsha Freelancers Software Solutions.",
-    },
+  const timeline = [
+    { year: "2019", title: "The Beginning", desc: "Started as a small group of passionate student developers." },
+    { year: "2021", title: "Going Corporate", desc: "Expanded into full-scale enterprise software and B2B solutions." },
+    { year: "2023", title: "AI Integration", desc: "Launched dedicated AI/ML development and automated systems." },
+    { year: "2026", title: "Global Reach", desc: "Serving international clients with world-class digital products." },
   ];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-20 pb-16 pt-8 text-left">
-      {/* 1. HERO HEADER */}
-      <section className="text-center space-y-4 max-w-4xl mx-auto">
-        <span className="text-xs uppercase font-extrabold tracking-widest text-slate-950 bg-neo-yellow px-3 py-1.5 rounded-full brutalist-border-sm">
-          Who We Are
-        </span>
-        <h1 className="text-4xl sm:text-5xl font-black text-slate-950 dark:text-slate-50 tracking-tight">
-          Empowering Students Through Innovation & Academic Excellence
-        </h1>
-        <p className="text-sm sm:text-base text-slate-500 dark:text-slate-400 font-medium max-w-2xl mx-auto leading-relaxed">
-          Arsha Freelancers Software Solutions bridges the divide between
-          university curricula and live industrial coding structures,
-          transforming complex concepts into successful grades and practical
-          skills.
-        </p>
-      </section>
+    <div className={`min-h-screen pt-24 pb-20 ${darkMode ? 'text-slate-100 bg-slate-950/20' : 'text-slate-900 bg-white/20'} backdrop-blur-lg`}>
+      
+      {/* Background Orbs */}
+      <div className="absolute top-0 right-0 w-96 h-96 bg-blue-600/10 rounded-full blur-[100px] pointer-events-none"></div>
+      <div className="absolute bottom-0 left-0 w-96 h-96 bg-purple-600/10 rounded-full blur-[100px] pointer-events-none"></div>
 
-      {/* 2. CORE BRIEF & PHOTO PLACEHOLDER */}
-      <section className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-        {/* Narrative */}
-        <div className="space-y-6">
-          <h2 className="text-2xl sm:text-3xl font-black text-slate-950 dark:text-slate-50 tracking-tight">
-            Our Identity & Mission
-          </h2>
-          <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
-            Arsha Freelancers Software Solutions was founded in Salem, Tamil
-            Nadu, with a straightforward aspiration: to alleviate the high
-            friction, fear, and ambiguity associated with academic projects and
-            technical thesis writing.
-          </p>
-          <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
-            Over the past four years, we've realized that students struggle not
-            due to lack of intellect, but due to a gap in practical software
-            development mentorship. Our seasoned engineers provide continuous
-            supervision, source codes walkthroughs, and precise reports
-            complying with complex university chapters.
-          </p>
-
-          <div className="grid grid-cols-2 gap-4 pt-2">
-            <div className="bg-neo-cyan text-slate-950 p-4 rounded-xl brutalist-border-sm font-bold">
-              <span className="block text-2xl font-black text-slate-950">
-                250+
-              </span>
-              <span className="text-[10px] font-extrabold text-slate-800 uppercase tracking-widest">
-                Alumni Supported
-              </span>
-            </div>
-            <div className="bg-neo-yellow text-slate-950 p-4 rounded-xl brutalist-border-sm font-bold">
-              <span className="block text-2xl font-black text-slate-950">
-                98%
-              </span>
-              <span className="text-[10px] font-extrabold text-slate-800 uppercase tracking-widest">
-                O/A grade success
-              </span>
-            </div>
-          </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        
+        {/* Header Section */}
+        <div className="text-center mb-20">
+          <motion.h1 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-4xl md:text-6xl font-extrabold mb-6 tracking-tight"
+          >
+            Empowering the <span className="text-gradient-primary">Digital Future</span>
+          </motion.h1>
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className={`max-w-3xl mx-auto text-lg ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}
+          >
+            Arsha Freelancers is a premium software engineering agency. We bridge the gap between complex business challenges and scalable technological solutions.
+          </motion.p>
         </div>
 
-        {/* Vision & Mission bento */}
-        <div className="grid grid-cols-1 gap-6">
-          <div className="bg-neo-pink text-slate-950 p-6 rounded-2xl brutalist-border">
-            <div className="flex gap-4 items-start">
-              <div className="p-3 bg-white text-slate-950 rounded-xl border-2 border-slate-950 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
-                <Compass className="w-6 h-6" />
-              </div>
-              <div className="space-y-1.5">
-                <h3 className="text-lg font-black text-slate-950">
-                  Our Mission
-                </h3>
-                <p className="text-xs sm:text-sm text-slate-800 font-semibold leading-relaxed">
-                  To provide premium technical guidance, high-scoring
-                  documentation, and practical code structures that empower
-                  every student to confidently explain their software and score
-                  stellar grades.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-neo-lime text-slate-950 p-6 rounded-2xl brutalist-border">
-            <div className="flex gap-4 items-start">
-              <div className="p-3 bg-white text-slate-950 rounded-xl border-2 border-slate-950 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
-                <Eye className="w-6 h-6" />
-              </div>
-              <div className="space-y-1.5">
-                <h3 className="text-lg font-black text-slate-950">
-                  Our Vision
-                </h3>
-                <p className="text-xs sm:text-sm text-slate-800 font-semibold leading-relaxed">
-                  To become India's most trusted, student-centric academic
-                  software guidance platform, recognized for high-performance
-                  integrations, premium presentations, and absolute educational
-                  integrity.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 3. OUR CORE VALUES */}
-      <section className="space-y-8">
-        <div className="text-center space-y-2">
-          <h2 className="text-2xl sm:text-3xl font-black text-slate-950 dark:text-slate-50 tracking-tight">
-            Our Core Values
-          </h2>
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium">
-            The non-negotiable principles that shape our development workflows
-            daily.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {coreValues.map((val, idx) => (
-            <div
-              key={idx}
-              className="bg-white dark:bg-slate-900 p-6 rounded-2xl brutalist-border text-left"
+        {/* Animated Counters / Stats */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-24">
+          {stats.map((stat, i) => (
+            <motion.div
+              key={stat.label}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1 }}
+              className="glass-card rounded-2xl p-6 text-center transform hover:-translate-y-2 transition-transform duration-300"
             >
-              <div className="p-3 w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-neo-yellow text-slate-950 border-2 border-slate-950 shadow-[2px_2px_0px_0px_rgba(15,23,42,1)]">
-                <val.icon className="w-6 h-6" />
+              <div className="w-12 h-12 mx-auto rounded-full bg-blue-500/10 flex items-center justify-center mb-4">
+                <stat.icon className="w-6 h-6 text-blue-500" />
               </div>
-              <h3 className="text-base font-black text-slate-950 dark:text-slate-100 tracking-tight mb-2">
-                {val.title}
-              </h3>
-              <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
-                {val.desc}
-              </p>
-            </div>
+              <h3 className="text-3xl font-extrabold mb-1">{stat.value}</h3>
+              <p className={`text-sm font-medium ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>{stat.label}</p>
+            </motion.div>
           ))}
         </div>
-      </section>
 
-      {/* 4. TECHNOLOGIES WE WORK WITH */}
-      <section className="bg-neo-purple/10 dark:bg-slate-900/40 p-8 sm:p-10 rounded-3xl brutalist-border space-y-8">
-        <div className="text-center space-y-2">
-          <span className="text-xs uppercase font-extrabold tracking-widest text-slate-950 bg-neo-cyan px-2.5 py-1 rounded-md border border-slate-950 shadow-[1px_1px_0px_0px_rgba(15,23,42,1)]">
-            Enterprise Ready Skills
-          </span>
-          <h2 className="text-2xl sm:text-3xl font-black text-slate-950 dark:text-slate-50 tracking-tight pt-2">
-            Technologies We Specialize In
-          </h2>
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium">
-            No code simulation is too ancient or complex for our active engineer
-            panel.
-          </p>
+        {/* Vision & Mission Split */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-24">
+          <motion.div 
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="glass-panel p-10 rounded-3xl"
+          >
+            <h2 className="text-2xl font-bold mb-4 text-blue-500">Our Mission</h2>
+            <p className="text-lg leading-relaxed">
+              To democratize access to enterprise-grade software solutions, empowering startups and established businesses alike to disrupt their industries through technology.
+            </p>
+          </motion.div>
+          
+          <motion.div 
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="glass-panel p-10 rounded-3xl"
+          >
+            <h2 className="text-2xl font-bold mb-4 text-purple-500">Our Vision</h2>
+            <p className="text-lg leading-relaxed">
+              To be the globally recognized benchmark for digital excellence, where brilliant engineering meets unparalleled user experience design.
+            </p>
+          </motion.div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 text-slate-950">
-          {technologies.map((tech, idx) => (
-            <div
-              key={idx}
-              className="bg-white dark:bg-slate-900 p-5 rounded-2xl brutalist-border-sm space-y-4"
-            >
-              <div className="flex items-center gap-2 pb-2.5 border-b border-slate-100 dark:border-slate-800">
-                <div className="p-2 bg-neo-orange text-slate-950 rounded-lg border border-slate-950 shadow-[1px_1px_0px_0px_rgba(15,23,42,1)]">
-                  <tech.icon className="w-5 h-5" />
-                </div>
-                <h3 className="font-extrabold text-sm text-slate-950 dark:text-slate-100 uppercase tracking-wider">
-                  {tech.category}
-                </h3>
-              </div>
+        {/* Core Values */}
+        <div className="mb-24">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-extrabold">Our Core Values</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {values.map((val, i) => (
+              <motion.div
+                key={val.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="glass-card rounded-2xl p-8 hover:shadow-2xl transition-all duration-300 group"
+              >
+                <val.icon className={`w-10 h-10 mb-6 ${val.color} group-hover:scale-110 transition-transform`} />
+                <h3 className="text-xl font-bold mb-3">{val.title}</h3>
+                <p className={`${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>{val.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
 
-              <div className="flex flex-wrap gap-2">
-                {tech.items.map((item, i) => (
-                  <span
-                    key={i}
-                    className="text-xs font-bold px-2.5 py-1 rounded-lg bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/60 hover:border-blue-500 transition-colors"
+        {/* Interactive Timeline */}
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-extrabold">Our Journey</h2>
+          </div>
+          <div className="relative border-l-2 border-blue-500/30 pl-8 ml-4 md:ml-0 md:pl-0 md:border-l-0">
+            
+            {/* Desktop Center Line */}
+            <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-0.5 bg-blue-500/30 transform -translate-x-1/2"></div>
+            
+            <div className="space-y-12">
+              {timeline.map((item, i) => {
+                const isEven = i % 2 === 0;
+                return (
+                  <motion.div 
+                    key={item.year}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    className={`relative flex flex-col md:flex-row items-center ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'} gap-8`}
                   >
-                    {item}
-                  </span>
-                ))}
-              </div>
+                    {/* Node */}
+                    <div className="absolute left-[-41px] md:static md:w-1/2 flex justify-center z-10">
+                      <div className="w-4 h-4 bg-blue-500 rounded-full shadow-[0_0_15px_rgba(59,130,246,0.8)]"></div>
+                    </div>
+                    
+                    {/* Content */}
+                    <div className={`w-full md:w-1/2 ${isEven ? 'md:pr-12 md:text-right' : 'md:pl-12 text-left'}`}>
+                      <div className="glass-card p-6 rounded-2xl hover:border-blue-500/50 transition-colors">
+                        <span className="text-blue-500 font-black text-xl block mb-2">{item.year}</span>
+                        <h3 className="text-lg font-bold mb-2">{item.title}</h3>
+                        <p className={`text-sm ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>{item.desc}</p>
+                      </div>
+                    </div>
+                  </motion.div>
+                )
+              })}
             </div>
-          ))}
-        </div>
-      </section>
-
-      {/* 5. STUDENT SUCCESS JOURNEY (Timeline summary) */}
-      <section className="space-y-8">
-        <div className="text-center space-y-2">
-          <h2 className="text-2xl sm:text-3xl font-black text-slate-950 dark:text-slate-50 tracking-tight">
-            Our Growth Story
-          </h2>
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium">
-            From custom project scripts to a premium full-suite academic
-            solutions platform.
-          </p>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          {journeyMilestones.map((ms, idx) => (
-            <div
-              key={idx}
-              className="bg-white dark:bg-slate-900 p-5 rounded-2xl brutalist-border relative text-left"
-            >
-              <div className="absolute top-4 right-4 text-xs font-mono font-black text-slate-950 bg-neo-yellow px-2 py-0.5 rounded border border-slate-950 shadow-[1px_1px_0px_0px_rgba(15,23,42,1)]">
-                {ms.year}
-              </div>
-              <h3 className="text-sm font-black text-slate-950 dark:text-slate-100 tracking-tight mb-2 pt-2">
-                {ms.title}
-              </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
-                {ms.desc}
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* About View Final Action */}
-      <section className="text-center pt-4">
-        <div className="inline-flex flex-wrap gap-4 justify-center">
-          <button
-            onClick={() => onNavigate("projects")}
-            className="px-6 py-3 bg-neo-purple text-slate-950 font-black text-xs rounded-xl brutalist-border"
-          >
-            Explore Student Project Library
-          </button>
-          <a
-            href="https://wa.me/918300799120?text=Hi+Arsha+Freelancers%2C+I+read+about+your+mission+on+the+About+Page+and+would+love+to+consult+with+an+expert."
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-1.5 px-6 py-3 bg-neo-green text-slate-950 font-black text-xs rounded-xl brutalist-border"
-          >
-            <MessageCircle className="w-4 h-4" />
-            Book Free Consultation
-          </a>
-        </div>
-      </section>
+      </div>
     </div>
   );
 }

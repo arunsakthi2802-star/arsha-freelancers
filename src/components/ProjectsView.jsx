@@ -112,24 +112,24 @@ export default function ProjectsView({
     switch (dept) {
       case "CS":
       case "CSE":
-        return "bg-neo-yellow text-slate-950 border border-slate-950";
+        return "bg-blue-600 hover:bg-blue-700 text-white text-white border border-slate-950";
       case "IT":
       case "Cybersecurity":
-        return "bg-neo-cyan text-slate-950 border border-slate-950";
+        return "bg-cyan-600 hover:bg-cyan-700 text-white text-white border border-slate-950";
       case "MCA":
       case "BCA":
-        return "bg-neo-purple text-slate-950 border border-slate-950";
+        return "bg-purple-600 hover:bg-purple-700 text-white text-white border border-slate-950";
       case "AI&DS":
       case "AI&ML":
-        return "bg-neo-pink text-slate-950 border border-slate-950";
+        return "bg-pink-600 hover:bg-pink-700 text-white text-white border border-slate-950";
       case "ECE":
       case "EEE":
-        return "bg-neo-orange text-slate-950 border border-slate-950";
+        return "bg-neo-orange text-white border border-slate-950";
       case "CSBS":
       case "MBA":
-        return "bg-neo-lime text-slate-950 border border-slate-950";
+        return "bg-neo-lime text-white border border-slate-950";
       default:
-        return "bg-neo-blue text-slate-950 border border-slate-950";
+        return "bg-neo-blue text-white border border-slate-950";
     }
   };
 
@@ -412,10 +412,10 @@ export default function ProjectsView({
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 pb-16 pt-8 text-left">
       {/* 1. HERO SECTION */}
       <section className="text-center space-y-6 max-w-4xl mx-auto">
-        <span className="text-xs uppercase font-extrabold tracking-widest text-slate-950 bg-neo-yellow px-3 py-1.5 rounded-full brutalist-border-sm">
+        <span className="text-xs uppercase font-extrabold tracking-widest text-white bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-full border border-slate-200/50 dark:border-slate-800-sm">
           The Project Hub
         </span>
-        <h1 className="text-4xl sm:text-5xl font-black text-slate-950 dark:text-slate-50 tracking-tight">
+        <h1 className="text-4xl sm:text-5xl font-black text-white dark:text-slate-50 tracking-tight">
           Explore Outstanding Student Projects & Custom Ideas
         </h1>
         <p className="text-sm sm:text-base text-slate-500 dark:text-slate-400 font-medium max-w-2xl mx-auto leading-relaxed">
@@ -427,10 +427,10 @@ export default function ProjectsView({
         {/* Dynamic Dual Choice CTA Blocks */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 text-left">
           {/* Card Option 1 */}
-          <div className="bg-white dark:bg-slate-900 brutalist-border rounded-3xl p-6 flex flex-col justify-between">
+          <div className="bg-transparent dark:bg-transparent border border-slate-200/50 dark:border-slate-800 rounded-3xl p-6 flex flex-col justify-between">
             <div className="space-y-3">
               <div className="text-2xl">📚</div>
-              <h3 className="text-lg font-black text-slate-950 dark:text-white">
+              <h3 className="text-lg font-black text-white dark:text-white">
                 Option 1: Browse Our Project Library
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400 font-medium leading-relaxed">
@@ -448,17 +448,17 @@ export default function ProjectsView({
                   100,
                 );
               }}
-              className="mt-6 px-4 py-2.5 bg-neo-purple text-slate-950 font-extrabold text-xs rounded-xl brutalist-border-sm text-center cursor-pointer"
+              className="mt-6 px-4 py-2.5 bg-purple-600 hover:bg-purple-700 text-white text-white font-extrabold text-xs rounded-xl border border-slate-200/50 dark:border-slate-800-sm text-center cursor-pointer"
             >
               Browse Ready Projects
             </button>
           </div>
 
           {/* Card Option 2 */}
-          <div className="bg-white dark:bg-slate-900 brutalist-border rounded-3xl p-6 flex flex-col justify-between">
+          <div className="bg-transparent dark:bg-transparent border border-slate-200/50 dark:border-slate-800 rounded-3xl p-6 flex flex-col justify-between">
             <div className="space-y-3">
               <div className="text-2xl">🧠</div>
-              <h3 className="text-lg font-black text-slate-950 dark:text-white">
+              <h3 className="text-lg font-black text-white dark:text-white">
                 Option 2: Submit Your Custom Project Idea
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400 font-medium leading-relaxed">
@@ -475,7 +475,7 @@ export default function ProjectsView({
                   100,
                 );
               }}
-              className="mt-6 px-4 py-2.5 bg-neo-yellow text-slate-950 font-extrabold text-xs rounded-xl brutalist-border-sm text-center cursor-pointer"
+              className="mt-6 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-white font-extrabold text-xs rounded-xl border border-slate-200/50 dark:border-slate-800-sm text-center cursor-pointer"
             >
               Submit Custom Concept
             </button>
@@ -516,7 +516,7 @@ export default function ProjectsView({
       {activeTab === "library" && (
         <div ref={libraryRef} className="space-y-8 scroll-mt-24">
           {/* SEARCH & FILTERS CONTROLS */}
-          <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl border-2 border-slate-950 dark:border-slate-800 space-y-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] dark:shadow-none">
+          <div className="bg-transparent dark:bg-transparent p-6 rounded-3xl border-2 border-slate-950 dark:border-slate-800 space-y-4 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] dark:shadow-none">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <h3 className="font-extrabold text-slate-900 dark:text-white text-base flex items-center gap-2">
                 <Filter className="w-5 h-5 text-blue-600" />
@@ -533,7 +533,7 @@ export default function ProjectsView({
                   placeholder="Search project titles, keywords..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-white focus:outline-none focus:border-blue-500 font-bold"
+                  className="w-full pl-9 pr-3 py-2.5 bg-transparent dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-white focus:outline-none focus:border-blue-500 font-bold"
                 />
               </div>
 
@@ -542,7 +542,7 @@ export default function ProjectsView({
                 <select
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-white focus:outline-none font-bold cursor-pointer"
+                  className="w-full px-3 py-2.5 bg-transparent dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-white focus:outline-none font-bold cursor-pointer"
                 >
                   <option value="All">All Categories</option>
                   {allCategories
@@ -560,7 +560,7 @@ export default function ProjectsView({
                 <select
                   value={selectedDept}
                   onChange={(e) => setSelectedDept(e.target.value)}
-                  className="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-white focus:outline-none font-bold cursor-pointer"
+                  className="w-full px-3 py-2.5 bg-transparent dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-white focus:outline-none font-bold cursor-pointer"
                 >
                   <option value="All">All Departments</option>
                   {allDepartments
@@ -578,7 +578,7 @@ export default function ProjectsView({
                 <select
                   value={selectedDomain}
                   onChange={(e) => setSelectedDomain(e.target.value)}
-                  className="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-white focus:outline-none font-bold cursor-pointer animate-none"
+                  className="w-full px-3 py-2.5 bg-transparent dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-white focus:outline-none font-bold cursor-pointer animate-none"
                 >
                   <option value="All">All Domains</option>
                   <option value="Web App">Web App</option>
@@ -596,7 +596,7 @@ export default function ProjectsView({
                 <select
                   value={selectedTech}
                   onChange={(e) => setSelectedTech(e.target.value)}
-                  className="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-white focus:outline-none font-bold cursor-pointer"
+                  className="w-full px-3 py-2.5 bg-transparent dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-white focus:outline-none font-bold cursor-pointer"
                 >
                   <option value="All">All Technologies</option>
                   {allTechnologies
@@ -614,7 +614,7 @@ export default function ProjectsView({
                 <select
                   value={selectedDifficulty}
                   onChange={(e) => setSelectedDifficulty(e.target.value)}
-                  className="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-white focus:outline-none font-bold cursor-pointer"
+                  className="w-full px-3 py-2.5 bg-transparent dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-white focus:outline-none font-bold cursor-pointer"
                 >
                   <option value="All">All Complexities</option>
                   <option value="Beginner">Beginner</option>
@@ -628,7 +628,7 @@ export default function ProjectsView({
                 <select
                   value={selectedDuration}
                   onChange={(e) => setSelectedDuration(e.target.value)}
-                  className="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-white focus:outline-none font-bold cursor-pointer"
+                  className="w-full px-3 py-2.5 bg-transparent dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-white focus:outline-none font-bold cursor-pointer"
                 >
                   <option value="All">All Durations</option>
                   {allDurations
@@ -646,7 +646,7 @@ export default function ProjectsView({
                 <select
                   value={selectedSort}
                   onChange={(e) => setSelectedSort(e.target.value)}
-                  className="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-white focus:outline-none font-bold cursor-pointer"
+                  className="w-full px-3 py-2.5 bg-transparent dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-white focus:outline-none font-bold cursor-pointer"
                 >
                   <option value="Latest">Latest Projects</option>
                   <option value="ComplexityDesc">
@@ -674,9 +674,13 @@ export default function ProjectsView({
             {paginatedProjects.map((project) => {
               const deptColor = getDeptColorClass(project.department);
               return (
-                <div
+                <motion.div
                   key={project.id}
-                  className="bg-white dark:bg-slate-900 brutalist-border rounded-3xl p-5 sm:p-6 flex flex-col justify-between"
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-50px" }}
+                  transition={{ duration: 0.5 }}
+                  className="bg-transparent dark:bg-transparent border border-slate-200/50 dark:border-slate-800 rounded-3xl p-5 sm:p-6 flex flex-col justify-between"
                 >
                   <div className="space-y-4">
                     {/* Card Header (ID & Department indicator) */}
@@ -706,7 +710,7 @@ export default function ProjectsView({
                       {project.technology.map((tech) => (
                         <span
                           key={tech}
-                          className="text-[10px] font-bold px-2 py-0.5 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded"
+                          className="text-[10px] font-bold px-2 py-0.5 bg-transparent dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded"
                         >
                           {tech}
                         </span>
@@ -714,7 +718,7 @@ export default function ProjectsView({
                     </div>
 
                     {/* Estimated parameters */}
-                    <div className="flex flex-col gap-1.5 pt-2 text-[11px] font-bold text-slate-400 bg-slate-50 dark:bg-slate-800 p-2 rounded-xl">
+                    <div className="flex flex-col gap-1.5 pt-2 text-[11px] font-bold text-slate-400 bg-transparent dark:bg-slate-800 p-2 rounded-xl">
                       <div className="flex justify-between">
                         <span>
                           Difficulty:{" "}
@@ -750,7 +754,7 @@ export default function ProjectsView({
                   <div className="space-y-2 pt-6 mt-6 border-t border-slate-100 dark:border-slate-800">
                     <button
                       onClick={() => openDetailsModal(project)}
-                      className="w-full px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-750 text-slate-900 dark:text-slate-100 text-xs font-black rounded-xl transition-all flex items-center justify-center gap-1.5 brutalist-border-sm"
+                      className="w-full px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-750 text-slate-900 dark:text-slate-100 text-xs font-black rounded-xl transition-all flex items-center justify-center gap-1.5 border border-slate-200/50 dark:border-slate-800-sm"
                     >
                       View Project Details
                       <Info className="w-3.5 h-3.5" />
@@ -759,24 +763,24 @@ export default function ProjectsView({
                     <div className="grid grid-cols-2 gap-2">
                       <button
                         onClick={() => handleRequestDemo(project)}
-                        className="px-3 py-2 bg-slate-900 dark:bg-slate-950 text-white hover:bg-slate-800 text-[11px] font-black rounded-xl text-center cursor-pointer brutalist-border-sm"
+                        className="px-3 py-2 bg-transparent dark:bg-transparent text-white hover:bg-slate-800 text-[11px] font-black rounded-xl text-center cursor-pointer border border-slate-200/50 dark:border-slate-800-sm"
                       >
                         Request Demo
                       </button>
                       <button
                         onClick={() => handleSelectCard(project)}
-                        className="px-3 py-2 bg-blue-600 hover:bg-blue-500 text-white text-[11px] font-black rounded-xl text-center cursor-pointer brutalist-border-sm"
+                        className="px-3 py-2 bg-blue-600 hover:bg-blue-500 text-white text-[11px] font-black rounded-xl text-center cursor-pointer border border-slate-200/50 dark:border-slate-800-sm"
                       >
                         Select Project
                       </button>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               );
             })}
 
             {sortedProjects.length === 0 && (
-              <div className="col-span-full text-center py-16 bg-slate-50 dark:bg-slate-900 rounded-3xl border border-dashed border-slate-300 dark:border-slate-800">
+              <div className="col-span-full text-center py-16 bg-transparent dark:bg-transparent rounded-3xl border border-dashed border-slate-300 dark:border-slate-800">
                 <BrainCircuit className="w-12 h-12 text-slate-400 mx-auto mb-3" />
                 <h4 className="font-extrabold text-slate-800 dark:text-white text-base">
                   No Matching Projects Found
@@ -856,7 +860,7 @@ export default function ProjectsView({
                       <button
                         key={idx}
                         onClick={() => handleSuggestionClick(title)}
-                        className="w-full text-left p-2.5 bg-slate-900/60 hover:bg-blue-900/40 border border-slate-800 rounded-xl text-xs font-bold transition-all text-slate-200 hover:text-white flex items-start gap-2 group cursor-pointer"
+                        className="w-full text-left p-2.5 bg-transparent/60 hover:bg-blue-900/40 border border-slate-800 rounded-xl text-xs font-bold transition-all text-slate-200 hover:text-white flex items-start gap-2 group cursor-pointer"
                       >
                         <span className="text-[10px] bg-slate-800 text-blue-400 w-5 h-5 rounded-full flex items-center justify-center font-bold mt-0.5 group-hover:bg-blue-600 group-hover:text-white flex-shrink-0">
                           {idx + 1}
@@ -878,13 +882,13 @@ export default function ProjectsView({
 
           {/* Right: Submission Form */}
           <div className="lg:col-span-7">
-            <div className="bg-white dark:bg-slate-900 border-2 border-slate-950 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] dark:shadow-none relative overflow-hidden">
+            <div className="bg-transparent dark:bg-transparent border-2 border-slate-950 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] dark:shadow-none relative overflow-hidden">
               {formSubmitted && (
-                <div className="absolute inset-0 bg-white/95 dark:bg-slate-900/95 z-30 flex flex-col items-center justify-center text-center p-6">
+                <div className="absolute inset-0 bg-transparent/95 dark:bg-transparent/95 z-30 flex flex-col items-center justify-center text-center p-6">
                   <div className="w-16 h-16 bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 rounded-full border-2 border-slate-950 flex items-center justify-center text-2xl font-black mb-4 animate-bounce">
                     ✓
                   </div>
-                  <h3 className="text-xl font-black text-slate-950 dark:text-white">
+                  <h3 className="text-xl font-black text-white dark:text-white">
                     Your Project Idea Received Successfully!
                   </h3>
                   <p className="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto mt-2 leading-relaxed">
@@ -906,7 +910,7 @@ export default function ProjectsView({
                 </div>
               )}
 
-              <h3 className="text-xl font-black text-slate-950 dark:text-slate-50 tracking-tight leading-none mb-6 pb-4 border-b border-slate-100 dark:border-slate-800">
+              <h3 className="text-xl font-black text-white dark:text-slate-50 tracking-tight leading-none mb-6 pb-4 border-b border-slate-100 dark:border-slate-800">
                 Submit Your Project Requirement Map
               </h3>
 
@@ -926,7 +930,7 @@ export default function ProjectsView({
                         placeholder="e.g. Arsha Freelancer"
                         value={formData.name}
                         onChange={handleInputChange}
-                        className="w-full pl-9 pr-3 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-white focus:outline-none focus:border-blue-500 font-bold"
+                        className="w-full pl-9 pr-3 py-2.5 bg-transparent dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-white focus:outline-none focus:border-blue-500 font-bold"
                       />
                     </div>
                   </div>
@@ -945,7 +949,7 @@ export default function ProjectsView({
                         placeholder="e.g. Anna University"
                         value={formData.college}
                         onChange={handleInputChange}
-                        className="w-full pl-9 pr-3 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-white focus:outline-none focus:border-blue-500 font-bold"
+                        className="w-full pl-9 pr-3 py-2.5 bg-transparent dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-white focus:outline-none focus:border-blue-500 font-bold"
                       />
                       <datalist id="tn-colleges">
                         <option value="Anna University, Chennai"></option>
@@ -983,7 +987,7 @@ export default function ProjectsView({
                       name="department"
                       value={formData.department}
                       onChange={handleInputChange}
-                      className="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-white focus:outline-none font-bold cursor-pointer"
+                      className="w-full px-3 py-2.5 bg-transparent dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-white focus:outline-none font-bold cursor-pointer"
                     >
                       <option value="CS">
                         B.Sc / BE Computer Science (CS)
@@ -1012,7 +1016,7 @@ export default function ProjectsView({
                       name="academicYear"
                       value={formData.academicYear}
                       onChange={handleInputChange}
-                      className="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-white focus:outline-none font-bold cursor-pointer"
+                      className="w-full px-3 py-2.5 bg-transparent dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-white focus:outline-none font-bold cursor-pointer"
                     >
                       <option value="Final Year">Final Year Student</option>
                       <option value="Pre-Final Year">
@@ -1041,7 +1045,7 @@ export default function ProjectsView({
                         placeholder="e.g. 8300799120"
                         value={formData.phone}
                         onChange={handleInputChange}
-                        className="w-full pl-9 pr-3 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-white focus:outline-none focus:border-blue-500 font-bold"
+                        className="w-full pl-9 pr-3 py-2.5 bg-transparent dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-white focus:outline-none focus:border-blue-500 font-bold"
                       />
                     </div>
                   </div>
@@ -1059,7 +1063,7 @@ export default function ProjectsView({
                         placeholder="e.g. arshatech06@gmail.com"
                         value={formData.email}
                         onChange={handleInputChange}
-                        className="w-full pl-9 pr-3 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-white focus:outline-none focus:border-blue-500 font-bold"
+                        className="w-full pl-9 pr-3 py-2.5 bg-transparent dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-white focus:outline-none focus:border-blue-500 font-bold"
                       />
                     </div>
                   </div>
@@ -1080,7 +1084,7 @@ export default function ProjectsView({
                         placeholder="e.g. Hand gesture translation system"
                         value={formData.title}
                         onChange={handleInputChange}
-                        className="w-full pl-9 pr-3 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-white focus:outline-none focus:border-blue-500 font-bold"
+                        className="w-full pl-9 pr-3 py-2.5 bg-transparent dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-white focus:outline-none focus:border-blue-500 font-bold"
                       />
                     </div>
                   </div>
@@ -1093,7 +1097,7 @@ export default function ProjectsView({
                       name="technology"
                       value={formData.technology}
                       onChange={handleInputChange}
-                      className="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-white focus:outline-none font-bold cursor-pointer"
+                      className="w-full px-3 py-2.5 bg-transparent dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-white focus:outline-none font-bold cursor-pointer"
                     >
                       <option value="Python">Python / Machine Learning</option>
                       <option value="Java">Java / Spring Boot / Android</option>
@@ -1122,7 +1126,7 @@ export default function ProjectsView({
                     placeholder="Briefly describe what modules, files, or reference papers are required. (Minimum 20 characters)"
                     value={formData.description}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-white focus:outline-none focus:border-blue-500 font-bold"
+                    className="w-full px-3 py-2.5 bg-transparent dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-white focus:outline-none focus:border-blue-500 font-bold"
                   ></textarea>
                 </div>
 
@@ -1139,7 +1143,7 @@ export default function ProjectsView({
                       required
                       value={formData.expectedDate}
                       onChange={handleInputChange}
-                      className="w-full pl-9 pr-3 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-white focus:outline-none focus:border-blue-500 font-bold cursor-pointer"
+                      className="w-full pl-9 pr-3 py-2.5 bg-transparent dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-white focus:outline-none focus:border-blue-500 font-bold cursor-pointer"
                     />
                   </div>
                 </div>
@@ -1228,7 +1232,7 @@ export default function ProjectsView({
       )}
 
       {/* CORE BENEFITS CHECKLIST (Always Visible on Projects page) */}
-      <section className="bg-slate-50 dark:bg-slate-900/40 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 space-y-6">
+      <section className="bg-transparent dark:bg-transparent/40 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 space-y-6">
         <div className="text-center space-y-1.5 max-w-xl mx-auto">
           <h3 className="text-lg font-black text-slate-900 dark:text-white tracking-tight">
             Our Absolute Quality Standard
@@ -1243,7 +1247,7 @@ export default function ProjectsView({
           {studentBenefits.slice(0, 4).map((benefit, idx) => (
             <div
               key={idx}
-              className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-100 dark:border-slate-850 flex gap-3.5 items-start"
+              className="bg-transparent dark:bg-transparent p-5 rounded-2xl border border-slate-100 dark:border-slate-850 flex gap-3.5 items-start"
             >
               <div className="p-1.5 bg-blue-50 dark:bg-blue-900/20 text-blue-600 rounded-lg flex-shrink-0">
                 <Check className="w-4 h-4" />

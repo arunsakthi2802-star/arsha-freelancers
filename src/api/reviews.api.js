@@ -1,15 +1,15 @@
-import api from "./apiClient";
+import api from"./apiClient";
 
 export const getReviews = (params = {}) => {
-  const qs = new URLSearchParams(params).toString();
-  return api.get(`/reviews${qs ? `?${qs}` : ""}`);
+ const qs = new URLSearchParams(params).toString();
+ return api.get(`/reviews${qs ? `?${qs}` :""}`);
 };
 
 export const submitReview = (formData) =>
-  api.post("/reviews", formData, { isFormData: true });
+ api.post("/reviews", formData, { isFormData: true });
 
 export const updateReview = (id, formData) =>
-  api.put(`/reviews/${id}`, formData, { isFormData: true });
+ api.put(`/reviews/${id}`, formData, { isFormData: true });
 
 export const deleteReview = (id) => api.delete(`/reviews/${id}`);
 
