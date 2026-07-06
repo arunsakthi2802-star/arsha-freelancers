@@ -115,6 +115,134 @@
   .animation-delay-4000 {
     animation-delay: 4s;
   }
+  
+  .background-animate {
+    background-size: 400%;
+    animation: AnimationName 5s ease infinite;
+  }
+
+  .ultimate-bg-animate {
+    background: linear-gradient(
+      -45deg,
+      #02040A, /* Ultra Deep Black */
+      #050816, /* Midnight Black */
+      #081120, /* Deep Space Blue */
+      #0A0F2C, /* Deep Navy */
+      #13092A, /* Deep Dark Purple */
+      #081620, /* Deep Dark Cyan */
+      #170514, /* Deep Dark Magenta */
+      #051510, /* Deep Dark Emerald */
+      #120803  /* Deep Dark Amber */
+    );
+    background-size: 800% 800%;
+    animation: colorCycle 60s ease infinite;
+  }
+
+  .ultimate-glass-overlay {
+    background: linear-gradient(135deg, rgba(0,0,0,0.4) 0%, rgba(11,17,32,0.6) 100%);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.03);
+  }
+
+  .antigravity-particles {
+    background-image: 
+      radial-gradient(rgba(100, 116, 139, 0.3) 1px, transparent 1px),
+      radial-gradient(rgba(100, 116, 139, 0.2) 1px, transparent 1px);
+    background-size: 32px 32px, 24px 24px;
+    background-position: 0 0, 12px 12px;
+    animation: particleDrift 60s linear infinite;
+  }
+  
+  .dark .antigravity-particles {
+    background-image: 
+      radial-gradient(rgba(255, 255, 255, 0.15) 1px, transparent 1px),
+      radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+  }
+}
+
+@keyframes particleDrift {
+  0% { background-position: 0px 0px, 12px 12px; }
+  100% { background-position: 320px 320px, 252px 252px; }
+}
+
+/* Aurora orb – GPU-safe: only animates translate (compositor) + blur is static */
+.aurora-orb {
+  position: absolute;
+  border-radius: 100%;
+  filter: blur(80px);
+  will-change: transform;
+  animation: auroraFloat var(--dur, 24s) ease-in-out infinite;
+}
+
+@keyframes auroraFloat {
+  0%   { transform: translate(0px,    0px);   }
+  25%  { transform: translate(60px,  -50px);  }
+  50%  { transform: translate(-40px,  80px);  }
+  75%  { transform: translate(80px,   40px);  }
+  100% { transform: translate(0px,    0px);   }
+}
+
+@property --border-angle {
+  syntax: "<angle>";
+  inherits: true;
+  initial-value: 0turn;
+}
+
+.hover-glow-card {
+  position: relative;
+  border-radius: 1rem;
+}
+
+.hover-glow-card::before,
+.hover-glow-card::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from var(--border-angle),
+    transparent 20%,
+    #08f,
+    #00ff99,
+    #ffbb00,
+    #ff0055,
+    transparent 80%
+  );
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  animation: glow-spin 3s linear infinite;
+}
+
+.hover-glow-card::after {
+  filter: blur(15px);
+}
+
+.hover-glow-card:hover::before,
+.hover-glow-card:hover::after {
+  opacity: 1;
+}
+
+@keyframes glow-spin {
+  to {
+    --border-angle: 1turn;
+  }
+}
+
+@keyframes colorCycle {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes AnimationName {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
 }
 
 @keyframes blob {

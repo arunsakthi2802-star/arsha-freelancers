@@ -3,29 +3,31 @@ import { MessageCircle, ArrowUp, X, Send } from"lucide-react";
 import { motion, AnimatePresence } from"motion/react";
 import Navbar from"./components/Navbar";
 import HomeView from"./components/HomeView";
-import AboutView from"./components/AboutView";
-import ServicesView from"./components/ServicesView";
-import ProjectsView from"./components/ProjectsView";
-import { PortfolioView, FaqView } from"./components/ExtraViews";
-import GalleryView from"./components/GalleryView";
-import ContactView from"./components/ContactView";
-import ReviewView from"./components/ReviewView";
-import Footer from"./components/Footer";
-import DetailsModal from"./components/DetailsModal";
-import AnimatedBackground from"./components/AnimatedBackground";
-import StoriesView from"./components/StoriesView";
-import LoginView from"./components/LoginView";
-import ArshaChat from"./components/ArshaChat";
-import AdminPortal from"./pages/admin/AdminPortal";
-import ManagerDashboard from"./pages/manager/ManagerDashboard";
-import UserDashboard from"./pages/user/UserDashboard";
-import AIProjectAdvisor from"./components/AIProjectAdvisor";
+const AboutView = React.lazy(() => import("./components/AboutView"));
+const ServicesView = React.lazy(() => import("./components/ServicesView"));
+const ProjectsView = React.lazy(() => import("./components/ProjectsView"));
+const PortfolioView = React.lazy(() => import("./components/ExtraViews").then(m => ({ default: m.PortfolioView })));
+const FaqView = React.lazy(() => import("./components/ExtraViews").then(m => ({ default: m.FaqView })));
+const GalleryView = React.lazy(() => import("./components/GalleryView"));
+const ContactView = React.lazy(() => import("./components/ContactView"));
+const ReviewView = React.lazy(() => import("./components/ReviewView"));
+const DetailsModal = React.lazy(() => import("./components/DetailsModal"));
+const StoriesView = React.lazy(() => import("./components/StoriesView"));
+const LoginView = React.lazy(() => import("./components/LoginView"));
+const ArshaChat = React.lazy(() => import("./components/ArshaChat"));
+const AdminPortal = React.lazy(() => import("./pages/admin/AdminPortal"));
+const ManagerDashboard = React.lazy(() => import("./pages/manager/ManagerDashboard"));
+const UserDashboard = React.lazy(() => import("./pages/user/UserDashboard"));
+const AIProjectAdvisor = React.lazy(() => import("./components/AIProjectAdvisor"));
+import Footer from "./components/Footer";
+import AnimatedBackground from "./components/AnimatedBackground";
 import { AuthProvider } from"./context/AuthContext";
 
 export default function App() {
  const [activeView, setActiveView] = useState("home");
  const [darkMode, setDarkMode] = useState(() => {
-    return localStorage.getItem("arsha_theme") === "dark" || false;
+    const savedTheme = localStorage.getItem("arsha_theme");
+    return savedTheme !== null ? savedTheme === "dark" : true;
   });
  // Modal states
  const [selectedProject, setSelectedProject] = useState(null);
@@ -324,12 +326,13 @@ export default function App() {
  <AuthProvider>
  <div
  className={`min-h-screen font-outfit flex flex-col justify-between transition-colors duration-500 select-none relative overflow-x-hidden ${
-          darkMode ? "bg-slate-950 text-slate-100" : "bg-slate-50 text-slate-900"
+          darkMode ? "ultimate-bg-animate text-slate-100" : "bg-slate-50 text-slate-900"
         }`}
  >
  <div className="fixed inset-0 z-[-2]">
     <AnimatedBackground theme="neo-cyber" darkMode={darkMode} />
   </div>
+
  {/* 1. HEADER & STICKY NAVIGATION */}
  {!isAdminPage && (
  <Navbar
@@ -342,7 +345,11 @@ export default function App() {
  )}
 
  {/* 2. BODY DYNAMIC MAIN CONTENT VIEW */}
- <main className={`${isAdminPage ?"" :"flex-grow pt-4"} relative z-10`}>{renderActiveView()}</main>
+ <main className={`${isAdminPage ?"" :"flex-grow pt-4"} relative z-10`}>
+    <React.Suspense fallback={<div className="min-h-[60vh] flex items-center justify-center"><div className="animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full"></div></div>}>
+      {renderActiveView()}
+    </React.Suspense>
+  </main>
 
  {/* 3. FOOTER */}
  {!isAdminPage && (

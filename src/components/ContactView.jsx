@@ -60,7 +60,7 @@ export default function ContactView({ darkMode }) {
                   </div>
                   <div>
                     <h4 className={`font-bold ${darkMode ? 'text-slate-200' : 'text-slate-800'}`}>Office Address</h4>
-                    <p className={`text-sm mt-1 ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>123 Tech Park Avenue,<br/>Innovation District, CA 94043</p>
+                    <p className={`text-sm mt-1 ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>L-4, staff quaters near,<br/>periyar university salem - 636011.</p>
                   </div>
                 </div>
 
@@ -81,7 +81,7 @@ export default function ContactView({ darkMode }) {
                   </div>
                   <div>
                     <h4 className={`font-bold ${darkMode ? 'text-slate-200' : 'text-slate-800'}`}>Email</h4>
-                    <p className={`text-sm mt-1 ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>contact@arshafreelancers.com</p>
+                    <p className={`text-sm mt-1 ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>info@arshafreelancers.com</p>
                   </div>
                 </div>
               </div>
@@ -170,7 +170,7 @@ export default function ContactView({ darkMode }) {
               </div>
               <iframe 
                 className="absolute inset-0 w-full h-full border-0 relative z-10 opacity-90 group-hover:opacity-100 transition-opacity mix-blend-luminosity hover:mix-blend-normal"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15665.811652033837!2d76.9960!3d11.0168!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTHCsDAxJzAwLjUiTiA3N8KwNTknNDUuNiJF!5e0!3m2!1sen!2sin!4v1625560938383!5m2!1sen!2sin" 
+                src="https://maps.google.com/maps?q=Periyar%20University,%20Salem&t=&z=14&ie=UTF8&iwloc=&output=embed" 
                 allowFullScreen="" 
                 loading="lazy"
               ></iframe>

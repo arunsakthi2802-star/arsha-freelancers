@@ -3,35 +3,35 @@ import { motion } from "motion/react";
 import { 
   Code, Layout, Smartphone, PenTool, Image, Hexagon, Search, 
   Megaphone, Cpu, Shield, Cloud, Server, Database, Users, 
-  ShoppingCart, HardDrive, HeadphonesIcon, GraduationCap 
+  ShoppingCart, HardDrive, Wrench, Lightbulb, Network 
 } from "lucide-react";
 
 export default function ServicesView({ onNavigate, onGetQuoteClick, darkMode }) {
   const [activeCategory, setActiveCategory] = useState("All");
 
   const categories = [
-    "All", "Web & Mobile", "Design & Brand", "Digital Marketing", "Enterprise Solutions", "Academic Projects"
+    "All", "Web & Mobile", "Design & Brand", "Digital Marketing", "Enterprise Solutions"
   ];
 
   const premiumServices = [
     { title: "Website Development", category: "Web & Mobile", icon: Layout, desc: "Custom, responsive, and blazing fast websites." },
     { title: "Web Applications", category: "Web & Mobile", icon: Code, desc: "Scalable full-stack web platforms." },
-    { title: "Mobile App Development", category: "Web & Mobile", icon: Smartphone, desc: "Native iOS and Android applications." },
+    { title: "Mobile Apps", category: "Web & Mobile", icon: Smartphone, desc: "Native iOS and Android applications." },
     { title: "UI/UX Design", category: "Design & Brand", icon: PenTool, desc: "Intuitive, user-centered interface design." },
     { title: "Graphic Design", category: "Design & Brand", icon: Image, desc: "Professional visual assets and illustrations." },
-    { title: "Logo Design & Branding", category: "Design & Brand", icon: Hexagon, desc: "Brand identity, logos, and style guides." },
-    { title: "SEO Optimization", category: "Digital Marketing", icon: Search, desc: "Rank higher and drive organic traffic." },
-    { title: "Digital Marketing", category: "Digital Marketing", icon: Megaphone, desc: "Data-driven marketing campaigns." },
+    { title: "Branding", category: "Design & Brand", icon: Hexagon, desc: "Brand identity, logos, and style guides." },
     { title: "AI Solutions", category: "Enterprise Solutions", icon: Cpu, desc: "Machine learning and AI integrations." },
     { title: "Cybersecurity", category: "Enterprise Solutions", icon: Shield, desc: "Vulnerability assessment and protection." },
+    { title: "SEO", category: "Digital Marketing", icon: Search, desc: "Rank higher and drive organic traffic." },
+    { title: "Digital Marketing", category: "Digital Marketing", icon: Megaphone, desc: "Data-driven marketing campaigns." },
     { title: "Cloud Services", category: "Enterprise Solutions", icon: Cloud, desc: "AWS, Azure, and Google Cloud management." },
-    { title: "ERP Solutions", category: "Enterprise Solutions", icon: Server, desc: "Enterprise Resource Planning software." },
-    { title: "CRM Development", category: "Enterprise Solutions", icon: Users, desc: "Custom Customer Relationship Management." },
+    { title: "ERP", category: "Enterprise Solutions", icon: Server, desc: "Enterprise Resource Planning software." },
+    { title: "CRM", category: "Enterprise Solutions", icon: Users, desc: "Custom Customer Relationship Management." },
+    { title: "API Development", category: "Enterprise Solutions", icon: Network, desc: "Robust and secure backend API services." },
     { title: "E-Commerce", category: "Web & Mobile", icon: ShoppingCart, desc: "Online stores and payment gateways." },
-    { title: "Hosting & Domain", category: "Enterprise Solutions", icon: HardDrive, desc: "Secure server hosting and deployment." },
-    { title: "Technical Support", category: "Enterprise Solutions", icon: HeadphonesIcon, desc: "24/7 technical assistance and maintenance." },
-    // Retaining core academic roots for Arsha Freelancers
-    { title: "Final Year Academic Projects", category: "Academic Projects", icon: GraduationCap, desc: "IEEE standard complete software project packages." }
+    { title: "Hosting", category: "Enterprise Solutions", icon: HardDrive, desc: "Secure server hosting and deployment." },
+    { title: "Maintenance", category: "Enterprise Solutions", icon: Wrench, desc: "24/7 technical assistance and maintenance." },
+    { title: "Technical Consulting", category: "Enterprise Solutions", icon: Lightbulb, desc: "Expert guidance for your tech infrastructure." }
   ];
 
   const filteredServices = activeCategory === "All" 
