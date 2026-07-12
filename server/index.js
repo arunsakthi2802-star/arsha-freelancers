@@ -99,6 +99,25 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 // MongoDB injection sanitization
 app.use(mongoSanitize());
 
+// Middleware to ensure DB connection is active before processing any request
+app.use(async (req, res, next) => {
+  // Bypass health check route
+  if (req.path === "/api/health") {
+    return next();
+  }
+  try {
+    await connectDB();
+    next();
+  } catch (error) {
+    console.error("❌ DB Middleware Connection Error:", error.message);
+    res.status(500).json({
+      success: false,
+      message: "Database connection failed. Please check backend logs and environment variables.",
+      error: error.message,
+    });
+  }
+});
+
 // ── Routes ─────────────────────────────────────────────────────────────────────
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
