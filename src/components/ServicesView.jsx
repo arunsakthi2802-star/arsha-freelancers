@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { motion } from "motion/react";
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import { 
   Code, Layout, Smartphone, PenTool, Image, Hexagon, Search, 
   Megaphone, Cpu, Shield, Cloud, Server, Database, Users, 
   ShoppingCart, HardDrive, Wrench, Lightbulb, Network 
 } from "lucide-react";
+import { fadeUp, staggerContainer, hoverCard } from "../utils/animations";
 
 export default function ServicesView({ onNavigate, onGetQuoteClick, darkMode }) {
   const [activeCategory, setActiveCategory] = useState("All");
@@ -39,43 +40,46 @@ export default function ServicesView({ onNavigate, onGetQuoteClick, darkMode }) 
     : premiumServices.filter(s => s.category === activeCategory);
 
   return (
-    <div className={`min-h-screen pt-24 pb-20 bg-transparent`}>
-      
-      {/* Background glow */}
-      <div className="absolute top-40 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-blue-600/20 rounded-full blur-[120px] pointer-events-none"></div>
-
+    <div className="min-h-screen pt-32 pb-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        
+        {/* Header */}
         <div className="text-center mb-16">
           <motion.h1 
-            initial={{ opacity: 0, y: -20 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className={`text-4xl md:text-6xl font-extrabold mb-6 tracking-tight ${darkMode ? 'text-white' : 'text-slate-900'}`}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            className={`text-4xl md:text-5xl font-extrabold mb-6 tracking-tight ${darkMode ? 'text-white' : 'text-gray-900'}`}
           >
-            Premium <span className="text-gradient-primary">Digital Services</span>
+            Digital Services
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className={`max-w-3xl mx-auto text-lg ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}
+            transition={{ delay: 0.2, duration: 0.5 }}
+            className={`max-w-3xl mx-auto text-lg ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}
           >
             From cutting-edge web applications to robust cybersecurity and academic prototypes, our expert team delivers excellence at every step.
           </motion.p>
         </div>
 
         {/* Categories Filter */}
-        <div className="flex flex-wrap justify-center gap-2 mb-12">
+        <div className="flex flex-wrap justify-center gap-3 mb-16">
           {categories.map((cat, i) => (
             <motion.button
               key={cat}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1 }}
+              transition={{ delay: i * 0.05 }}
               onClick={() => setActiveCategory(cat)}
-              className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all ${
+              className={`px-5 py-2 rounded-full text-sm font-medium transition-all border ${
                 activeCategory === cat
-                  ? "bg-blue-600 text-white shadow-lg shadow-blue-500/30"
-                  : `glass hover:bg-blue-50 hover:text-blue-600 ${darkMode ? 'text-slate-300 border-slate-700' : 'text-slate-600 border-slate-200'}`
+                  ? darkMode 
+                    ? "bg-white text-gray-900 border-white" 
+                    : "bg-gray-900 text-white border-gray-900"
+                  : darkMode 
+                    ? "bg-transparent text-gray-400 border-gray-800 hover:text-white hover:border-gray-600" 
+                    : "bg-transparent text-gray-600 border-gray-200 hover:text-gray-900 hover:border-gray-300"
               }`}
             >
               {cat}
@@ -83,53 +87,45 @@ export default function ServicesView({ onNavigate, onGetQuoteClick, darkMode }) 
           ))}
         </div>
 
-        {/* Service Grid with 3D Hover & Glow */}
+        {/* Service Grid */}
         <motion.div 
           layout
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
         >
-          {filteredServices.map((srv, index) => (
-            <motion.div
-              layout
-              key={srv.title}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              transition={{ duration: 0.3 }}
-              whileHover={{ 
-                y: -10,
-                rotateX: 5,
-                rotateY: -5,
-                scale: 1.02,
-                transition: { type: "spring", stiffness: 300 }
-              }}
-              className={`relative group cursor-pointer glass-card rounded-2xl p-6 h-full transition-all duration-300 ${
-                darkMode ? 'hover:shadow-[0_0_30px_rgba(37,99,235,0.2)] hover:border-blue-500/50' : 'hover:shadow-2xl hover:border-blue-400'
-              }`}
-              style={{ perspective: 1000 }}
-              onClick={onGetQuoteClick}
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
-              
-              <div className="relative z-10">
-                <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white mb-6 shadow-lg group-hover:scale-110 transition-transform">
-                  <srv.icon className="w-7 h-7" />
+          <AnimatePresence mode="popLayout">
+            {filteredServices.map((srv) => (
+              <motion.div
+                layout
+                key={srv.title}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.3 }}
+                whileHover="hover"
+                variants={hoverCard}
+                className={`relative group cursor-pointer rounded-2xl p-8 border transition-colors ${
+                  darkMode ? 'bg-gray-900/50 border-gray-800 hover:border-gray-700' : 'bg-white border-gray-100 hover:border-gray-200 shadow-sm'
+                }`}
+                onClick={onGetQuoteClick}
+              >
+                <div className="w-12 h-12 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center mb-6 transition-colors group-hover:bg-blue-50 dark:group-hover:bg-blue-900/20">
+                  <srv.icon className="w-6 h-6 text-gray-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" />
                 </div>
                 
-                <h3 className={`text-xl font-bold mb-3 ${darkMode ? 'text-white' : 'text-slate-900'}`}>
+                <h3 className={`text-xl font-semibold mb-3 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                   {srv.title}
                 </h3>
                 
-                <p className={`text-sm mb-6 ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+                <p className={`text-sm mb-8 leading-relaxed ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                   {srv.desc}
                 </p>
 
-                <div className="absolute bottom-6 left-6 flex items-center gap-2 text-blue-500 font-semibold text-sm opacity-0 group-hover:opacity-100 transition-all transform translate-y-2 group-hover:translate-y-0">
+                <div className="absolute bottom-8 left-8 flex items-center gap-2 text-blue-600 font-medium text-sm opacity-0 group-hover:opacity-100 transition-all transform translate-y-2 group-hover:translate-y-0">
                   Request Quote <span className="group-hover:translate-x-1 transition-transform">→</span>
                 </div>
-              </div>
-            </motion.div>
-          ))}
+              </motion.div>
+            ))}
+          </AnimatePresence>
         </motion.div>
 
       </div>

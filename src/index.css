@@ -1,285 +1,107 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 @import "tailwindcss";
+
 @custom-variant dark (&:is(.dark *));
+
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Poppins", "Inter", sans-serif;
-  --font-outfit: "Outfit", "Inter", sans-serif;
-
-  --color-brand-blue: #2563EB;
-  --color-brand-indigo: #4F46E5;
-  --color-brand-purple: #7C3AED;
-  --color-brand-cyan: #06B6D4;
-  --color-brand-emerald: #10B981;
-  --color-brand-orange: #F97316;
-  --color-brand-pink: #EC4899;
-  --color-brand-yellow: #FACC15;
-
-  --color-dark-100: #050816;
-  --color-dark-200: #0B1120;
-  --color-dark-300: #111827;
-
-  --color-light-100: #FFFFFF;
-  --color-light-200: #F8FAFC;
-  --color-light-300: #F3F4F6;
+  
+  /* Minimal Color Palette */
+  --color-base: #FFFFFF;
+  --color-base-dark: #0A0A0A; /* Near black */
+  
+  --color-surface: #F9FAFB; /* Gray 50 */
+  --color-surface-dark: #171717; /* Neutral 900 */
+  
+  --color-primary: #111827; /* Gray 900 for buttons on light */
+  --color-primary-dark: #F3F4F6; /* Gray 100 for buttons on dark */
+  
+  --color-accent: #2563EB; /* Clean Blue */
+  --color-accent-secondary: #06B6D4; /* Cyan */
+  
+  --color-text: #111827;
+  --color-text-muted: #6B7280;
+  
+  --color-text-dark: #F9FAFB;
+  --color-text-muted-dark: #9CA3AF;
 }
 
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  body {
+    @apply bg-[var(--color-base)] text-[var(--color-text)] font-sans transition-colors duration-300;
+  }
 
-/* === GLOBAL SMOOTH SCROLL & INPUT POLISH === */
-html {
-  scroll-behavior: smooth;
-}
+  .dark body {
+    @apply bg-[var(--color-base-dark)] text-[var(--color-text-dark)];
+  }
 
-/* Smooth transition for all form inputs and selects */
-input, textarea, select {
-  transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight;
+  }
 }
 
 @layer utilities {
-  .glass {
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.4);
+  .glass-header {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
   }
 
-  .dark .glass {
-    background: rgba(17, 24, 39, 0.6);
-    backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+  .dark .glass-header {
+    background: rgba(10, 10, 10, 0.8);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   }
 
   .glass-card {
-    background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(24px);
-    border: 1px solid rgba(226, 232, 240, 0.8);
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.05);
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(0, 0, 0, 0.05);
   }
 
   .dark .glass-card {
-    background: rgba(11, 17, 32, 0.7);
-    backdrop-filter: blur(24px);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
-  }
-
-  .glass-panel {
-    background: linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(248,250,252,0.85) 100%);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.6);
-  }
-
-  .dark .glass-panel {
-    background: linear-gradient(145deg, rgba(31,41,55,0.4) 0%, rgba(17,24,39,0.7) 100%);
-    backdrop-filter: blur(20px);
+    background: rgba(23, 23, 23, 0.6);
     border: 1px solid rgba(255, 255, 255, 0.05);
   }
 
-  .text-gradient-primary {
-    background: linear-gradient(to right, var(--color-brand-blue), var(--color-brand-purple));
+  /* Minimal text gradient for special accents */
+  .text-gradient {
+    background: linear-gradient(135deg, var(--color-text), var(--color-text-muted));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
-  .text-gradient-secondary {
-    background: linear-gradient(to right, var(--color-brand-cyan), var(--color-brand-blue));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+  .dark .text-gradient {
+    background: linear-gradient(135deg, var(--color-text-dark), var(--color-text-muted-dark));
   }
-
-  .text-gradient-accent {
-    background: linear-gradient(to right, var(--color-brand-orange), var(--color-brand-pink));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .bg-gradient-mesh {
-    background-image: 
-      radial-gradient(at 40% 20%, hsla(228,100%,74%,0.15) 0px, transparent 50%),
-      radial-gradient(at 80% 0%, hsla(189,100%,56%,0.15) 0px, transparent 50%),
-      radial-gradient(at 0% 50%, hsla(355,100%,93%,0.1) 0px, transparent 50%),
-      radial-gradient(at 80% 50%, hsla(340,100%,76%,0.15) 0px, transparent 50%),
-      radial-gradient(at 0% 100%, hsla(22,100%,77%,0.1) 0px, transparent 50%),
-      radial-gradient(at 80% 100%, hsla(242,100%,70%,0.15) 0px, transparent 50%),
-      radial-gradient(at 0% 0%, hsla(343,100%,76%,0.1) 0px, transparent 50%);
-  }
-
-  .dark .bg-gradient-mesh {
-    background-image: 
-      radial-gradient(at 40% 20%, hsla(228,100%,74%,0.1) 0px, transparent 50%),
-      radial-gradient(at 80% 0%, hsla(189,100%,56%,0.1) 0px, transparent 50%),
-      radial-gradient(at 0% 50%, hsla(355,100%,93%,0.05) 0px, transparent 50%),
-      radial-gradient(at 80% 50%, hsla(340,100%,76%,0.1) 0px, transparent 50%),
-      radial-gradient(at 0% 100%, hsla(22,100%,77%,0.05) 0px, transparent 50%),
-      radial-gradient(at 80% 100%, hsla(242,100%,70%,0.1) 0px, transparent 50%),
-      radial-gradient(at 0% 0%, hsla(343,100%,76%,0.05) 0px, transparent 50%);
-  }
-
-  .animate-blob {
-    animation: blob 7s infinite;
-  }
-  .animation-delay-2000 {
-    animation-delay: 2s;
-  }
-  .animation-delay-4000 {
-    animation-delay: 4s;
-  }
-  
-  .background-animate {
-    background-size: 400%;
-    animation: AnimationName 5s ease infinite;
-  }
-
-  .ultimate-bg-animate {
-    background: linear-gradient(
-      -45deg,
-      #02040A, /* Ultra Deep Black */
-      #050816, /* Midnight Black */
-      #081120, /* Deep Space Blue */
-      #0A0F2C, /* Deep Navy */
-      #13092A, /* Deep Dark Purple */
-      #081620, /* Deep Dark Cyan */
-      #170514, /* Deep Dark Magenta */
-      #051510, /* Deep Dark Emerald */
-      #120803  /* Deep Dark Amber */
-    );
-    background-size: 800% 800%;
-    animation: colorCycle 60s ease infinite;
-  }
-
-  .ultimate-glass-overlay {
-    background: linear-gradient(135deg, rgba(0,0,0,0.4) 0%, rgba(11,17,32,0.6) 100%);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.03);
-  }
-
-  .antigravity-particles {
-    background-image: 
-      radial-gradient(rgba(100, 116, 139, 0.3) 1px, transparent 1px),
-      radial-gradient(rgba(100, 116, 139, 0.2) 1px, transparent 1px);
-    background-size: 32px 32px, 24px 24px;
-    background-position: 0 0, 12px 12px;
-    animation: particleDrift 60s linear infinite;
-  }
-  
-  .dark .antigravity-particles {
-    background-image: 
-      radial-gradient(rgba(255, 255, 255, 0.15) 1px, transparent 1px),
-      radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
-  }
-}
-
-@keyframes particleDrift {
-  0% { background-position: 0px 0px, 12px 12px; }
-  100% { background-position: 320px 320px, 252px 252px; }
-}
-
-/* Aurora orb – GPU-safe: only animates translate (compositor) + blur is static */
-.aurora-orb {
-  position: absolute;
-  border-radius: 100%;
-  filter: blur(80px);
-  will-change: transform;
-  animation: auroraFloat var(--dur, 24s) ease-in-out infinite;
-}
-
-@keyframes auroraFloat {
-  0%   { transform: translate(0px,    0px);   }
-  25%  { transform: translate(60px,  -50px);  }
-  50%  { transform: translate(-40px,  80px);  }
-  75%  { transform: translate(80px,   40px);  }
-  100% { transform: translate(0px,    0px);   }
-}
-
-@property --border-angle {
-  syntax: "<angle>";
-  inherits: true;
-  initial-value: 0turn;
-}
-
-.hover-glow-card {
-  position: relative;
-  border-radius: 1rem;
-}
-
-.hover-glow-card::before,
-.hover-glow-card::after {
-  content: "";
-  position: absolute;
-  inset: -3px;
-  border-radius: inherit;
-  background: conic-gradient(
-    from var(--border-angle),
-    transparent 20%,
-    #08f,
-    #00ff99,
-    #ffbb00,
-    #ff0055,
-    transparent 80%
-  );
-  z-index: -1;
-  opacity: 0;
-  transition: opacity 0.5s ease;
-  animation: glow-spin 3s linear infinite;
-}
-
-.hover-glow-card::after {
-  filter: blur(15px);
-}
-
-.hover-glow-card:hover::before,
-.hover-glow-card:hover::after {
-  opacity: 1;
-}
-
-@keyframes glow-spin {
-  to {
-    --border-angle: 1turn;
-  }
-}
-
-@keyframes colorCycle {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-@keyframes AnimationName {
-  0%,
-  100% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-}
-
-@keyframes blob {
-  0% { transform: translate(0px, 0px) scale(1); }
-  33% { transform: translate(30px, -50px) scale(1.1); }
-  66% { transform: translate(-20px, 20px) scale(0.9); }
-  100% { transform: translate(0px, 0px) scale(1); }
 }
 
 /* Scrollbar customizations */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 8px;
+  background: #E5E7EB;
+  border-radius: 4px;
 }
 .dark ::-webkit-scrollbar-thumb {
-  background: #334155;
+  background: #3F3F46;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #D1D5DB;
 }
 .dark ::-webkit-scrollbar-thumb:hover {
-  background: #475569;
+  background: #52525B;
 }
+
