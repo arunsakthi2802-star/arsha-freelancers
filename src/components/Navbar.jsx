@@ -37,8 +37,9 @@ export default function Navbar({
   const menuItems = [
     { id: "home", label: "Home" },
     { id: "about", label: "About" },
-    { id: "projects", label: "Work" },
+    { id: "projects", label: "Project Library" },
     { id: "review", label: "Testimonials" },
+    { id: "faq", label: "FAQ" },
     { id: "contact", label: "Contact" },
   ];
 
@@ -51,12 +52,12 @@ export default function Navbar({
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "glass-header py-3 shadow-sm"
-          : "bg-transparent py-5"
+          ? "glass shadow-sm py-2"
+          : "bg-transparent py-4"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-12">
+        <div className="flex items-center justify-between h-14">
           {/* Logo */}
           <div
             className="flex-shrink-0 cursor-pointer flex items-center gap-2 group"
@@ -65,35 +66,40 @@ export default function Navbar({
             <img 
               src="/ARSHA LOGO.png" 
               alt="Arsha Logo" 
-              className="h-9 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+              className="h-10 w-auto object-contain transform group-hover:scale-105 transition-transform duration-300"
             />
             <div className="flex flex-col">
-              <span className={`text-lg font-bold tracking-tight ${darkMode ? "text-white" : "text-gray-900"}`}>
+              <span className={`text-xl font-bold tracking-tight ${darkMode ? "text-white" : "text-slate-900"}`}>
                 Arsha <span className="text-blue-600">Freelancers</span>
+              </span>
+              <span className="text-[10px] uppercase font-bold tracking-widest text-slate-400 -mt-1">
+                Software Solutions
               </span>
             </div>
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden xl:flex items-center space-x-2">
+          <div className="hidden xl:flex items-center space-x-1">
             {menuItems.map((item) => (
               <button
                 key={item.id}
                 onClick={() => setActiveView(item.id)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors relative group ${
+                className={`px-4 py-2 rounded-full text-sm font-semibold transition-all relative group ${
                   activeView === item.id
-                    ? darkMode ? "text-white" : "text-gray-900"
-                    : darkMode ? "text-gray-400 hover:text-white" : "text-gray-500 hover:text-gray-900"
+                    ? darkMode ? "text-white" : "text-slate-900"
+                    : darkMode ? "text-slate-400 hover:text-white" : "text-slate-500 hover:text-slate-900"
                 }`}
               >
                 {item.label}
                 {activeView === item.id && (
                   <motion.div
                     layoutId="navbar-indicator"
-                    className="absolute inset-0 bg-gray-100 dark:bg-gray-800 rounded-full -z-10"
+                    className="absolute inset-0 bg-blue-500/10 dark:bg-white/10 rounded-full -z-10"
                     transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                   />
                 )}
+                {/* Hover Underline */}
+                <span className={`absolute bottom-1 left-4 right-4 h-0.5 bg-blue-500 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left ${activeView === item.id ? "hidden" : ""}`}></span>
               </button>
             ))}
 
@@ -104,10 +110,10 @@ export default function Navbar({
               onMouseLeave={() => setServicesDropdownOpen(false)}
             >
               <button
-                className={`flex items-center gap-1 px-4 py-2 rounded-full text-sm font-medium transition-colors relative group ${
+                className={`flex items-center gap-1 px-4 py-2 rounded-full text-sm font-semibold transition-all relative group ${
                   activeView === "services" || activeView === "advisor"
-                    ? darkMode ? "text-white bg-gray-800" : "text-gray-900 bg-gray-100"
-                    : darkMode ? "text-gray-400 hover:text-white" : "text-gray-500 hover:text-gray-900"
+                    ? darkMode ? "text-white" : "text-slate-900"
+                    : darkMode ? "text-slate-400 hover:text-white" : "text-slate-500 hover:text-slate-900"
                 }`}
               >
                 Services
@@ -121,7 +127,7 @@ export default function Navbar({
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: 10, scale: 0.95 }}
                     transition={{ duration: 0.2 }}
-                    className="absolute top-full left-0 mt-2 w-48 rounded-xl glass-card overflow-hidden shadow-lg border border-gray-200 dark:border-gray-800"
+                    className="absolute top-full left-0 mt-2 w-48 rounded-xl glass-card overflow-hidden"
                   >
                     <div className="py-2">
                       {serviceItems.map((subItem) => (
@@ -133,8 +139,8 @@ export default function Navbar({
                           }}
                           className={`w-full text-left px-4 py-2.5 text-sm font-medium transition-colors ${
                             darkMode
-                              ? "text-gray-300 hover:text-white hover:bg-gray-800"
-                              : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                              ? "text-slate-300 hover:text-white hover:bg-white/10"
+                              : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
                           }`}
                         >
                           {subItem.label}
@@ -152,7 +158,7 @@ export default function Navbar({
             <button
               onClick={() => setDarkMode(!darkMode)}
               className={`p-2.5 rounded-full transition-colors ${
-                darkMode ? "text-gray-400 hover:text-white hover:bg-gray-800" : "text-gray-500 hover:text-gray-900 hover:bg-gray-100"
+                darkMode ? "bg-white/10 text-yellow-300 hover:bg-white/20" : "bg-slate-100 text-slate-600 hover:bg-slate-200"
               }`}
               aria-label="Toggle theme"
             >
@@ -162,10 +168,10 @@ export default function Navbar({
             {isAuthenticated ? (
               <button
                 onClick={() => setActiveView(isAdmin ? "admin" : isManager ? "manager" : "portal")}
-                className={`flex items-center gap-2 px-4 py-2 rounded-full font-medium text-sm transition-all border ${
+                className={`flex items-center gap-2 px-4 py-2 rounded-full font-bold text-sm transition-all border ${
                   darkMode
-                    ? "border-gray-700 hover:bg-gray-800 text-white"
-                    : "border-gray-200 hover:bg-gray-50 text-gray-900"
+                    ? "border-slate-700 hover:bg-slate-800 text-white"
+                    : "border-slate-200 hover:bg-slate-50 text-slate-900"
                 }`}
               >
                 <LayoutDashboard className="w-4 h-4" />
@@ -174,8 +180,8 @@ export default function Navbar({
             ) : (
               <button
                 onClick={() => setActiveView("login")}
-                className={`font-medium text-sm transition-colors ${
-                  darkMode ? "text-gray-400 hover:text-white" : "text-gray-600 hover:text-gray-900"
+                className={`font-semibold text-sm transition-colors ${
+                  darkMode ? "text-slate-300 hover:text-white" : "text-slate-600 hover:text-slate-900"
                 }`}
               >
                 Log In
@@ -184,9 +190,9 @@ export default function Navbar({
 
             <button
               onClick={onGetQuoteClick}
-              className="px-5 py-2.5 rounded-full font-medium text-sm text-white bg-blue-600 hover:bg-blue-700 transition-colors"
+              className="px-6 py-2.5 rounded-full font-bold text-sm text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg hover:shadow-blue-500/25 transition-all transform hover:-translate-y-0.5"
             >
-              Get a Quote
+              Get Started
             </button>
           </div>
 
@@ -194,13 +200,13 @@ export default function Navbar({
           <div className="flex xl:hidden items-center gap-3">
             <button
               onClick={() => setDarkMode(!darkMode)}
-              className={`p-2 rounded-full ${darkMode ? "text-gray-400 hover:text-white" : "text-gray-500 hover:text-gray-900"}`}
+              className={`p-2 rounded-full ${darkMode ? "text-yellow-300" : "text-slate-600"}`}
             >
               {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className={`p-2 ${darkMode ? "text-white" : "text-gray-900"}`}
+              className={`p-2 ${darkMode ? "text-white" : "text-slate-900"}`}
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -215,7 +221,7 @@ export default function Navbar({
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className={`xl:hidden border-t ${darkMode ? "bg-gray-950 border-gray-800" : "bg-white border-gray-100"}`}
+            className={`xl:hidden border-t ${darkMode ? "bg-slate-900 border-slate-800" : "bg-white border-slate-100"}`}
           >
             <div className="px-4 pt-2 pb-6 space-y-1">
               {[...menuItems, ...serviceItems].map((item) => (
@@ -225,32 +231,32 @@ export default function Navbar({
                     setActiveView(item.id);
                     setMobileMenuOpen(false);
                   }}
-                  className={`block w-full text-left px-4 py-3 rounded-lg font-medium ${
+                  className={`block w-full text-left px-4 py-3 rounded-xl font-medium ${
                     activeView === item.id
-                      ? "bg-blue-50 text-blue-600 dark:bg-gray-800 dark:text-white"
-                      : darkMode ? "text-gray-400" : "text-gray-600"
+                      ? "bg-blue-500/10 text-blue-600"
+                      : darkMode ? "text-slate-300" : "text-slate-700"
                   }`}
                 >
                   {item.label}
                 </button>
               ))}
-              <div className="pt-4 flex flex-col gap-3 px-4">
+              <div className="pt-4 flex flex-col gap-3">
                 <button
                   onClick={() => {
                     onGetQuoteClick();
                     setMobileMenuOpen(false);
                   }}
-                  className="w-full py-3 rounded-lg font-medium text-white bg-blue-600 hover:bg-blue-700"
+                  className="w-full py-3 rounded-xl font-bold text-sm text-white bg-gradient-to-r from-blue-600 to-indigo-600"
                 >
-                  Get a Quote
+                  Get Started
                 </button>
                 <button
                   onClick={() => {
                     setActiveView(isAuthenticated ? (isAdmin ? "admin" : isManager ? "manager" : "portal") : "login");
                     setMobileMenuOpen(false);
                   }}
-                  className={`w-full py-3 rounded-lg font-medium border ${
-                    darkMode ? "border-gray-800 text-white hover:bg-gray-800" : "border-gray-200 text-gray-900 hover:bg-gray-50"
+                  className={`w-full py-3 rounded-xl font-bold text-sm border ${
+                    darkMode ? "border-slate-700 text-white" : "border-slate-200 text-slate-900"
                   }`}
                 >
                   {isAuthenticated ? "Dashboard" : "Log In"}
@@ -263,4 +269,3 @@ export default function Navbar({
     </nav>
   );
 }
-
