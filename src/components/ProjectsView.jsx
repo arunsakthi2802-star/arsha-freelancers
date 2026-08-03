@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect, useMemo, useCallback } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
+import { motion } from "motion/react";
 import {
   Search,
   Filter,
@@ -139,16 +139,6 @@ export default function ProjectsView({
 
   // Library States
   const [search, setSearch] = useState("");
-  const [searchInput, setSearchInput] = useState("");
-
-  // Debounce search — waits 300ms after user stops typing before filtering
-  const debounceTimer = useRef(null);
-  const handleSearchChange = useCallback((e) => {
-    const val = e.target.value;
-    setSearchInput(val);
-    clearTimeout(debounceTimer.current);
-    debounceTimer.current = setTimeout(() => setSearch(val), 300);
-  }, []);
   const [selectedDept, setSelectedDept] = useState(preselectedDept);
   const [selectedTech, setSelectedTech] = useState("All");
   const [selectedDomain, setSelectedDomain] = useState("All");
@@ -542,9 +532,9 @@ export default function ProjectsView({
                 <input
                   type="text"
                   placeholder="Search project titles, keywords..."
-                  value={searchInput}
-                  onChange={handleSearchChange}
-                  className="w-full pl-9 pr-3 py-2.5 bg-transparent dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-white focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 font-bold transition-all duration-200 placeholder:text-slate-400"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="w-full pl-9 pr-3 py-2.5 bg-transparent dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-white focus:outline-none focus:border-blue-500 font-bold"
                 />
               </div>
 

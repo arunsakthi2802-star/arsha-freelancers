@@ -24,17 +24,6 @@
   --color-light-300: #F3F4F6;
 }
 
-
-/* === GLOBAL SMOOTH SCROLL & INPUT POLISH === */
-html {
-  scroll-behavior: smooth;
-}
-
-/* Smooth transition for all form inputs and selects */
-input, textarea, select {
-  transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
-}
-
 @layer utilities {
   .glass {
     background: rgba(255, 255, 255, 0.7);
