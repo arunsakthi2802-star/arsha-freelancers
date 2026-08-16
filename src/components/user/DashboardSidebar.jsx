@@ -25,9 +25,9 @@ export default function DashboardSidebar({ activeTab, setActiveTab, onLogout, us
 
       {/* Sidebar */}
       <aside className={`
-        fixed inset-y-0 left-0 z-50 w-64 bg-bg-primary border-r border-border-primary flex flex-col transition-transform duration-300 ease-in-out
-        lg:relative lg:translate-x-0
-        ${isMobileOpen ? "translate-x-0" : "-translate-x-full"}
+        fixed inset-y-0 right-0 z-50 w-64 bg-bg-primary border-l border-border-primary flex flex-col transition-transform duration-300 ease-in-out
+        lg:left-0 lg:right-auto lg:border-l-0 lg:border-r lg:translate-x-0 lg:relative
+        ${isMobileOpen ? "translate-x-0" : "translate-x-full"}
       `}>
         
         {/* Logo area */}

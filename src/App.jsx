@@ -320,48 +320,48 @@ export default function App() {
  );
  };
 
- const isAdminPage = activeView === "admin";
+  const isDashboardView = ["admin", "manager", "portal"].includes(activeView);
 
- return (
- <AuthProvider>
- <div
- className={`min-h-screen font-outfit flex flex-col justify-between transition-colors duration-500 select-none relative overflow-x-hidden ${
+  return (
+  <AuthProvider>
+  <div
+  className={`min-h-screen font-outfit flex flex-col justify-between transition-colors duration-500 select-none relative overflow-x-hidden ${
           darkMode ? "ultimate-bg-animate text-slate-100" : "bg-slate-50 text-slate-900"
         }`}
- >
- <div className="fixed inset-0 z-[-2]">
+  >
+  <div className="fixed inset-0 z-[-2]">
     <AnimatedBackground theme="neo-cyber" darkMode={darkMode} />
   </div>
 
- {/* 1. HEADER & STICKY NAVIGATION */}
- {!isAdminPage && (
- <Navbar
- activeView={activeView}
- setActiveView={setActiveView}
- darkMode={darkMode}
- setDarkMode={setDarkMode}
- onGetQuoteClick={() => setIsQuoteModalOpen(true)}
- />
- )}
+  {/* 1. HEADER & STICKY NAVIGATION */}
+  {!isDashboardView && (
+  <Navbar
+  activeView={activeView}
+  setActiveView={setActiveView}
+  darkMode={darkMode}
+  setDarkMode={setDarkMode}
+  onGetQuoteClick={() => setIsQuoteModalOpen(true)}
+  />
+  )}
 
- {/* 2. BODY DYNAMIC MAIN CONTENT VIEW */}
- <main className={`${isAdminPage ?"" :"flex-grow pt-4"} relative z-10`}>
+  {/* 2. BODY DYNAMIC MAIN CONTENT VIEW */}
+  <main className={`${isDashboardView ?"" :"flex-grow pt-[4.5rem]"} relative z-10`}>
     <React.Suspense fallback={<div className="min-h-[60vh] flex items-center justify-center"><div className="animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full"></div></div>}>
       {renderActiveView()}
     </React.Suspense>
   </main>
 
- {/* 3. FOOTER */}
- {!isAdminPage && (
- <Footer
- activeView={activeView}
- setActiveView={setActiveView}
- onGetQuoteClick={() => setIsQuoteModalOpen(true)}
- />
- )}
+  {/* 3. FOOTER */}
+  {!isDashboardView && (
+  <Footer
+  activeView={activeView}
+  setActiveView={setActiveView}
+  onGetQuoteClick={() => setIsQuoteModalOpen(true)}
+  />
+  )}
 
- {/* 4. FLOATING UTILITIES */}
- {!isAdminPage && (
+  {/* 4. FLOATING UTILITIES */}
+  {!isDashboardView && (
  <>
  {/* Lyzr AI Chat */}
  <ArshaChat />

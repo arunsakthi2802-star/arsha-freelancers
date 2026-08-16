@@ -48,12 +48,6 @@ export default function DashboardTopbar({ setIsMobileOpen, activeTab, theme, set
   return (
     <header className="h-16 border-b border-border-primary bg-bg-primary/80 backdrop-blur-md sticky top-0 z-30 px-4 sm:px-6 flex items-center justify-between shrink-0">
       <div className="flex items-center gap-3">
-        <button 
-          onClick={() => setIsMobileOpen(true)}
-          className="lg:hidden p-2 -ml-2 text-text-secondary hover:text-text-primary hover:bg-bg-secondary rounded-lg transition-colors cursor-pointer"
-        >
-          <Menu className="w-5 h-5" />
-        </button>
         <h1 className="text-lg font-black text-text-primary tracking-tight capitalize">{getPageTitle()}</h1>
       </div>
       
@@ -135,6 +129,13 @@ export default function DashboardTopbar({ setIsMobileOpen, activeTab, theme, set
 
         {/* ThemeSwitcher component */}
         <ThemeSwitcher theme={theme} setTheme={setTheme} darkMode={darkMode} />
+
+        <button 
+          onClick={() => setIsMobileOpen(true)}
+          className="lg:hidden p-2 -mr-2 text-text-secondary hover:text-text-primary hover:bg-bg-secondary rounded-lg transition-colors cursor-pointer"
+        >
+          <Menu className="w-5 h-5" />
+        </button>
       </div>
     </header>
   );
