@@ -50,6 +50,12 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.1
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon.png"
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter packages.

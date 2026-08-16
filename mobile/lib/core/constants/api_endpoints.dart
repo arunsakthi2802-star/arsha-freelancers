@@ -1,17 +1,13 @@
-import 'dart:io';
-import 'package:flutter/foundation.dart';
+
 
 class ApiEndpoints {
+  // Replace this with your actual live Render URL!
+  static const String productionUrl = "https://arsha-freelancers.onrender.com/api";
+
   // Determine backend host dynamically depending on platform
   static String get baseUrl {
-    if (kIsWeb) {
-      return "http://localhost:5000/api";
-    } else if (Platform.isAndroid) {
-      // 10.0.2.2 points to host machine from Android emulator
-      return "http://10.0.2.2:5000/api";
-    } else {
-      return "http://localhost:5000/api";
-    }
+    // Forcing production URL for the debug APK build to bypass Windows security blocks!
+    return productionUrl;
   }
 
   // Auth Routes
