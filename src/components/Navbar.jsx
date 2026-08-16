@@ -221,7 +221,7 @@ export default function Navbar({
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className={`xl:hidden border-t ${darkMode ? "bg-slate-900 border-slate-800" : "bg-white border-slate-100"}`}
+            className={`xl:hidden border-t overflow-y-auto max-h-[calc(100vh-4.5rem)] ${darkMode ? "bg-slate-900 border-slate-800" : "bg-white border-slate-100"}`}
           >
             <div className="px-4 pt-2 pb-6 space-y-1">
               {[...menuItems, ...serviceItems].map((item) => (
